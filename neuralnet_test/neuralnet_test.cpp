@@ -21,7 +21,6 @@ int main()
 	return 0;
 }
 
-
 void stopwatch_test()
 {
 	Stopwatch<std::milli> sw;

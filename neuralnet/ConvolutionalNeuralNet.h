@@ -8,4 +8,4 @@ public:
 	virtual ~ConvolutionalNeuralNet() = default;
 };
 
-typedef ConvolutionalNeuralNet CNN
+typedef ConvolutionalNeuralNet CNN;

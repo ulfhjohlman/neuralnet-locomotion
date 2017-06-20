@@ -1,18 +1,12 @@
 #pragma once
 #include "NeuralNet.h"
+
 class RecurrentNeuralNet :
 	public NeuralNet
 {
 public:
-
-	RecurrentNeuralNet()
-	{
-	}
-
-	virtual ~RecurrentNeuralNet()
-	{
-	}
+	RecurrentNeuralNet() = default;
+	virtual ~RecurrentNeuralNet() = default;
 };
 
-typedef RecurrentNeuralNet RNN
-
+typedef RecurrentNeuralNet RNN;

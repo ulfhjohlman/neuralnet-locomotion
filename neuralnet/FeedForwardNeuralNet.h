@@ -8,5 +8,5 @@ public:
 	virtual ~FeedForwardNeuralNet() = default;
 };
 
-typedef FeedForwardNeuralNet FFNN
+typedef FeedForwardNeuralNet FFNN;
 

@@ -4,14 +4,9 @@ class ContinousTimeRecurrentNeuralNet : public RecurrentNeuralNet
 {
 public:
 
-	ContinousTimeRecurrentNeuralNet()
-	{
-	}
+	ContinousTimeRecurrentNeuralNet() = default;
 
-	virtual ~ContinousTimeRecurrentNeuralNet()
-	{
-	}
+	virtual ~ContinousTimeRecurrentNeuralNet() = default;
 };
 
 typedef ContinousTimeRecurrentNeuralNet CRTNN;
-

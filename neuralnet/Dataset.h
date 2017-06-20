@@ -13,7 +13,7 @@ public:
 	Dataset() : m_doc(0), m_pRoot(0) {
 		m_pRoot = m_doc.NewElement("Root");
 		m_doc.InsertFirstChild(m_pRoot);
-
+	
 		tinyxml2::XMLElement * pElement = m_doc.NewElement("IntValue");
 
 		pElement->SetText(10);
@@ -32,11 +32,19 @@ public:
 		std::cout << pElement->Attribute("year") << std::endl;
 
 		m_doc.InsertEndChild(m_pRoot);
+		m_doc.Print();
 		m_doc.SaveFile("poop.xml", false);
+
+		tinyxml2::XMLDocument loader;
+		loader.LoadFile("poop.xml");
+		tinyxml2::XMLElement* e = loader.FirstChildElement("root");
+		
+		int day = 0;
+		std::cout << e->IntAttribute( &day ) << std::endl;
+
 	}
 
-	virtual ~Dataset() { }
-
+	virtual ~Dataset() = default;
 	//virtual void loadFromFile(const char* name);
 protected:
 	tinyxml2::XMLDocument m_doc;

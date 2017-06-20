@@ -145,6 +145,7 @@
     <ClInclude Include="Dataset.h" />
     <ClInclude Include="FeedForwardNeuralNet.h" />
     <ClInclude Include="NeuralNet.h" />
+    <ClInclude Include="NeuralNetException.h" />
     <ClInclude Include="RecurrentNeuralNet.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Stopwatch.h" />

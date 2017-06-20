@@ -57,6 +57,9 @@
     <ClInclude Include="RecurrentNeuralNet.h">
       <Filter>Header Files\Neural Nets</Filter>
     </ClInclude>
+    <ClInclude Include="NeuralNetException.h">
+      <Filter>Header Files\Exceptions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
