@@ -33,7 +33,12 @@ int main()
 void stopwatch_test()
 {
 	Stopwatch<std::milli> sw;
-	//std::cout << sw.getAbsoluteTime() << std::endl;
+	using namespace std::chrono_literals;
+	auto start = std::chrono::high_resolution_clock::now();
+	std::this_thread::sleep_for(500ms);
+	auto end = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double, std::milli> elapsed = end - start;
+	std::cout << "Waited " << elapsed.count() << " ms\n";
 	//std::cout << "Stopwatch test passed" << std::endl;
 }
 

@@ -10,6 +10,14 @@
 #include <vector>
 #include <map>
 
+/// <summary>
+/// A class for wrapping tinyxml2 features into a object that can store data related to a dataset. 
+/// The dataset throws exceptions in both debug and release build. So it's meant to handle errors regardless
+/// of operation. 
+/// 
+/// Is not threadsafe. Locking might be implemented for client use in two specific functions.
+/// Can not handle large sets(> memory) of data. And does not buffer anything.
+/// </summary>
 class Dataset
 {
 public:
@@ -63,6 +71,21 @@ public:
 		checkRootNode();
 	}
 
+	virtual void selectCurrentElement(const char* name) {
+		checkRootNode();
+		m_currentElement = m_rootNode->FirstChildElement(name);
+		checkCurrentElement();
+	}
+
+	/// <summary>
+	/// Get the number of items in current element
+	/// </summary>
+	/// <returns></returns>
+	virtual unsigned int getNumberOfItems() const {
+		checkCurrentElement();
+		tinyxml2::XMLAttribute* attribute = m_currentElement->FindAttribute("a ");
+		return 1;
+	}
 
 	/// <summary>
 	/// Is bugged. Reads out of bounds when day is single digit. Need to get pos of whitespace.
