@@ -27,7 +27,7 @@ public:
 	}
 	
 	/// <summary>
-	/// Get date and time from this computer. Need to get lap time first.
+	/// Get date and time from this computer.
 	/// </summary>
 	/// <returns>string day/month/year hours:minutes:seconds</returns>
 	std::string getAbsoluteTime() {

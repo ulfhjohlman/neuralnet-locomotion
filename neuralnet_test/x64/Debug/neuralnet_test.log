@@ -1,8 +1,15 @@
 ﻿  neuralnet_test.cpp
 c:\users\jonathan\documents\visual studio 2017\projects\masterdemo\neuralnet\stopwatch.h(35): warning C4996: 'ctime': This function or variable may be unsafe. Consider using ctime_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\time.h(475): note: see declaration of 'ctime'
-  c:\users\jonathan\documents\visual studio 2017\projects\masterdemo\neuralnet\stopwatch.h(33): note: while compiling class template member function 'std::string Stopwatch<std::milli>::getAbsoluteTime(void)'
-  c:\users\jonathan\documents\visual studio 2017\projects\masterdemo\neuralnet_test\neuralnet_test.cpp(27): note: see reference to function template instantiation 'std::string Stopwatch<std::milli>::getAbsoluteTime(void)' being compiled
-  c:\users\jonathan\documents\visual studio 2017\projects\masterdemo\neuralnet_test\neuralnet_test.cpp(26): note: see reference to class template instantiation 'Stopwatch<std::milli>' being compiled
+  c:\users\jonathan\documents\visual studio 2017\projects\masterdemo\neuralnet\stopwatch.h(33): note: while compiling class template member function 'std::string Stopwatch<std::ratio<1,1>>::getAbsoluteTime(void)'
+  c:\users\jonathan\documents\visual studio 2017\projects\masterdemo\neuralnet\dataset.h(72): note: see reference to function template instantiation 'std::string Stopwatch<std::ratio<1,1>>::getAbsoluteTime(void)' being compiled
+  c:\users\jonathan\documents\visual studio 2017\projects\masterdemo\neuralnet\dataset.h(147): note: see reference to class template instantiation 'Stopwatch<std::ratio<1,1>>' being compiled
+c:\users\jonathan\documents\visual studio 2017\projects\masterdemo\neuralnet\dataset.h(98): warning C4267: 'initializing': conversion from 'size_t' to 'unsigned int', possible loss of data
+  c:\users\jonathan\documents\visual studio 2017\projects\masterdemo\neuralnet_test\neuralnet_test.cpp(49): note: see reference to function template instantiation 'void Dataset::insertNewElements<float>(const char *,const std::vector<float,std::allocator<_Ty>> &)' being compiled
+          with
+          [
+              _Ty=float
+          ]
+c:\users\jonathan\documents\visual studio 2017\projects\masterdemo\neuralnet\dataset.h(98): warning C4267: 'initializing': conversion from 'size_t' to 'const unsigned int', possible loss of data
   neuralnet_test.vcxproj -> C:\Users\Jonathan\documents\visual studio 2017\Projects\masterdemo\x64\Debug\neuralnet_test.exe
   neuralnet_test.vcxproj -> C:\Users\Jonathan\documents\visual studio 2017\Projects\masterdemo\x64\Debug\neuralnet_test.pdb (Partial PDB)

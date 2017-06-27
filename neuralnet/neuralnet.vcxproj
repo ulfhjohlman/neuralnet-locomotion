@@ -142,7 +142,9 @@
   <ItemGroup>
     <ClInclude Include="ContinousTimeRecurrentNeuralNet.h" />
     <ClInclude Include="ConvolutionalNeuralNet.h" />
+    <ClInclude Include="DataPrinter.h" />
     <ClInclude Include="Dataset.h" />
+    <ClInclude Include="DatasetException.h" />
     <ClInclude Include="FeedForwardNeuralNet.h" />
     <ClInclude Include="NeuralNet.h" />
     <ClInclude Include="NeuralNetException.h" />
@@ -150,6 +152,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Stopwatch.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="XMLException.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
