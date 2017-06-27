@@ -83,7 +83,7 @@ public:
 	/// <returns></returns>
 	virtual unsigned int getNumberOfItems() const {
 		checkCurrentElement();
-		tinyxml2::XMLAttribute* attribute = m_currentElement->FindAttribute("a ");
+		//tinyxml2::XMLAttribute* attribute = m_currentElement->FindAttribute("a ");
 		return 1;
 	}
 
