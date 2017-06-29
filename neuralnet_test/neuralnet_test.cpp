@@ -34,14 +34,21 @@ void stopwatch_test()
 {
 	using namespace std::chrono_literals;
 	Stopwatch<std::milli> sw;
-
+	sw.getLapTime();
 	auto start = std::chrono::high_resolution_clock::now();
 	std::this_thread::sleep_for(500ms);
 	auto end = std::chrono::high_resolution_clock::now();
 
+	double stopwatchTime = sw.getLapTime();
+
 	std::chrono::duration<double, std::milli> elapsed = end - start;
-	std::cout << "Waited " << elapsed.count() << " ms\n";
-	std::cout << "Stopwatch test passed" << std::endl;
+	std::cout << "Waited " << elapsed.count() << " ms, " << " Stopwatch laptime=" << stopwatchTime << std::endl;
+
+	const double absoluteErrorThreshold = 0.02; //20 microsec
+	if (std::abs(elapsed.count() - stopwatchTime) < absoluteErrorThreshold)
+		std::cout << "Stopwatch test passed" << std::endl;
+	else
+		std::cout << "Stopwatch test failed" << std::endl;
 }
 
 void dataset_test()
