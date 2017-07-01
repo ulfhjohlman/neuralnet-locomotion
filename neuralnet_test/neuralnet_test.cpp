@@ -1,14 +1,20 @@
 #include "stdafx.h"
+
 #include "../neuralnet/Dataset.h"
 #include "../neuralnet/Stopwatch.h"
 #include "../neuralnet/DatasetException.h"
 #include "../neuralnet/XMLException.h"
 #include "../neuralnet/DataPrinter.h"
 
+#include "../testclasses/ThreadsafeQueue.h"
+#include "../testclasses/utilityfunctions.h"
+
 #ifdef _DEBUG
-#pragma comment(lib, "../Debug/neuralnet.lib")
+#pragma comment(lib, "../x64/Debug/neuralnet.lib")
+#pragma comment(lib, "../x64/Debug/testclasses.lib")
 #else
-#pragma comment(lib, "../Release/neuralnet.lib")
+#pragma comment(lib, "../x64/Release/neuralnet.lib")
+#pragma comment(lib, "../x64//Release/testclasses.lib")
 #endif // _DEBUG
 
 #include <iostream>
@@ -16,6 +22,7 @@
 #include <vector>
 #include <thread>
 #include <chrono>
+#include <functional>
 
 //Function prototypes
 void stopwatch_test();
@@ -24,6 +31,11 @@ void dataprinter_test();
 
 int main()
 {
+	/*auto lamb = [](int a, int b) { return a + b; };
+	std::pair<int, double> p = Time< decltype(lamb), int, int >(lamb, 1, 2);
+	std::cout << p.second << " " << p.first << std::endl;
+	std::cout << TimeVoid<decltype(stopwatch_test)>(stopwatch_test) << " sec\n";
+	std::cout << std::thread::hardware_concurrency() << " ntherds\n";*/
 	dataprinter_test();
 	stopwatch_test();
 	dataset_test();

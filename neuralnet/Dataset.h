@@ -9,6 +9,7 @@
 #include <iostream>
 #include <vector>
 #include <map>
+#include <cassert>
 
 /// <summary>
 /// A class for wrapping tinyxml2 features into a object that can store data related to a dataset. 
@@ -123,6 +124,9 @@ public:
 	void insertNewElements(const char* listName, const std::vector<T>& elements) {
 		checkRootNode();
 
+#ifdef _DEBUG
+		assert(elements.size() < UINT32_MAX);
+#endif // _DEBUG
 		const unsigned int size = elements.size();
 		if (size < 1) throw DatasetException("Empty vector.");
 
@@ -142,6 +146,9 @@ public:
 	void insertData(const char* dataName, const std::vector<T>& data) {
 		checkRootNode();
 
+#ifdef _DEBUG
+		assert(data.size() < UINT32_MAX);
+#endif // _DEBUG
 		const unsigned int size = data.size();
 		if (size < 1) throw DatasetException("Empty vector.");
 

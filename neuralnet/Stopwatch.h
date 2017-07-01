@@ -27,12 +27,12 @@ public:
 	}
 	
 	/// <summary>
-	/// Get date and time from this computer.
+	/// Get date and time from this computer. Not threadsafe!
 	/// </summary>
 	/// <returns>string day/month/year hours:minutes:seconds</returns>
 	std::string getAbsoluteTime() {
 		std::time_t date_time = std::chrono::system_clock::to_time_t(m_end);
-		return std::ctime(&date_time);
+		return std::ctime(&date_time); //Use strftime istead
 	}
 private:
 	std::chrono::time_point<std::chrono::system_clock> m_start, m_end;
