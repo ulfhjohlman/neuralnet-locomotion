@@ -86,9 +86,10 @@ int main() {
 	newcopy = *p_head;
 
 
-	//newcopy[10] = 1;
+	newcopy[10] = 59;
 
 	p_head->print();
+	std::cout << std::endl;
 	newcopy.print();
 
 	delete p_head;
@@ -96,6 +97,7 @@ int main() {
 	//float sum = parallel_accumulate(x.begin(), x.end(), 0.0f);
 	//threading_test();
 	std::cout << "practice done.";
+	std::cin.get();
 	std::cin.get();
 }
 

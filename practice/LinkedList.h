@@ -12,8 +12,8 @@ public:
 	~LinkedList();
 
 	void add(LinkedList<T>* node);
-	const LinkedList<T>* getNext() const;
-	void print();
+	LinkedList<T>* getNext() const;
+	void print() const;
 
 	T& operator[](const size_t index);
 	LinkedList<T>& operator=(const LinkedList<T>& rhs);
@@ -30,13 +30,15 @@ LinkedList<T>& LinkedList<T>::operator=(const LinkedList<T>& rhs) //FUUUUCK forg
 	std::cout << "HEYHEY\n";
 	if (this == &rhs)
 		throw std::exception("NOPE");
-
 	this->m_value = rhs.m_value;
-	//const LinkedList<T>* it = &rhs;
-	//while (it->getNext()) {
-	//	this->add(new LinkedList<T>(it->getNext()->m_value));
-	//	it = it->getNext();
-	//}
+	if (rhs.getNext()) {
+		m_next = new LinkedList<T>();
+		(*m_next) = *(rhs.getNext()); //calls copy assignment again
+		std::cout <<"wtf\n";
+		std::cout << "wtf\n";
+		std::cout << "wtf\n";
+		std::cout << "heeh\n";
+	}
 
 	return *this;
 }
@@ -59,7 +61,7 @@ T& LinkedList<T>::operator[](const size_t index)
 }
 
 template<typename T>
-void LinkedList<T>::print()
+void LinkedList<T>::print() const
 {
 	std::cout << m_value << std::endl;
 	if (m_next)
@@ -67,7 +69,7 @@ void LinkedList<T>::print()
 }
 
 template<typename T>
-const LinkedList<T>* LinkedList<T>::getNext() const
+LinkedList<T>* LinkedList<T>::getNext() const
 {
 	return m_next;
 }

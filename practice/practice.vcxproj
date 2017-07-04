@@ -139,12 +139,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="LinkedList.h" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="LinkedList.h" />
     <ClInclude Include="Memory.h" />
     <ClInclude Include="MemoryCapacity.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\testclasses\testclasses.vcxproj">
+      <Project>{2d1a866d-51a6-4d95-b399-11ba14b698b3}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

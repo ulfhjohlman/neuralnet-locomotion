@@ -39,6 +39,8 @@ int main()
 	dataprinter_test();
 	stopwatch_test();
 	dataset_test();
+
+	std::cin.get();
 	return 0;
 }
 
