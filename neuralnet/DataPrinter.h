@@ -2,6 +2,7 @@
 #include <sstream>
 #include <vector>
 #include <exception>
+#include <type_traits>
 
 class DataPrinter
 {
@@ -11,17 +12,19 @@ public:
 
 	template<typename T>
 	void write(T data) {
+		static_assert(std::is_integral<T>::value, "Not a number. Can only store number data.");
 		m_buffer << m_buffer.scientific << data;
 	}
 
 	template<typename T>
 	void write(std::vector<T>& data) {
+		static_assert(std::is_integral<T>::value, "Not a number. Can only store number data.");
 			for (const auto& i : data) {
 				m_buffer << i << " ";
 			}
 	}
 
-	std::string getString() const {
+	const std::string& getString() const {
 		return m_buffer.str();
 	}
 	const char* getData() const {

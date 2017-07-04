@@ -27,7 +27,7 @@ private:
 };
 
 template<typename T>
-inline void ThreadsafeQueue<T>::push(T new_value)
+void ThreadsafeQueue<T>::push(T new_value)
 {
 	std::lock_guard<std::mutex> lk(m_mut);
 	m_queue.push(new_value);
@@ -35,7 +35,7 @@ inline void ThreadsafeQueue<T>::push(T new_value)
 }
 
 template<typename T>
-inline void ThreadsafeQueue<T>::wait_and_pop(T & value)
+void ThreadsafeQueue<T>::wait_and_pop(T & value)
 {
 	std::unique_lock<std::mutex> lk(m_mut);
 	m_condition.wait(lk, [this] { return !m_queue.empty(); });
@@ -44,7 +44,7 @@ inline void ThreadsafeQueue<T>::wait_and_pop(T & value)
 }
 
 template<typename T>
-inline std::shared_ptr<T> ThreadsafeQueue<T>::wait_and_pop()
+std::shared_ptr<T> ThreadsafeQueue<T>::wait_and_pop()
 {
 	std::unique_lock<std::mutex> lk(m_mut);
 	m_condition(lk, [this] { return !m_queue.empty(); });
@@ -54,18 +54,19 @@ inline std::shared_ptr<T> ThreadsafeQueue<T>::wait_and_pop()
 }
 
 template<typename T>
-inline bool ThreadsafeQueue<T>::try_pop(T& value)
+bool ThreadsafeQueue<T>::try_pop(T& value)
 {
 	std::lock_guard<std::mutex> lk(m_mut);
 	if (m_queue.empty())
 		return false;
-	value = m_queue.front();
+	T new_value( std::move( m_queue.front() ));
+	//value = std::move(m_queue.front()) ;
 	m_queue.pop();
 	return true;
 }
 
 template<typename T>
-inline std::shared_ptr<T> ThreadsafeQueue<T>::try_pop()
+std::shared_ptr<T> ThreadsafeQueue<T>::try_pop()
 {
 	std::lock_guard<std::mutex> lk(m_mut);
 	std::shared_ptr<T> sp = nullptr;
@@ -77,7 +78,7 @@ inline std::shared_ptr<T> ThreadsafeQueue<T>::try_pop()
 }
 
 template<typename T>
-inline bool ThreadsafeQueue<T>::empty() const
+bool ThreadsafeQueue<T>::empty() const
 {
 	std::lock_guard<std::mutex> lk(m_mut);
 	return m_queue.empty(); //Can be inconsistent while being modified by another thread

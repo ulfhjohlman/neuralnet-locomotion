@@ -23,10 +23,6 @@ public:
 		return *this;
 	}
 
-	FunctionWrapper(const FunctionWrapper&) = delete;
-	FunctionWrapper(FunctionWrapper&) = delete;
-	FunctionWrapper& operator=(const FunctionWrapper&) = delete;
-
 	//void functional operator for this object.
 	void operator()() { impl->call(); } 
 private:
@@ -50,4 +46,8 @@ private:
 	};
 
 	std::unique_ptr<impl_base> impl;
+
+	FunctionWrapper(const FunctionWrapper&) = delete;
+	FunctionWrapper(FunctionWrapper&) = delete;
+	FunctionWrapper& operator=(FunctionWrapper& rhs) = delete;
 };
