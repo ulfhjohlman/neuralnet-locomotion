@@ -12,13 +12,13 @@ public:
 
 	template<typename T>
 	void write(T data) {
-		static_assert(std::is_integral<T>::value, "Not a number. Can only store number data.");
+		static_assert(std::is_integral<T>::value || std::is_arithmetic<T>::value, "Not a number. Can only store number data.");
 		m_buffer << m_buffer.scientific << data;
 	}
 
 	template<typename T>
 	void write(std::vector<T>& data) {
-		static_assert(std::is_integral<T>::value, "Not a number. Can only store number data.");
+		static_assert(std::is_integral<T>::value || std::is_arithmetic<T>::value, "Not a number. Can only store number data.");
 			for (const auto& i : data) {
 				m_buffer << i << " ";
 			}

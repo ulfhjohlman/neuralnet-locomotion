@@ -31,11 +31,11 @@ void dataprinter_test();
 
 int main()
 {
-	auto lamb = [](int a, int b) { return a + b; };
-	std::pair<int, double> p = Time< decltype(lamb), int, int >(lamb, 1, 2);
-	std::cout << p.second << " " << p.first << std::endl;
-	std::cout << TimeVoid<decltype(stopwatch_test)>(stopwatch_test) << " sec\n";
-	std::cout << std::thread::hardware_concurrency() << " ntherds\n";
+	//auto lamb = [](int a, int b) { return a + b; };
+	//std::pair<int, double> p = Time< decltype(lamb), int, int >(lamb, 1, 2);
+	//std::cout << p.second << " " << p.first << std::endl;
+	//std::cout << TimeVoid<decltype(stopwatch_test)>(stopwatch_test) << " sec\n";
+	//std::cout << std::thread::hardware_concurrency() << " ntherds\n";
 	dataprinter_test();
 	stopwatch_test();
 	dataset_test();
@@ -54,9 +54,9 @@ void stopwatch_test()
 	double stopwatchTime = sw.getLapTime();
 
 	std::chrono::duration<double, std::milli> elapsed = end - start;
-	std::cout << "Waited " << elapsed.count() << " ms, " << " Stopwatch laptime=" << stopwatchTime << std::endl;
+	std::cout << "Waited " << elapsed.count() << " ms, " << " Stopwatch lap time=" << stopwatchTime << std::endl;
 
-	const double absoluteErrorThreshold = 0.02; //20 microsec
+	const double absoluteErrorThreshold = 0.02; //20 micro sec
 	if (std::abs(elapsed.count() - stopwatchTime) < absoluteErrorThreshold)
 		std::cout << "Stopwatch test passed" << std::endl;
 	else
@@ -71,7 +71,7 @@ void dataset_test()
 		d.insertNewRoot("XML");
 		d.insertNewRoot("newRoot");
 		d.insertNewElement("int", 5);
-		std::vector<float> floats = { 1, 2, 3, 4, 5, 6.005f, 42.01f }; //Will not be exact represantion
+		std::vector<float> floats = { 1, 2, 3, 4, 5, 6.005f, 42.01f }; //Will not be exact representation
 		d.insertNewElements("floats", floats);
 		d.insertDate();
 
@@ -94,7 +94,7 @@ void dataset_test()
 void dataprinter_test()
 {
 	DataPrinter dp;
-	std::vector<float> floats = { 1, 2, 3, 4, 5, 6.00005f, 42.0231231231231f }; //Will not be exact represantion
+	std::vector<float> floats = { 1, 2, 3, 4, 5, 6.00005f, 42.0231231231231f }; //Will not be exact representation
 	dp.write(floats);
 	std::cout << dp.getString() << std::endl;
 	std::cout << "DataPrinter test passed" << std::endl;
