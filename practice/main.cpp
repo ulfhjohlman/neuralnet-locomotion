@@ -95,7 +95,7 @@ int main() {
 	delete p_head;
 
 	//float sum = parallel_accumulate(x.begin(), x.end(), 0.0f);
-	//threading_test();
+	threading_test();
 	std::cout << "practice done.";
 	std::cin.get();
 	std::cin.get();
@@ -117,7 +117,7 @@ void memory_test()
 
 			auto memoryleft = MemoryCapacity::getFreeRam();
 			auto virtualMemoryLeft = MemoryCapacity::getFreeVirtualMemory();
-			std::cout << memoryleft << "+" << virtualMemoryLeft << " B\n";
+			std::cout << memoryleft << "+" << " ~0 " << " Bytes\n";
 
 			if (memoryleft < MemoryCapacity::GB) {
 				//Try allocate that gigabyte, can still throw bad_alloc.

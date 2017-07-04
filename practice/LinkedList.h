@@ -27,17 +27,12 @@ private:
 template<typename T>
 LinkedList<T>& LinkedList<T>::operator=(const LinkedList<T>& rhs) //FUUUUCK forgot &
 {
-	std::cout << "HEYHEY\n";
 	if (this == &rhs)
-		throw std::exception("NOPE");
+		throw std::exception("Don't self assign");
 	this->m_value = rhs.m_value;
 	if (rhs.getNext()) {
 		m_next = new LinkedList<T>();
 		(*m_next) = *(rhs.getNext()); //calls copy assignment again
-		std::cout <<"wtf\n";
-		std::cout << "wtf\n";
-		std::cout << "wtf\n";
-		std::cout << "heeh\n";
 	}
 
 	return *this;
