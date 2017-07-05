@@ -31,15 +31,13 @@ void dataprinter_test();
 
 int main()
 {
-	//auto lamb = [](int a, int b) { return a + b; };
-	//std::pair<int, double> p = Time< decltype(lamb), int, int >(lamb, 1, 2);
-	//std::cout << p.second << " " << p.first << std::endl;
-	//std::cout << TimeVoid<decltype(stopwatch_test)>(stopwatch_test) << " sec\n";
-	//std::cout << std::thread::hardware_concurrency() << " ntherds\n";
+	std::cout.sync_with_stdio(true); // make cout thread-safe
+
 	dataprinter_test();
 	stopwatch_test();
 	dataset_test();
 
+	std::cout << "Neural net tests done." << std::endl;
 	std::cin.get();
 	return 0;
 }

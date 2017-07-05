@@ -2,18 +2,23 @@
 #include <stdexcept>
 #include <iostream>
 
+/// <summary>
+/// Mostly for move semantic practice.
+/// </summary>
 template<typename T>
 class LinkedList
 {
 public:
 	LinkedList();
 	LinkedList(T t_);
-	
+	LinkedList(const LinkedList<T>& l_);
+	LinkedList(LinkedList<T>&& move_);
 	~LinkedList();
 
 	void add(LinkedList<T>* node);
 	LinkedList<T>* getNext() const;
 	void print() const;
+	//list tail?
 
 	T& operator[](const size_t index);
 	LinkedList<T>& operator=(const LinkedList<T>& rhs);
@@ -25,8 +30,31 @@ private:
 };
 
 template<typename T>
-LinkedList<T>& LinkedList<T>::operator=(const LinkedList<T>& rhs) //FUUUUCK forgot &
+LinkedList<T>::LinkedList(LinkedList<T>&& move_)
 {
+	std::cout << "move constructor\n";
+
+	this->m_value = move_.m_value;
+	move_.m_value = 0;
+	if (move_.getNext()) {
+		this->m_next = move_.m_next;
+		move_.m_next = nullptr;
+	}
+	
+}
+
+template<typename T>
+LinkedList<T>::LinkedList(const LinkedList<T>& l_)
+{
+	std::cout << "Copy constructor\n";
+	*this = l_;
+}
+
+template<typename T>
+LinkedList<T>& LinkedList<T>::operator=(const LinkedList<T>& rhs) 
+{
+	std::cout << "Copy assignment\n";
+
 	if (this == &rhs)
 		throw std::exception("Don't self assign");
 	this->m_value = rhs.m_value;
@@ -72,12 +100,11 @@ LinkedList<T>* LinkedList<T>::getNext() const
 template<typename T>
 void LinkedList<T>::add(LinkedList<T>* node)
 {
-#ifdef _DEBUG
 	if (node == nullptr)
 		throw std::invalid_argument("can't add nullptr.");
-#endif 
+
 	if (m_next) {
-		node->add( m_next );
+		node->add( m_next ); //Alternating tail add if it has several elements.
 		m_next = node;
 	}
 	else {

@@ -20,13 +20,113 @@
 
 void memory_test();
 void threading_test();
+void linkedlist_test();
 
+int main() {
+	linkedlist_test();
+	threading_test();
+
+	std::cout << "Done. Press any key to exit.\n";
+	std::cin.get();
+}
+
+void memory_test()
+{
+	using namespace std::chrono_literals;
+	MemoryCapacity::print();
+
+	std::vector<std::unique_ptr< char >> chunks;
+
+	auto allocate_chunk = [](size_t size) { return new char[size]; }; //why not
+
+	try {
+		while (true) {
+			std::this_thread::sleep_for(50ms);
+			chunks.push_back(std::unique_ptr<char>(allocate_chunk(MemoryCapacity::MB * 100))); //allocate 100mbchunks
+
+			auto memoryleft = MemoryCapacity::getFreeRam();
+			auto virtualMemoryLeft = MemoryCapacity::getFreeVirtualMemory();
+			//std::cout << memoryleft << "+" << " ~0 " << " Bytes\n";
+
+			if (memoryleft < MemoryCapacity::GB) {
+				//Try allocate that gigabyte, can still throw bad_alloc.
+				auto ptr = std::unique_ptr<char>(Memory::requestAllocation<char>(MemoryCapacity::GB));
+				if (ptr == nullptr) //Is not true if OS can write to pagefile, i.e OS will make room for ptr
+					std::cerr << "allocation request denied.\n";
+
+				chunks.push_back(std::move(ptr)); //Push for the sake of it. Move ownership of data in unique pointer.
+				throw std::exception("Less than 1 GB free ram left, buy or download some more.");
+			}
+		}
+	}
+	catch (std::bad_alloc& e) {
+		std::cerr << e.what() << std::endl;
+	}
+	catch (std::exception& e) {
+		std::cerr << e.what() << std::endl;
+	}
+
+	MemoryCapacity::print();
+}
+
+
+void threading_test()
+{
+	std::cout.sync_with_stdio(true);
+	std::thread t1(memory_test);
+
+	//auto ptr = [](float x) { return std::sin(x) + std::cos(x); };
+	//ThreadPool pool;
+	//auto fut = pool.submit([]() { return std::sin(10) + std::cos(10); });
+	//auto answer = fut.get();
+
+	std::cout << "" << " From pool\n";
+	if (t1.joinable())
+		t1.join();
+}
+
+void linkedlist_test()
+{
+	std::vector<float> x(500);
+	float x_values = -2;
+	std::generate(x.begin(), x.end(), [=, &x_values] { return x_values += 0.01f; });
+
+	std::vector<float> y(500);
+	std::fill(y.begin(), y.end(), 0);
+	int i = { 0 };
+	std::generate(y.begin(), y.end(), [=, &x, &i] { return std::sin(x[i++]); }); //awkward
+	std::transform(x.begin(), x.end(), y.begin(), [](float x) { return std::cos(x); });
+
+	LinkedList<float>* p_head = new LinkedList<float>(5.0f);
+	p_head->add(new LinkedList<float>(1.0f));
+	p_head->add(new LinkedList<float>(3.0f));
+	p_head->add(new LinkedList<float>(4.0f));
+	(*p_head)[50] = 100;
+	LinkedList<float> newcopy(1.0f);
+	newcopy = *p_head;
+	LinkedList<float> anothercopy(std::move(newcopy)); //invoke move constructor
+
+	p_head->print();
+	std::cout << std::endl;
+	anothercopy.add(p_head); //Gonna be some weird ass add.
+
+	p_head->print();
+	std::cout << std::endl;
+	newcopy.print();
+	std::cout << std::endl;
+	anothercopy.print();
+
+	//delete p_head; //Memory get deleted by anothercopy destructor
+
+	std::cout << "linked list done, press any key.";
+	std::cin.get();
+}
 
 
 template<typename Iterator, typename T>
 struct accumulate_block
 {
-	accumulate_block(Iterator first_, Iterator last_): first(first_), last(last_) { }
+	accumulate_block(Iterator first_, Iterator last_) : first(first_), last(last_) { }
 	Iterator first, last;
 
 	T operator()()
@@ -63,95 +163,4 @@ T parallel_accumulate(Iterator first, Iterator last, T init)
 	}
 	result += last_result;
 	return result;
-}
-
-
-int main() {
-	std::vector<float> x(500);
-	float x_values = -2;
-	std::generate(x.begin(), x.end(), [=, &x_values] { return x_values += 0.01f; });
-
-	std::vector<float> y(500);
-	std::fill(y.begin(), y.end(), 0);
-	int i = { 0 };
-	std::generate(y.begin(), y.end(), [=, &x, &i] { return std::sin(x[i++]); }); //awkward
-	std::transform(x.begin(), x.end(), y.begin(), [](float x) { return std::cos(x); });
-
-	LinkedList<float>* p_head = new LinkedList<float>(5.0f);
-	p_head->add(new LinkedList<float>(1.0f));
-	p_head->add(new LinkedList<float>(3.0f));
-	p_head->add(new LinkedList<float>(4.0f));
-	(*p_head)[50] = 100;
-	LinkedList<float> newcopy(1.0f);
-	newcopy = *p_head;
-
-
-	newcopy[10] = 59;
-
-	p_head->print();
-	std::cout << std::endl;
-	newcopy.print();
-
-	delete p_head;
-
-	//float sum = parallel_accumulate(x.begin(), x.end(), 0.0f);
-	threading_test();
-	std::cout << "practice done.";
-	std::cin.get();
-	std::cin.get();
-}
-
-void memory_test()
-{
-	using namespace std::chrono_literals;
-	MemoryCapacity::print();
-
-	std::vector<std::unique_ptr< char >> chunks;
-
-	auto allocate_chunk = [](size_t size) { return new char[size]; }; //why not
-
-	try {
-		while (true) {
-			std::this_thread::sleep_for(50ms);
-			chunks.push_back(std::unique_ptr<char>(allocate_chunk(MemoryCapacity::MB * 100))); //allocate 100mbchunks
-
-			auto memoryleft = MemoryCapacity::getFreeRam();
-			auto virtualMemoryLeft = MemoryCapacity::getFreeVirtualMemory();
-			std::cout << memoryleft << "+" << " ~0 " << " Bytes\n";
-
-			if (memoryleft < MemoryCapacity::GB) {
-				//Try allocate that gigabyte, can still throw bad_alloc.
-				auto ptr = std::unique_ptr<char>(Memory::requestAllocation<char>(MemoryCapacity::GB));
-				if (ptr == nullptr) //Is not true if OS can write to pagefile
-					std::cerr << "allocation request denied.\n";
-
-				chunks.push_back(std::move(ptr)); //Push for the sake of it. Move ownership of data in unique pointer.
-				throw std::exception("Less than 1 GB free ram left, buy or download some more.");
-			}
-		}
-	}
-	catch (std::bad_alloc& e) {
-		std::cerr << e.what() << std::endl;
-	}
-	catch (std::exception& e) {
-		std::cerr << e.what() << std::endl;
-	}
-
-	MemoryCapacity::print();
-}
-
-
-void threading_test()
-{
-	std::cout.sync_with_stdio(true);
-	std::thread t1(memory_test);
-
-	//auto ptr = [](float x) { return std::sin(x) + std::cos(x); };
-	//ThreadPool pool;
-	//auto fut = pool.submit([]() { return std::sin(10) + std::cos(10); });
-	//auto answer = fut.get();
-
-	std::cout << "" << " From pool\n";
-	if (t1.joinable())
-		t1.join();
 }

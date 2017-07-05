@@ -11,7 +11,7 @@ template<typename Iterator, typename Function, unsigned long min_per_thread = 10
 void parallel_for_each(Iterator first, Iterator last, Function f) {
 	const unsigned long length = std::distance(first, last);
 
-	if (length == 0)
+	/*if (length == 0)
 		return;
 
 	if (length < 2UL * min_per_thread)
@@ -19,7 +19,7 @@ void parallel_for_each(Iterator first, Iterator last, Function f) {
 	else {
 		Iterator mid = first + length / 2;
 		std::future<void> fi;
-	}
+	}*/
 }
 
 template<unsigned int i, typename Function>
@@ -38,27 +38,29 @@ struct Loop < -1, Function >
 };
 
 template <typename Function, typename ...Args>
-auto Time(Function f, Args && ...args)
+auto time(Function f, Args && ...args)
 {
-	static_assert( !std::is_void<decltype(f(args...))>::value, "Call TimeVoid if return type is void!");
+	static_assert( !std::is_void<decltype(f(args...))>::value, "Call time_void if return type is void!");
 
-	auto start = std::chrono::high_resolution_clock::now();
-	auto holder = f(std::forward<Args>(args)...);
-	auto end = std::chrono::high_resolution_clock::now();
-	std::chrono::duration<double> elapsed_seconds = end - start;
+	auto start =  high_resolution_clock::now();
+	auto result = f(std::forward<Args>(args)...);
+	auto end =    high_resolution_clock::now();
+	duration<double> elapsed_seconds = end - start;
 
-	return std::pair<decltype(f(args...)), double>{ holder, elapsed_seconds.count() };
+	return std::pair<decltype(f(args...)), double>{ result, elapsed_seconds.count() };
 }
 
 template <typename Function, typename ...Args>
-auto TimeVoid(Function f,  Args && ...args) 
+auto time_void(Function f,  Args && ...args) 
 {
-	static_assert( std::is_void<decltype(f(args...))>::value, "Call Time if return type is not void!");
+	static_assert( std::is_void<decltype(f(args...))>::value, "Call time if return type is not void!");
+	using std::chrono;
 
-	auto start = std::chrono::high_resolution_clock::now();
+
+	auto start = high_resolution_clock::now();
 	f(std::forward<Args>(args)...);
-	auto end = std::chrono::high_resolution_clock::now();
-	std::chrono::duration<double> elapsed_seconds = end - start;
+	auto end = high_resolution_clock::now();
+	duration<double> elapsed_seconds = end - start;
 
 	return elapsed_seconds.count();
 }
