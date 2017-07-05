@@ -31,7 +31,7 @@ void dataprinter_test();
 
 int main()
 {
-	std::cout.sync_with_stdio(true); // make cout thread-safe
+	std::cout.sync_with_stdio(true); // make cout thread-
 
 	dataprinter_test();
 	stopwatch_test();

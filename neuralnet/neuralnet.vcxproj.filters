@@ -25,6 +25,9 @@
     <Filter Include="Header Files\Structures">
       <UniqueIdentifier>{eafabc62-867d-4089-b3c6-f272a7dcd5b5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Training strategies">
+      <UniqueIdentifier>{273174c6-e6e6-46ea-a4cd-7cc1e2c6a465}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />

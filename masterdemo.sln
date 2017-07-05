@@ -1,19 +1,39 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.13
+VisualStudioVersion = 15.0.26430.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "neuralnet", "neuralnet\neuralnet.vcxproj", "{71F440CD-66DF-4E4F-89A6-41114D384B0F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7CA82B13-C58D-4B7B-96FE-0348731BF2B3} = {7CA82B13-C58D-4B7B-96FE-0348731BF2B3}
+		{2D1A866D-51A6-4D95-B399-11BA14B698B3} = {2D1A866D-51A6-4D95-B399-11BA14B698B3}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "neuralnet_test", "neuralnet_test\neuralnet_test.vcxproj", "{72198BFB-CA87-429D-9108-8D8A496F30B5}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "evolutionaryalgorithm", "evolutionaryalgorithm\evolutionaryalgorithm.vcxproj", "{6BB46B4B-938C-493F-A23B-7ABC6834497E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7CA82B13-C58D-4B7B-96FE-0348731BF2B3} = {7CA82B13-C58D-4B7B-96FE-0348731BF2B3}
+		{2D1A866D-51A6-4D95-B399-11BA14B698B3} = {2D1A866D-51A6-4D95-B399-11BA14B698B3}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "evolutionaryalgorithm_test", "evolutionaryalgorithm_test\evolutionaryalgorithm_test.vcxproj", "{A08ABC94-C880-4932-A86D-68CD9FF61614}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7CA82B13-C58D-4B7B-96FE-0348731BF2B3} = {7CA82B13-C58D-4B7B-96FE-0348731BF2B3}
+		{6BB46B4B-938C-493F-A23B-7ABC6834497E} = {6BB46B4B-938C-493F-A23B-7ABC6834497E}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "testclasses", "testclasses\testclasses.vcxproj", "{2D1A866D-51A6-4D95-B399-11BA14B698B3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7CA82B13-C58D-4B7B-96FE-0348731BF2B3} = {7CA82B13-C58D-4B7B-96FE-0348731BF2B3}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "practice", "practice\practice.vcxproj", "{D12515AE-A250-49D5-893F-2CDEC7DBEB40}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7CA82B13-C58D-4B7B-96FE-0348731BF2B3} = {7CA82B13-C58D-4B7B-96FE-0348731BF2B3}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "utility", "utility\utility.vcxproj", "{7CA82B13-C58D-4B7B-96FE-0348731BF2B3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,6 +91,14 @@ Global
 		{D12515AE-A250-49D5-893F-2CDEC7DBEB40}.Release|x64.Build.0 = Release|x64
 		{D12515AE-A250-49D5-893F-2CDEC7DBEB40}.Release|x86.ActiveCfg = Release|Win32
 		{D12515AE-A250-49D5-893F-2CDEC7DBEB40}.Release|x86.Build.0 = Release|Win32
+		{7CA82B13-C58D-4B7B-96FE-0348731BF2B3}.Debug|x64.ActiveCfg = Debug|x64
+		{7CA82B13-C58D-4B7B-96FE-0348731BF2B3}.Debug|x64.Build.0 = Debug|x64
+		{7CA82B13-C58D-4B7B-96FE-0348731BF2B3}.Debug|x86.ActiveCfg = Debug|Win32
+		{7CA82B13-C58D-4B7B-96FE-0348731BF2B3}.Debug|x86.Build.0 = Debug|Win32
+		{7CA82B13-C58D-4B7B-96FE-0348731BF2B3}.Release|x64.ActiveCfg = Release|x64
+		{7CA82B13-C58D-4B7B-96FE-0348731BF2B3}.Release|x64.Build.0 = Release|x64
+		{7CA82B13-C58D-4B7B-96FE-0348731BF2B3}.Release|x86.ActiveCfg = Release|Win32
+		{7CA82B13-C58D-4B7B-96FE-0348731BF2B3}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

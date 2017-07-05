@@ -47,7 +47,7 @@ private:
 
 	std::unique_ptr<impl_base> impl;
 
-	FunctionWrapper(const FunctionWrapper&) = delete;
+	/*FunctionWrapper(const FunctionWrapper&) = delete;
 	FunctionWrapper(FunctionWrapper&) = delete;
-	FunctionWrapper& operator=(FunctionWrapper& rhs) = delete;
+	FunctionWrapper& operator=(FunctionWrapper& rhs) = delete;*/
 };

@@ -5,6 +5,8 @@
 #include "Stopwatch.h"
 #include "DataPrinter.h"
 
+#include "../testclasses/utilityfunctions.h"
+
 #include <string>
 #include <iostream>
 #include <vector>
@@ -18,6 +20,8 @@
 /// 
 /// Is not threadsafe. Locking might be implemented for client use in two specific functions.
 /// Can not handle large sets(> memory) of data. And does not buffer anything.
+/// 
+/// Class far from done or properly specialized!
 /// </summary>
 class Dataset
 {
@@ -93,7 +97,7 @@ public:
 	/// </summary>
 	virtual void insertDate() {
 		tinyxml2::XMLElement* date = m_doc.NewElement("Date");
-		std::string date_string = m_stopwatch.getAbsoluteTime();
+		std::string date_string = getAbsoluteTime();
 
 		date->SetAttribute("day", date_string.substr(0, 3).c_str() );
 		date->SetAttribute("month", date_string.substr(4, 3).c_str());
