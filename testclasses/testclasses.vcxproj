@@ -139,12 +139,10 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="FunctionWrapper.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="StopwatchTest.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="ThreadPool.h" />
-    <ClInclude Include="ThreadsafeQueue.h" />
-    <ClInclude Include="utilityfunctions.h" />
+    <ClInclude Include="TestFramework.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -153,6 +151,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\utility\utility.vcxproj">
+      <Project>{7ca82b13-c58d-4b7b-96fe-0348731bf2b3}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

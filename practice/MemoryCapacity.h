@@ -11,7 +11,7 @@
 // argument and uses it to pad and right justify the number.
 
 /// <summary>
-/// Singleton class
+/// Singleton class for 
 /// </summary>
 class MemoryCapacity
 {
@@ -25,10 +25,7 @@ public:
 	{
 		KB = (1024ULL),
 		MB = (1024ULL * 1024ULL),
-		GB = (1024ULL * 1024ULL * 1024ULL),
-		TB = 1,
-		PB = 2,
-		EB = 3
+		GB = (1024ULL * 1024ULL * 1024ULL)
 	};
 
 	static unsigned long long getFreeRam() {
@@ -86,7 +83,7 @@ private:
 	MemoryCapacity() = default;
 
 	static void getMemoryStatus() {
-		statex.dwLength = sizeof(statex); //Need to set this everytime apparently
+		statex.dwLength = sizeof(statex); //Need to set this every time apparently
 		BOOL success = GlobalMemoryStatusEx(&statex);
 #ifdef _DEBUG
 		if (!success)
@@ -94,7 +91,49 @@ private:
 #endif // _DEBUG
 	}
 };
-MEMORYSTATUSEX MemoryCapacity::statex; //Initialize
+MEMORYSTATUSEX MemoryCapacity::statex; //Initialize static
 
-#else //apple gnu linux
-#endif // _WIN64
+#else //GNU based system
+
+class MemoryCapacity
+{
+public:
+	static MemoryCapacity& getInstance() {
+		static MemoryCapacity instance;
+		return instance;
+	}
+
+	enum capacity
+	{
+		KB = (1024ULL),
+		MB = (1024ULL * 1024ULL),
+		GB = (1024ULL * 1024ULL * 1024ULL)
+	};
+
+	static unsigned long long getFreeRam() {
+		throw std::exception("Not implemented.");
+		return 0;
+	}
+
+	static unsigned long long getFreeRam(capacity unit) {
+		throw std::exception("Not implemented.");
+		return 0;
+	}
+
+	static unsigned long long getFreeVirtualMemory() {
+		throw std::exception("Not implemented.");
+		return 0;
+	}
+
+	static unsigned long long getFreeVirtualMemory(capacity unit) {
+		throw std::exception("Not implemented.");
+		return 0;
+	}
+
+	static void print() { throw std::exception("Not implemented."); }
+private:
+
+};
+
+
+#endif // _WIN64 or gnu

@@ -142,7 +142,6 @@
   <ItemGroup>
     <ClInclude Include="ContinousTimeRecurrentNeuralNet.h" />
     <ClInclude Include="ConvolutionalNeuralNet.h" />
-    <ClInclude Include="DataPrinter.h" />
     <ClInclude Include="Dataset.h" />
     <ClInclude Include="DatasetException.h" />
     <ClInclude Include="FeedForwardNeuralNet.h" />
@@ -150,17 +149,21 @@
     <ClInclude Include="NeuralNetException.h" />
     <ClInclude Include="RecurrentNeuralNet.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Stopwatch.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="XMLException.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Dataset.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\testclasses\testclasses.vcxproj">
+      <Project>{2d1a866d-51a6-4d95-b399-11ba14b698b3}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

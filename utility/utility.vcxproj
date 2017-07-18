@@ -127,8 +127,18 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DataPrinter.h" />
+    <ClInclude Include="FunctorWrapper.h" />
+    <ClInclude Include="SimpleThreadPool.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Stopwatch.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="ThreadGuard.h" />
+    <ClInclude Include="ThreadPoolv2.h" />
+    <ClInclude Include="ThreadsafeQueue.h" />
+    <ClInclude Include="utilityfunctions.h" />
+    <ClInclude Include="XMLException.h" />
+    <ClInclude Include="XMLWrapper.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

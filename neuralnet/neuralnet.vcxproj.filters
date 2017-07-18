@@ -39,9 +39,6 @@
     <ClInclude Include="targetver.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
-    <ClInclude Include="Stopwatch.h">
-      <Filter>Header Files\Utilities</Filter>
-    </ClInclude>
     <ClInclude Include="ConvolutionalNeuralNet.h">
       <Filter>Header Files\Neural Nets</Filter>
     </ClInclude>
@@ -66,16 +63,13 @@
     <ClInclude Include="DatasetException.h">
       <Filter>Header Files\Exceptions</Filter>
     </ClInclude>
-    <ClInclude Include="XMLException.h">
-      <Filter>Header Files\Exceptions</Filter>
-    </ClInclude>
-    <ClInclude Include="DataPrinter.h">
-      <Filter>Header Files\Utilities</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Dataset.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

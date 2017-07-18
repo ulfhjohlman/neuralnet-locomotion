@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\Testing">
+      <UniqueIdentifier>{793d0d67-665a-42fd-a962-af70e68050f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\utility">
+      <UniqueIdentifier>{6ec60452-77dd-43c8-93d3-f3b3505334ed}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -24,16 +30,10 @@
     <ClInclude Include="stdafx.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
-    <ClInclude Include="utilityfunctions.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="TestFramework.h">
+      <Filter>Header Files\Testing</Filter>
     </ClInclude>
-    <ClInclude Include="ThreadsafeQueue.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ThreadPool.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FunctionWrapper.h">
+    <ClInclude Include="StopwatchTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
