@@ -40,8 +40,9 @@ public:
 				i.join();
 				k++;
 			}
-
+#ifdef _DEBUG
 		std::cout << "ThreadPool closing " << k << " threads." << std::endl;
+#endif // _DEBUG
 	}
 
 	void addWork(FunctorWrapper&& f) {
@@ -126,6 +127,9 @@ protected:
 		m_number_of_working_threads.fetch_add(1); //This thread is working
 		f = std::move( m_queue.front() );
 		m_queue.pop();
+
+		lk.unlock();
+		m_cond.notify_one(); 
 	}
 
 	/// <summary>

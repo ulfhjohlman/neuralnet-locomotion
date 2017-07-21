@@ -7,16 +7,18 @@
 #include <chrono>
 #include <algorithm>
 #include <numeric>
+#include <limits>
 #include <iomanip>
+#include <random>
+#include <functional>
+#include <stdexcept>
 
 #include "MemoryCapacity.h"
 #include "Memory.h"
 #include "LinkedList.h"
 
-#include "../testclasses/ThreadPool.h"
-#include "../testclasses/ThreadsafeQueue.h"
-#include "../testclasses/FunctionWrapper.h"
-#include "../testclasses/utilityfunctions.h"
+#include "../utility/utilityfunctions.h"
+#include "../utility/Stopwatch.h"
 
 #include "../lib/Eigen/dense"
 
@@ -24,30 +26,112 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <cstdlib>
+#include <malloc.h>
 
 void memory_test();
 void threading_test();
 void linkedlist_test();
 
 
-int main() {
-
+void avx_test()
+{
+	//-----------------------------------------------------
 	/* Initialize the two argument vectors */
 	__m256 evens = _mm256_set_ps(2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 14.0, 16.0);
-	__m256 odds = _mm256_set_ps(1.0, 3.0, 5.0, 7.0, 9.0, 11.0, 13.0, 15.0);
-	//float* aligned_floats = (float*)std::aligned_alloc(32, 64 * sizeof(float));
-	//... Initialize data ...
-	//__m256 vec = _mm256_load_ps(aligned_floats);
+	__m256 odds = _mm256_set_ps(1.0, 3.0, 5.0, 7.0, 9.0, 11.0, 13.0, 17.0); 
+	//ps = single precision, pd = double...
 
 	/* Compute the difference between the two vectors */
-	__m256 result = _mm256_sub_ps(evens, odds);
+	__m256 result = _mm256_sub_ps(evens, odds); //[-1,1,1,...]
+	//Note that order is reversed after operation. i.e 
+	//16 - 17 = -1 is first element
 
 	/* Display the elements of the result vector */
 	float* f = (float*)&result;
 	printf("%f %f %f %f %f %f %f %f\n",
 		f[0], f[1], f[2], f[3], f[4], f[5], f[6], f[7]);
+	//-----------------------------------------------------
 
 
+	size_t alignment = 256;
+	float* aligned_floats = (float*)_aligned_malloc( 32 , alignment); //8(floats) * 4(bytes per float) = 32(bytes), 256(bit) % 32(bit) = 0; 
+	//This ptr should have a memory address that is a multiple of 256 bits.
+	//This is also a then a multiple of 32 bits(float size), which is the size of each 
+	//element in the 256 bit register. 
+
+	if (aligned_floats == NULL){ printf_s("Error allocation aligned memory.");  }
+	if (((unsigned long long)aligned_floats % alignment) == 0)
+		printf_s("This pointer, %p, is aligned on %zu\n",
+			aligned_floats, alignment);
+	else
+		printf_s("This pointer, %p, is not aligned on %zu\n",
+			aligned_floats, alignment);
+
+	for (int i = 0; i < 8; i++) {
+		aligned_floats[i] = 1.0f + i;
+		printf("%f ", aligned_floats[i]);
+	}
+	std::cout << std::endl;
+
+	__m256 vec1 = _mm256_load_ps(aligned_floats); //load aligned
+	__m256 vec2 = _mm256_set1_ps(1.05f);
+	__m256 vec3 = _mm256_sub_ps(vec1, vec2);
+	f = (float*)&vec3;
+	printf("%f %f %f %f %f %f %f %f\n",
+		f[0], f[1], f[2], f[3], f[4], f[5], f[6], f[7]);
+
+	if (aligned_floats)
+		_aligned_free(aligned_floats);
+}
+
+template<typename T>
+void random_test() {
+	// obtain a seed from the system clock:
+	unsigned long long seed = std::chrono::system_clock::now().time_since_epoch().count();
+
+	std::mt19937_64 mt64_engine(seed);
+	std::ranlux24 engine_ranlux(seed); //ranlux48 does not work!
+	std::minstd_rand basic_rnd(seed);
+
+
+	auto print_vector = [](const std::vector<T>& print_this) {
+		std::for_each(print_this.begin(), print_this.end(),
+			[](T element) { std::cout << element << std::endl; });
+	};
+
+	const int N = 1e3;
+	std::vector<T> numbers(N);
+
+	Stopwatch<std::milli> timer;
+	std::generate(numbers.begin(), numbers.end(), [] { return std::sin(std::rand()); }); // warm up
+																						 
+	timer.getLapTime();
+	std::generate(numbers.begin(), numbers.end(), [&engine_ranlux] {return std::generate_canonical<T, std::numeric_limits<T>::digits>(engine_ranlux); });
+	double ranlux_time = timer.getLapTime();
+
+	std::generate(numbers.begin(), numbers.end(), [&mt64_engine] {return std::generate_canonical<T, std::numeric_limits<T>::digits>(mt64_engine); });
+	double mt64_time = timer.getLapTime();
+
+	std::generate(numbers.begin(), numbers.end(), [&basic_rnd] {return std::generate_canonical<T, std::numeric_limits<T>::digits>(basic_rnd); });
+	double minstd_time = timer.getLapTime();
+
+	std::generate(numbers.begin(), numbers.end(), [] { return (T)std::rand() / (T)RAND_MAX; });
+	double stdrand_time = timer.getLapTime();
+
+	printf("ranlux24: %f [ms] \nmt64: %f [ms]\nminstd: %f [ms]\nstdrand: %f [ms]\n", ranlux_time, mt64_time, minstd_time, stdrand_time);
+}
+
+int main() {
+	avx_test();
+
+	std::cout << "double random test: " << std::endl;
+	random_test<double>();
+	std::cout << std::endl;
+
+	std::cout << "float random test: " << std::endl;
+	random_test<float>();
+	std::cout << std::endl;
+	
 	//linkedlist_test();
 	//threading_test();
 
@@ -100,11 +184,6 @@ void threading_test()
 	std::cout.sync_with_stdio(true);
 	std::thread t1(memory_test);
 
-	//auto ptr = [](float x) { return std::sin(x) + std::cos(x); };
-	//ThreadPool pool;
-	//auto fut = pool.submit([]() { return std::sin(10) + std::cos(10); });
-	//auto answer = fut.get();
-
 	std::cout << "" << " From pool\n";
 	if (t1.joinable())
 		t1.join();
@@ -145,47 +224,4 @@ void linkedlist_test()
 
 	std::cout << "linked list done, press any key.";
 	std::cin.get();
-}
-
-
-template<typename Iterator, typename T>
-struct accumulate_block
-{
-	accumulate_block(Iterator first_, Iterator last_) : first(first_), last(last_) { }
-	Iterator first, last;
-
-	T operator()()
-	{
-		return std::accumulate(first, last, T());
-	}
-};
-
-template<typename Iterator, typename T>
-T parallel_accumulate(Iterator first, Iterator last, T init)
-{
-	unsigned long const length = std::distance(first, last);
-	if (!length)
-		return init;
-	unsigned long const block_size = 25;
-	unsigned long const num_blocks = (length + block_size - 1) / block_size;
-	std::vector<std::future<T> > futures(num_blocks - 1);
-	ThreadPool pool;
-	Iterator block_start = first;
-	for (unsigned long i = 0; i < (num_blocks - 1); ++i)
-	{
-		Iterator block_end = block_start;
-		std::advance(block_end, block_size);
-		accumulate_block<Iterator, T> block(block_start, block_end);
-		futures[i] = pool.submit(block);
-		block_start = block_end;
-	}
-	accumulate_block<Iterator, T> block_last(block_start, last);
-	T last_result = block_last();
-	T result = init;
-	for (unsigned long i = 0; i < (num_blocks - 1); ++i)
-	{
-		result += futures[i].get();
-	}
-	result += last_result;
-	return result;
 }

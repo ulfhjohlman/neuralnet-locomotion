@@ -43,12 +43,17 @@ std::string XMLWrapper_test();
 std::string dataprinter_test();
 std::string dataset_test();
 
+void multi_threaded_tests();
+void parallel_for_test();
+
+
 int main()
 {
 	std::cout.sync_with_stdio(true); // make cout thread-safe
 	
 	//test 
 	single_threaded_tests();
+	multi_threaded_tests();
 
 	std::cout << "Neural net tests done." << std::endl;
 	std::cin.get();
@@ -63,9 +68,9 @@ void single_threaded_tests()
 	ThreadPool pool;
 
 	//methods, pass: &function == temporary pointer to function.
-	auto test_dataprinter = pool.submit(&dataprinter_test);
-	auto test_XMLWrapper = pool.submit(&XMLWrapper_test);
-	auto test_dataset = pool.submit(&dataset_test);
+	auto test_dataprinter      = pool.submit(&dataprinter_test);
+	auto test_XMLWrapper       = pool.submit(&XMLWrapper_test);
+	auto test_dataset          = pool.submit(&dataset_test);
 
 	//TestFramework
 	StopwatchTest sw_test;
@@ -174,4 +179,75 @@ std::string dataset_test()
 	}
 	output << "Dataset test failed!" << std::endl;
 	return output.str();
+}
+
+template<typename T>
+T calculate_error(const std::vector<T>& v1, const std::vector<T>& v2)
+{
+	if (v1.size() != v2.size())
+		throw std::invalid_argument("vectors is of different size, calculate_error(v1,v2)");
+
+	T result = 0;
+	for (size_t i = 0; i < v1.size(); i++)
+	{
+		T e = v1[i] - v2[i];
+		result += std::abs(e);
+	}
+	return result;
+}
+
+void parallel_for_test() {
+	auto print_time = [](const double message) { std::cout << message << std::endl; };
+	auto f = [](double& u) { u = std::sin(u) + std::tanh(u); };
+	Stopwatch<> timer;
+
+	const size_t N = 2e8;
+	std::vector<double> x(N);
+
+	//generate and copy data.
+	std::cout << "generating...\n";
+	std::generate(x.begin(), x.end(), [] { return (double)std::rand() / (double)RAND_MAX - 0.5; });
+	std::vector<double> y(x);
+	std::vector<double> z(x);
+	std::cout << "for_each...\n";
+
+	//time single threaded
+	timer.getLapTime();
+	for_each(x.begin(), x.end(), f);
+	double single_thread_time = timer.getLapTime();
+
+	//time thread pool
+	timer.getLapTime();
+	parallel_for_each(y.begin(), y.end(), f, 1000000);
+	double multi_thread_time = timer.getLapTime();
+
+	//time open mp
+	timer.getLapTime();
+#pragma omp parallel for
+	for (int i = 0; i < z.size(); i++) {
+		z[i] = std::sin(z[i]) + std::tanh(z[i]); 
+	}
+	double openmp_time = timer.getLapTime();
+
+	std::cout << "single to multi speed up: " << single_thread_time / multi_thread_time << "x" << "\nopenmp to multi speed up: " << openmp_time / multi_thread_time << "x" << std::endl;
+
+	if (std::equal(x.begin(), x.end(), y.begin()))
+		std::cout << "single == multi, success\n";
+	else {
+		std::cout << "single != multi, fail\n";
+		std::cout << calculate_error<double>(x, y) << " total multi error\n";
+	}
+
+	if (std::equal(x.begin(), x.end(), z.begin()))
+		std::cout << "single == openmp, success\n";
+	else {
+		std::cout << "single != openmp, fail\n";
+		//Error only in release build of 10^-9.
+		std::cout << calculate_error<double>(x, z) << " total open mp error, where the hell is this error coming from?\n";
+	}
+}
+
+void multi_threaded_tests()
+{
+	parallel_for_test();
 }

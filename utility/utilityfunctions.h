@@ -10,27 +10,40 @@
 #include <string>
 #include <type_traits>
 
-template<typename Iterator, typename Function, size_t group_size = 100>
-void parallel_for_each(Iterator first, Iterator last, Function f) {
+
+#include "ThreadPoolv2.h"
+template<typename Iterator, typename Function >
+void parallel_for_each(Iterator first, Iterator last, Function f, size_t block_size = 100) {
 	const size_t length = std::distance(first, last);
 
 	if (length == 0)
 		return;
-
-	size_t number_items = length / group_size;
-
-	if (length < 2UL * min_per_thread)
-		return parallel_for_each(first, last, f);
-	else {
-		Iterator mid = first + length / 2;
-		std::future<void> fi;
+	ThreadPool pool;
+	size_t number_items = length / block_size; //integer math rounds down
+	
+	Iterator block_start = first;
+	Iterator block_end = block_start;
+	
+	for (size_t i = 0; i < number_items; i++) {
+		std::advance(block_end, block_size); 
+		auto wrap_f = std::bind( std::for_each<decltype(block_start), decltype(f)>, block_start, block_end, f );// f : [ block_start, block_start + block_size ] -> f(x) 
+		pool.addWork( std::move(wrap_f) );
+		block_start = block_end;
 	}
+	if (block_end != last) {
+		block_end = last;
+		auto wrap_f = std::bind(std::for_each<decltype(block_start), decltype(f)>, block_start, block_end, f);// f : [ block_start, block_start + block_size ] -> f(x) 
+		pool.addWork( std::move(wrap_f));
+	}
+
+	pool.help();
+	while (!pool.isDone()){ }
 }
 
 /// <summary>
 /// <code> 
 ///auto l = [](int a, int b) { std::cout << a + b << std::endl; };
-///Loop<3, decltype(l), int, int>::unroll(l, 2, 3);
+///Loop 3, decltype(l), int, int ::unroll(l, 2, 3);
 /// </code>
 /// </summary>
 template<unsigned int i, typename Function, typename ...Args>
