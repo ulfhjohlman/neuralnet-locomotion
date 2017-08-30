@@ -151,6 +151,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\evolutionaryalgorithm\evolutionaryalgorithm.vcxproj">
+      <Project>{6bb46b4b-938c-493f-a23b-7abc6834497e}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\testclasses\testclasses.vcxproj">
       <Project>{2d1a866d-51a6-4d95-b399-11ba14b698b3}</Project>
     </ProjectReference>

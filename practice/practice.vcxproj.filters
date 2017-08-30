@@ -29,5 +29,11 @@
     <ClInclude Include="LinkedList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="odeinttests.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vairoustests.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
