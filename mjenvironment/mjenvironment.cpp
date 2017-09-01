@@ -34,6 +34,12 @@ void keyboard(GLFWwindow* window, int key, int scancode, int act, int mods)
 		mj_resetData(m, d);
 		mj_forward(m, d);
 	}
+
+	// backspace: reset simulation
+	if (act == GLFW_PRESS && key == GLFW_KEY_R)
+	{
+		m->body_pos += 1;
+	}
 }
 
 
