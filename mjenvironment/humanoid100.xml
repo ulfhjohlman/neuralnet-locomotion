@@ -40,6 +40,21 @@
         <default class="borderpost">
             <geom type="box" size="0.41 0.41 0.41" rgba=".55 .55 .55 1"/>
         </default>
+	
+
+ 	<default class="juggler">
+        	<joint limited='true' damping='1' armature='0'/>
+        	<geom contype='1' conaffinity='1' condim='3' rgba='0.8 0.6 .4 1'
+        		margin="0.001" solref=".02 1" solimp=".8 .8 .01" material="geom" type='capsule'/>
+        	<motor ctrlrange='-1 1'  ctrllimited='true'/>
+			<default class="passive">
+			 	<geom contype='0' conaffinity='0' rgba='.5 .5 1 1' type='capsule'  size='.005 .5' />
+			</default>
+		<default class="wall">
+			 	<geom contype='1' conaffinity='1' rgba='1 0 0 1' type='capsule'/>
+		</default>
+    	</default>
+
     </default>
 
     <asset>
@@ -105,7 +120,7 @@
                         <joint name='left_hip_x' type='hinge' pos='0 0 0' axis='-1 0 0' range='-25 5'  damping='5' stiffness='10' armature='0.01' />
                         <joint name='left_hip_z' type='hinge' pos='0 0 0' axis='0 0 -1' range='-60 35' damping='5' stiffness='10' armature='0.01' />
                         <joint name='left_hip_y' type='hinge' pos='0 0 0' axis='0 1 0' range='-120 20' damping='5' stiffness='20' armature='0.01' />
-                        <geom name='left_thigh1' type='capsule' fromto='0 0 0 0 -0.01 -.34'  size='0.06' />
+                        <geom name='left_thigh1' type='capsule' fromto='0 0 0 0 -0.01 -.34'  size='0.049' />
                         <body name='left_shin' pos='0 -0.01 -0.403' >
                             <joint name='left_knee' type='hinge' pos='0 0 .02' axis='0 -1 0' range='-160 -2' stiffness='1' armature='0.0060' />
                             <geom name='left_shin1' type='capsule' fromto='0 0 0 0 0 -.3'   size='0.049' />

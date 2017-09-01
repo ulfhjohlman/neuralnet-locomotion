@@ -24,7 +24,7 @@ bool button_right = false;
 double lastx = 0;
 double lasty = 0;
 
-
+int sign = 1;
 // keyboard callback
 void keyboard(GLFWwindow* window, int key, int scancode, int act, int mods)
 {
@@ -38,7 +38,17 @@ void keyboard(GLFWwindow* window, int key, int scancode, int act, int mods)
 	// backspace: reset simulation
 	if (act == GLFW_PRESS && key == GLFW_KEY_R)
 	{
-		m->body_pos += 1;
+		std::cout << m->names << std::endl;
+		std::cout << m->nu << std::endl;
+
+		for (int i = 0; i < 2*m->nu; i+=2) {
+			std::cout << *(m->actuator_ctrlrange+i) << " " << *(m->actuator_ctrlrange + i+1) << std::endl;
+
+			sign = -sign;
+			//*(d->actuator_force + i) = 0.4;
+			*(d->act) = sign*0.4;
+			*(d->act+1) = sign*0.4;
+		}
 	}
 }
 
@@ -99,6 +109,16 @@ void scroll(GLFWwindow* window, double xoffset, double yoffset)
 }
 
 
+// simple controller applying damping to each dof
+void test_controller(const mjModel* m, mjData* d)
+{
+	if (m->nu == m->nv)
+		mju_scl(d->ctrl, d->qvel, -0.1, m->nv);
+
+	*(d->actuator_force+1) = 0.4;
+}
+
+
 // main function
 int main(int argc, const char** argv)
 {
@@ -112,7 +132,7 @@ int main(int argc, const char** argv)
 
 	// load and compile model
 	char error[1000] = "Could not load binary model";
-	m = mj_loadXML("humanoid100.xml", 0, error, 1000);
+	m = mj_loadXML("humanoid.xml", 0, error, 1000);
 	if (!m)
 		mju_error_s("Load model error: %s", error);
 
@@ -140,6 +160,8 @@ int main(int argc, const char** argv)
 	glfwSetCursorPosCallback(window, mouse_move);
 	glfwSetMouseButtonCallback(window, mouse_button);
 	glfwSetScrollCallback(window, scroll);
+
+	mjcb_control = test_controller;
 
 	// run main loop, target real-time simulation and 60 fps rendering
 	while (!glfwWindowShouldClose(window))

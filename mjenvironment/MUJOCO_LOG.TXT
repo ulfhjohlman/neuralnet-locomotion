@@ -4,3 +4,21 @@ ERROR: Could not open activation key file mjkey.txt
 Fri Sep  1 17:47:51 2017
 ERROR: Could not open activation key file mjkey.txt
 
+Fri Sep  1 19:52:01 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 368. The simulation is unstable. Time = 2.3850.
+
+Fri Sep  1 20:11:06 2017
+ERROR: Load model error: XML Error: Schema violation: unrecognized element
+
+Element 'motor', line 112, column 17
+
+
+Fri Sep  1 20:12:51 2017
+ERROR: Load model error: XML Error: Schema violation: unrecognized element
+
+Element 'motor', line 116, column 17
+
+
+Fri Sep  1 20:18:55 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 312. The simulation is unstable. Time = 16.1730.
+
