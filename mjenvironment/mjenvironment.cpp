@@ -46,8 +46,8 @@ void keyboard(GLFWwindow* window, int key, int scancode, int act, int mods)
 
 			sign = -sign;
 			//*(d->actuator_force + i) = 0.4;
-			*(d->act) = sign*0.4;
-			*(d->act+1) = sign*0.4;
+			*(d->act+i) = sign*0.4;
+			*(d->act+i+1) = sign*0.4;
 		}
 	}
 }
