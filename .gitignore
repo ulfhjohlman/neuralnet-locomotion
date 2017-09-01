@@ -3,7 +3,7 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
-lib/mjpro150/mjkey.txt
+lib/mjpro150/bin/mjkey.txt
 
 # User-specific files
 *.suo
@@ -23,7 +23,7 @@ lib/mjpro150/mjkey.txt
 x64/
 x86/
 bld/
-[Bb]in/
+#[Bb]in/
 [Oo]bj/
 [Ll]og/
 
