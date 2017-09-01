@@ -6,6 +6,7 @@
 #include "stdio.h"
 #include "stdlib.h"
 #include "string.h"
+#include <iostream>
 
 
 // MuJoCo data structures
@@ -96,14 +97,16 @@ void scroll(GLFWwindow* window, double xoffset, double yoffset)
 int main(int argc, const char** argv)
 {
 	// activate software
-	mj_activate("mjkey.txt");
+	int activate_result = mj_activate("mjkey.txt");
+	if (activate_result == 0) {
+		std::cout << "Add mjkey.txt to mjenvironment/" << std::endl;
+		std::cin.get();
+		return 1;
+	}
 
 	// load and compile model
 	char error[1000] = "Could not load binary model";
-	//if (strlen(argv[1]) > 4 && !strcmp(argv[1] + strlen(argv[1]) - 4, ".mjb"))
-		//m = mj_loadModel(argv[1], 0);
-	//else
-		m = mj_loadXML("humanoid100.xml", 0, error, 1000);
+	m = mj_loadXML("humanoid100.xml", 0, error, 1000);
 	if (!m)
 		mju_error_s("Load model error: %s", error);
 
