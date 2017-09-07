@@ -10,7 +10,9 @@
 #include "LinkedList.h"
 #include "../utility/Stopwatch.h"
 
+#include "../lib/Eigen/dense"
 
+void eigen_test();
 void memory_test();
 void threading_test();
 void linkedlist_test();
@@ -134,6 +136,27 @@ void test_random_engines() {
 	std::cout << "float random test: " << std::endl;
 	random_test<float>();
 	std::cout << std::endl;
+}
+
+void eigen_test()
+{
+	using namespace Eigen;
+	MatrixXi A;
+	A.resize(2,4);
+	A.setZero();
+
+	int array[8];
+	for (int i = 0; i < 8; ++i) array[i] = i;
+	std::cout << "Column-major:\n" << Map<Matrix<int, 2, 4> >(array) << std::endl;
+	std::cout << "Row-major:\n" << Map<Matrix<int, 2, 4, RowMajor> >(array) << std::endl;
+	std::cout << "Row-major using stride:\n" <<
+		Map<Matrix<int, 2, 4>, Unaligned, Stride<1, 4> >(array) << std::endl;
+
+	A = Map<MatrixXi, 0, OuterStride<> >(array, 2, 4, OuterStride<>(1));
+
+	array[0] = 50;
+
+	std::cout << std::endl << A << std::endl;
 }
 
 void memory_test()

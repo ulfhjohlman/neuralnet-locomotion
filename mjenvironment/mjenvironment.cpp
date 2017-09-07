@@ -45,7 +45,6 @@ void keyboard(GLFWwindow* window, int key, int scancode, int act, int mods)
 			std::cout << *(m->actuator_ctrlrange+i) << " " << *(m->actuator_ctrlrange + i+1) << std::endl;
 
 			sign = -sign;
-			//*(d->actuator_force + i) = 0.4;
 			*(d->act+i) = sign*0.4;
 			*(d->act+i+1) = sign*0.4;
 		}
@@ -115,7 +114,8 @@ void test_controller(const mjModel* m, mjData* d)
 	if (m->nu == m->nv)
 		mju_scl(d->ctrl, d->qvel, -0.1, m->nv);
 
-	*(d->actuator_force+1) = 0.4;
+	sign = -sign;
+	*(d->actuator_force+1) = sign*0.4;
 }
 
 
