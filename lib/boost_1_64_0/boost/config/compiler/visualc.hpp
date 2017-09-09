@@ -321,6 +321,6 @@
 #  if defined(BOOST_ASSERT_CONFIG)
 #     error "Unknown compiler version - please run the configure tests and report the results"
 #  else
-#     pragma message("Unknown compiler version - please run the configure tests and report the results")
+#     pragma message("Unknown compiler version - please run the configure tests and report the results - my ass")
 #  endif
 #endif
