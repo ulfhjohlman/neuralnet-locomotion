@@ -5,13 +5,26 @@
 #include <immintrin.h>
 #include <thread>
 #include <chrono>
+#include <vector>
 
 #include "Memory.h"
 #include "LinkedList.h"
 #include "../utility/Stopwatch.h"
-
 #include "../lib/Eigen/dense"
 
+#include <cstdlib>
+
+//include ViennaCL headers
+#include "viennacl/ocl/device.hpp"
+#include "viennacl/ocl/platform.hpp"
+#include "viennacl/device_specific/builtin_database/common.hpp"
+#include "viennacl/scalar.hpp"
+#include "viennacl/vector.hpp"
+
+
+
+
+void list_platforms();
 void eigen_test();
 void memory_test();
 void threading_test();
@@ -20,6 +33,8 @@ void avx_test();
 void test_random_engines();
 void threading_test();
 void linkedlist_test();
+void gpu_test1();
+void gpu_test2();
 
 
 void avx_test()
@@ -40,7 +55,6 @@ void avx_test()
 	printf("%f %f %f %f %f %f %f %f\n",
 		f[0], f[1], f[2], f[3], f[4], f[5], f[6], f[7]);
 	//-----------------------------------------------------
-
 
 	size_t alignment = 256;
 	float* aligned_floats = (float*)_aligned_malloc(32, alignment); //8(floats) * 4(bytes per float) = 32(bytes), 256(bit) % 32(bit) = 0; 
@@ -141,22 +155,18 @@ void test_random_engines() {
 void eigen_test()
 {
 	using namespace Eigen;
-	MatrixXi A;
-	A.resize(2,4);
-	A.setZero();
+	MatrixXi y;
+	MatrixXi A(2, 2);
+	MatrixXi x(2, 2);
+	y.setZero();
+	A << 2, 1,
+		3, 4;
+	x << 1, 1,
+		1, 1;
 
-	int array[8];
-	for (int i = 0; i < 8; ++i) array[i] = i;
-	std::cout << "Column-major:\n" << Map<Matrix<int, 2, 4> >(array) << std::endl;
-	std::cout << "Row-major:\n" << Map<Matrix<int, 2, 4, RowMajor> >(array) << std::endl;
-	std::cout << "Row-major using stride:\n" <<
-		Map<Matrix<int, 2, 4>, Unaligned, Stride<1, 4> >(array) << std::endl;
+	y.noalias() = A*x;
 
-	A = Map<MatrixXi, 0, OuterStride<> >(array, 2, 4, OuterStride<>(1));
-
-	array[0] = 50;
-
-	std::cout << std::endl << A << std::endl;
+	std::cout << A << "*" << x << "=" << y << std::endl;
 }
 
 void memory_test()
@@ -243,4 +253,103 @@ void linkedlist_test()
 
 	std::cout << "linked list done, press any key.";
 	std::cin.get();
+}
+
+void list_platforms() {
+	/**
+	*  Retrieve the platforms and iterate:
+	**/
+	typedef std::vector< viennacl::ocl::platform > platforms_type;
+	platforms_type platforms = viennacl::ocl::get_platforms();
+
+	bool is_first_element = true;
+	for (platforms_type::iterator platform_iter = platforms.begin();
+		platform_iter != platforms.end();
+		++platform_iter)
+	{
+		typedef std::vector<viennacl::ocl::device> devices_type;
+		devices_type devices = platform_iter->devices(CL_DEVICE_TYPE_ALL);
+
+		/**
+		*  Print some platform information
+		**/
+		std::cout << "# =========================================" << std::endl;
+		std::cout << "#         Platform Information             " << std::endl;
+		std::cout << "# =========================================" << std::endl;
+
+		std::cout << "#" << std::endl;
+		std::cout << "# Vendor and version: " << platform_iter->info() << std::endl;
+		std::cout << "#" << std::endl;
+
+		if (is_first_element)
+		{
+			std::cout << "# ViennaCL uses this OpenCL platform by default." << std::endl;
+			is_first_element = false;
+		}
+
+
+		/**
+		*  Traverse the devices and print all information available using the convenience member function full_info():
+		**/
+		std::cout << "# " << std::endl;
+		std::cout << "# Available Devices: "  << devices.size() << std::endl;
+		std::cout << "# " << std::endl;
+		for (devices_type::iterator iter = devices.begin(); iter != devices.end(); iter++)
+		{
+			std::cout << std::endl;
+
+			std::cout << "  -----------------------------------------" << std::endl;
+			std::cout << iter->full_info();
+			std::cout << "ViennaCL Device Architecture:  " << iter->architecture_family() << std::endl;
+			std::cout << "ViennaCL Database Mapped Name: " << viennacl::device_specific::builtin_database::get_mapped_device_name(iter->name(), iter->vendor_id()) << std::endl;
+			std::cout << "  -----------------------------------------" << std::endl;
+
+			std::cout << iter->max_mem_alloc_size() / 1024 / 1024 << std::endl;
+			
+		}
+		std::cout << std::endl;
+		std::cout << "###########################################" << std::endl;
+		std::cout << std::endl;
+	}
+
+}
+
+void gpu_test1() {
+	typedef float        ScalarType;
+	//typedef double    ScalarType; //use this if your GPU supports double precision
+
+	// Define a few CPU scalars:
+	ScalarType s1 = 3.1415926;
+	ScalarType s2 = 2.71763;
+	ScalarType s3 = 42.0;
+
+	// ViennaCL scalars are defined in the same way:
+	viennacl::scalar<ScalarType> vcl_s1;
+	viennacl::scalar<ScalarType> vcl_s2 = 1.0;
+	viennacl::scalar<ScalarType> vcl_s3 = 1.0;
+
+	// CPU scalars can be transparently assigned to GPU scalars and vice versa:
+	vcl_s1 = s1;
+	s2 = vcl_s2;
+	vcl_s3 = s3;
+
+	// Operations between GPU scalars work just as for CPU scalars (but are much slower!)
+	s1 += s2;
+	vcl_s1 += vcl_s2;
+
+	s1 = s2 + s3;
+	vcl_s1 = vcl_s2 + vcl_s3;
+
+	s1 = s2 + s3 * s2 - s3 / s1;
+	vcl_s1 = vcl_s2 + vcl_s3 * vcl_s2 - vcl_s3 / vcl_s1;
+
+	// Operations can also be mixed:
+	vcl_s1 = s1 * vcl_s2 + s3 - vcl_s3;
+
+	// Output stream is overloaded as well:
+	std::cout << "CPU scalar s2: " << s2 << std::endl;
+	std::cout << "GPU scalar vcl_s2: " << vcl_s2 << std::endl;
+}
+
+void gpu_test2() {
 }

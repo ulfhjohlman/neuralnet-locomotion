@@ -39,6 +39,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "graphics", "graphics\graphi
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mjenvironment", "mjenvironment\mjenvironment.vcxproj", "{EFE02A73-5C27-4887-B012-04C52D32DBEF}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bulletenvironment", "bulletenvironment\bulletenvironment.vcxproj", "{B7876BE9-9D9F-4E98-B6AE-09323342AA34}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -117,6 +119,14 @@ Global
 		{EFE02A73-5C27-4887-B012-04C52D32DBEF}.Release|x64.Build.0 = Release|x64
 		{EFE02A73-5C27-4887-B012-04C52D32DBEF}.Release|x86.ActiveCfg = Release|Win32
 		{EFE02A73-5C27-4887-B012-04C52D32DBEF}.Release|x86.Build.0 = Release|Win32
+		{B7876BE9-9D9F-4E98-B6AE-09323342AA34}.Debug|x64.ActiveCfg = Debug|x64
+		{B7876BE9-9D9F-4E98-B6AE-09323342AA34}.Debug|x64.Build.0 = Debug|x64
+		{B7876BE9-9D9F-4E98-B6AE-09323342AA34}.Debug|x86.ActiveCfg = Debug|Win32
+		{B7876BE9-9D9F-4E98-B6AE-09323342AA34}.Debug|x86.Build.0 = Debug|Win32
+		{B7876BE9-9D9F-4E98-B6AE-09323342AA34}.Release|x64.ActiveCfg = Release|x64
+		{B7876BE9-9D9F-4E98-B6AE-09323342AA34}.Release|x64.Build.0 = Release|x64
+		{B7876BE9-9D9F-4E98-B6AE-09323342AA34}.Release|x86.ActiveCfg = Release|Win32
+		{B7876BE9-9D9F-4E98-B6AE-09323342AA34}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

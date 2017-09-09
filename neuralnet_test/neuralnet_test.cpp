@@ -7,6 +7,11 @@
 
 #include "../neuralnet/Dataset.h"
 #include "../neuralnet/DatasetException.h"
+#include "../neuralnet/NeuralNet.h"
+#include "../neuralnet/FeedForwardNeuralNet.h"
+#include "../neuralnet/LayeredTopology.h"
+
+#include "../lib/Eigen/dense"
 
 #include "../utility/Stopwatch.h"
 #include "../utility/XMLException.h"
@@ -42,6 +47,7 @@ void single_threaded_tests();
 std::string XMLWrapper_test();
 std::string dataprinter_test();
 std::string dataset_test();
+std::string feedForwardNeuralNet_test();
 
 void multi_threaded_tests();
 void parallel_for_test();
@@ -50,10 +56,12 @@ void parallel_for_test();
 int main()
 {
 	std::cout.sync_with_stdio(true); // make cout thread-safe
+
+	std::cout << feedForwardNeuralNet_test();
 	
 	//test 
-	single_threaded_tests();
-	multi_threaded_tests();
+	//single_threaded_tests();
+	//multi_threaded_tests();
 
 	std::cout << "Neural net tests done." << std::endl;
 	std::cin.get();
@@ -178,6 +186,23 @@ std::string dataset_test()
 		output << e.what() << std::endl;
 	}
 	output << "Dataset test failed!" << std::endl;
+	return output.str();
+}
+
+std::string feedForwardNeuralNet_test() {
+	std::ostringstream output;
+	const int n_inputs = 20000;
+	LayeredTopology * top = new LayeredTopology{ n_inputs, 20000, 2000, 200, 200, 200, 20 };
+	FeedForwardNeuralNet ffnn(top);
+	
+
+	MatrixType m(n_inputs, 1);
+	m.setRandom();
+
+	ffnn.input(m);
+	output << ffnn.output() << std::endl; 
+
+	output << "FFNN test passed.\n";
 	return output.str();
 }
 

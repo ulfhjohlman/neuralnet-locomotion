@@ -92,12 +92,14 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>../lib/;../lib/ViennaCL-1.7.1/libviennacl/include;../lib/ViennaCL-1.7.1/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
     </Link>
     <Lib>
-      <AdditionalDependencies>../lib/tinyxml2/x64-Debug-Lib/tinyxml2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>../lib/OpenCL.lib;../lib/tinyxml2/x64-Debug-Lib/tinyxml2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -126,6 +128,9 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>../lib/;../lib/ViennaCL-1.7.1/libviennacl/include;../lib/ViennaCL-1.7.1/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -133,7 +138,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>../lib/tinyxml2/x64-Release-Lib/tinyxml2.lib;</AdditionalDependencies>
+      <AdditionalDependencies>../lib/OpenCL.lib;../lib/tinyxml2/x64-Release-Lib/tinyxml2.lib;</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -145,11 +150,15 @@
     <ClInclude Include="Dataset.h" />
     <ClInclude Include="DatasetException.h" />
     <ClInclude Include="FeedForwardNeuralNet.h" />
+    <ClInclude Include="Layer.h" />
+    <ClInclude Include="LayeredTopology.h" />
     <ClInclude Include="NeuralNet.h" />
     <ClInclude Include="NeuralNetException.h" />
+    <ClInclude Include="Neuron.h" />
     <ClInclude Include="RecurrentNeuralNet.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="Topology.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Dataset.cpp" />
