@@ -9,9 +9,7 @@ public:
 		LayeredTopology(baseLayerSize), m_timeDelayLevels(0) { }
 	virtual ~RecurrentTopology() = default;
 
-	virtual void addRecurrentLayer() {
-
-	}
+	virtual void addRecurrentLayer() { }
 	
 	
 private:

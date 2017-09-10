@@ -32,14 +32,15 @@ public:
 	virtual ~Layer() = default;
 	
 	Layer(const Layer& copy_this) : m_weights( copy_this.m_weights ), m_outputs( copy_this.m_outputs ){
-		std::cout << "Layer copy constructor\n";
+		//std::cout << "Layer copy constructor\n";
 	}
 	
 	Layer(Layer&& move_this) {
-		std::cout << "Layer move constructor\n";
+		//std::cout << "Layer move constructor\n";
 
 		m_weights.swap(move_this.m_weights);
 		m_outputs.swap(move_this.m_outputs);
+		m_bias.swap(move_this.m_bias);
 	}
 
 	Layer& operator=(const Layer& copy_this) = delete;
@@ -47,6 +48,7 @@ public:
 
 	virtual void setRandom() {
 		m_weights.setRandom();
+		m_bias.setRandom();
 	}
 
 	virtual void setLayer(int size, int inputSize) {
@@ -54,7 +56,8 @@ public:
 		checkSize(inputSize);
 
 		m_outputs.resize(size, 1);
-		m_weights.resize(size, inputSize + 1);
+		m_weights.resize(size, inputSize);
+		m_bias.resize(size);
 	}
 
 	virtual void input(const MatrixType& x) {
@@ -62,10 +65,10 @@ public:
 
 		//Load input onto layer and compute
 		//No aliasing issues here.
-		m_outputs.noalias() = m_weights.leftCols( x.rows() ) * x;
+		m_outputs.noalias() = m_weights * x;
 
-		//Add bias to each neuron, rightmost column in weights matrix
-		m_outputs.array().colwise() += m_weights.col(m_weights.cols() - 1).array();
+		//Add bias to each neuron
+		m_outputs.array().colwise() += m_bias.array();
 		
 		//Add separate neuron activation here in the future
 		m_outputs.array() = m_outputs.array().tanh();
@@ -85,6 +88,7 @@ protected:
 	}
 
 	inline void checkMatchingSize(const MatrixType& lhs, const MatrixType& rhs) {
+#ifdef _NEURALNET_DEBUG
 		bool colsNotEqual = lhs.cols() != rhs.cols();
 		bool rowsNotEqual = lhs.rows() != rhs.rows();
 		if (colsNotEqual || rowsNotEqual) {
@@ -92,12 +96,13 @@ protected:
 			os << " Not matching matrix size (rows,cols) " << __LINE__ << " at " << __FILE__ << std::endl;
 			throw NeuralNetException( os.str().c_str() );
 		}
+#endif // _NEURALNET_DEBUG
 	}
 
 	//y=A*x
 	inline void checkNeuronMismatch(const MatrixType& y, MatrixType& A, const MatrixType& x) {
 #ifdef _NEURALNET_DEBUG
-		bool neuronMismatch = (A.cols()-1) != x.rows(); //y = A*x, y in R^(wxm), A in R^(w+1xn) , x in R^(nxm)
+		bool neuronMismatch = A.cols() != x.rows(); //y = A*x, y in R^(wxm), A in R^(wxn) , x in R^(nxm)
 		bool resultMismatch = y.cols() != x.cols();
 		if (neuronMismatch) {
 			std::ostringstream os;
@@ -116,7 +121,8 @@ protected:
 private:
 	MatrixType m_weights;
 	MatrixType m_outputs;
+	VectorType m_bias;
 
-	viennacl::matrix<ScalarType> m_gpu_weights;
+	viennacl::matrix<ScalarType> m_gpu_weights; //Append bias to this
 	viennacl::vector<ScalarType> m_gpu_outputs;
 };

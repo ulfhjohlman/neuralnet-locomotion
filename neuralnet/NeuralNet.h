@@ -7,6 +7,7 @@
 #include "NeuralNetException.h"
 #include "Eigen/dense"
 typedef Eigen::MatrixXf MatrixType;
+typedef Eigen::VectorXf VectorType;
 typedef float			ScalarType;
 
 class NeuralInput;

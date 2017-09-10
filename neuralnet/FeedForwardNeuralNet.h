@@ -22,8 +22,6 @@ public:
 			int layerSize = topology->getLayerSize(i);
 			
 			m_layers.push_back(std::move(Layer(layerSize, numberOfInputs)));
-
-			std::cout << "layer" << i << ": " << numberOfInputs*layerSize << " neurons." << std::endl;
 		}
 	}
 	virtual ~FeedForwardNeuralNet() { 
@@ -54,9 +52,8 @@ public:
 		return m_layers.back().output();
 	}
 
-
-	virtual void save(const char* toFile) {}
-	virtual void load(const char* fromFile) {}
+	virtual void save(const char* toFile) { }
+	virtual void load(const char* fromFile) { }
 protected:
 	void checkEmptyNetwork() const {
 #ifdef _NEURALNET_DEBUG
