@@ -1,27 +1,29 @@
 #pragma once
+#include "Topology.h"
+
 #include <vector>
 #include <stdexcept>
 #include <initializer_list>
 
 
-class LayeredTopology 
+class LayeredTopology : private Topology
 {
 public:
 	LayeredTopology() = default;
 	LayeredTopology(int reserveLayers) { m_layerSizes.reserve(reserveLayers); }
 	LayeredTopology(std::initializer_list<int> layerSize) : m_layerSizes(layerSize) { }
-	~LayeredTopology() = default;
+	virtual ~LayeredTopology() = default;
 	
-	void addLayer(int size) {
+	virtual void addLayer(int size) {
 		checkSize(size);
 		m_layerSizes.push_back(size);
 	}
 
-	int getLayerSize(int i) {
+	virtual int getLayerSize(int i) {
 		return m_layerSizes[i];
 	}
 
-	size_t getNumberOfLayers() {
+	virtual size_t getNumberOfLayers() {
 		return m_layerSizes.size();
 	}
 

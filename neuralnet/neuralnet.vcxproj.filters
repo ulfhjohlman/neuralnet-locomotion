@@ -75,6 +75,9 @@
     <ClInclude Include="LayeredTopology.h">
       <Filter>Header Files\Structures</Filter>
     </ClInclude>
+    <ClInclude Include="RecurrentTopology.h">
+      <Filter>Header Files\Structures</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

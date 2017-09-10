@@ -47,6 +47,7 @@ public:
 			m_layers[i].input(m_layers[i-1].output());
 		}
 	}
+
 	virtual MatrixType& output() {
 		checkEmptyNetwork();
 

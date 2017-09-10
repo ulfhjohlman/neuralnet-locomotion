@@ -1,15 +1,12 @@
 #pragma once
 
+/// <summary>
+/// Defines a general topology, empty for now.
+/// </summary>
 class Topology 
 {
 public:
 	Topology() = default;
-	~Topology() = default;
-	
-	Topology(const Topology& copy_this) = delete;
-	Topology& operator=(const Topology& copy_this) = delete;
-	
-	Topology(Topology&& move_this) = delete;
-	Topology& operator=(Topology&& move_this) = delete;
+	virtual ~Topology() = default;
 private:
 };
