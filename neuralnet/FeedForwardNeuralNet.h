@@ -3,6 +3,7 @@
 #include "Topology.h"
 #include "LayeredTopology.h"
 #include "Layer.h"
+#include "LayerFactory.h"
 
 #include <vector>
 #include <stdexcept>
@@ -37,8 +38,7 @@ public:
 		destroyLayers();
 		m_layers.reserve(m_topology->getNumberOfLayers());
 
-;
-		Layer* inputLayer = new Layer(m_topology->getLayerSize( 0 ), 0);
+		Layer* inputLayer = LayerFactory::constructLayer(m_topology->getLayerSize(0), 0, Layer::noActivation);
 		m_layers.push_back(inputLayer);
 
 		//construct network from topology
@@ -47,7 +47,7 @@ public:
 			int layerSize = m_topology->getLayerSize(i);
 			checkLayerArgs(layerSize, numberOfInputs);
 
-			Layer* newLayer = new Layer(layerSize, numberOfInputs);
+			Layer* newLayer = LayerFactory::constructLayer(layerSize, numberOfInputs, Layer::noActivation);
 			m_layers.push_back(newLayer);
 		}
 	}

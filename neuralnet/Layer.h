@@ -9,19 +9,6 @@
 
 // ViennaCL headers
 
-#ifndef VIENNACL_WITH_OPENCL
-#define VIENNACL_WITH_OPENCL
-#endif
-
-#ifndef VIENNACL_HAVE_EIGEN
-#define VIENNACL_HAVE_EIGEN
-#endif // !VIENNACL_HAVE_EIGEN
-
-#include "viennacl/vector.hpp"
-#include "viennacl/linalg/norm_2.hpp"
-#include "viennacl/matrix.hpp"
-#include "viennacl/ocl/backend.hpp"
-
 class Layer : public NeuralNet
 {
 public:
@@ -70,8 +57,7 @@ public:
 		//Add bias to each neuron
 		m_outputs.array().colwise() += m_bias.array();
 		
-		//Add separate neuron activation here in the future
-		m_outputs.array() = m_outputs.array().tanh();
+		//Subclass for separate neuron activation here
 
 		//printOperations(x);
 	}
@@ -82,6 +68,16 @@ public:
 
 	virtual void save(const char* toFile) { }
 	virtual void load(const char* fromFile) { }
+
+	enum LayerType
+	{
+		noActivation = 0,
+		tanh = 1,
+		sigmoid = 2,
+		relu = 3,
+		inputLayer = 4,
+		scalingLayer = 5
+	};
 protected:
 
 	inline void checkSize(int size) {
@@ -132,7 +128,4 @@ private:
 	MatrixType m_weights;
 	MatrixType m_outputs;
 	VectorType m_bias;
-
-	viennacl::matrix<ScalarType> m_gpu_weights; //Appends bias
-	viennacl::vector<ScalarType> m_gpu_outputs;
 };

@@ -5,6 +5,10 @@
 #include <numeric>
 #include <set>
 
+/// <summary>
+/// Blev ej super logiskt. FeedForwardNerualNet är egentligen 
+/// ett subset av denna klass konceptuellt. Får fixa senare
+/// </summary>
 class CascadeNeuralNet : public FeedForwardNeuralNet
 {
 public:
@@ -19,7 +23,7 @@ public:
 		clearMembers();
 		checkTopology(m_topology);
 
-		Layer* inputLayer = new Layer(m_topology->getLayerSize(0), 0);
+		Layer* inputLayer = LayerFactory::constructLayer(m_topology->getLayerSize(0), 0, Layer::noActivation);
 		m_layers.push_back(inputLayer);
 		m_numberOfLayerInputs.push_back(0);
 		
@@ -32,7 +36,7 @@ public:
 			int layerSize = m_topology->getLayerSize(i);
 			checkLayerArgs(layerSize, numberOfInputs);
 
-			Layer* newLayer = new Layer(layerSize, numberOfInputs);
+			Layer* newLayer = LayerFactory::constructLayer(layerSize, numberOfInputs, Layer::noActivation);
 			m_layers.push_back(newLayer);
 		}
 	}
@@ -44,7 +48,7 @@ public:
 		//Load first layer
 		m_layers.front()->output() = x;//Remove this copy in future
 
-		MatrixType xi; 
+		MatrixType xi; //This should be fixed in future
 		//Propagate forward
 		for (int i = 1; i < m_layers.size(); i++) {
 			xi.resize(m_numberOfLayerInputs[i], numberOfCols);
@@ -102,7 +106,6 @@ private:
 		destroyLayers();
 		m_layers.reserve(numberOfLayers);
 	}
-
 
 	CascadeTopology* m_topology;
 	std::vector<int> m_numberOfLayerInputs;

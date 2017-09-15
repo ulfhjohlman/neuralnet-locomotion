@@ -84,6 +84,9 @@
     <ClInclude Include="CascadeTopology.h">
       <Filter>Header Files\Structures</Filter>
     </ClInclude>
+    <ClInclude Include="LayerFactory.h">
+      <Filter>Header Files\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

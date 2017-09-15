@@ -154,6 +154,7 @@
     <ClInclude Include="FeedForwardNeuralNet.h" />
     <ClInclude Include="Layer.h" />
     <ClInclude Include="LayeredTopology.h" />
+    <ClInclude Include="LayerFactory.h" />
     <ClInclude Include="NeuralNet.h" />
     <ClInclude Include="NeuralNetException.h" />
     <ClInclude Include="Neuron.h" />
