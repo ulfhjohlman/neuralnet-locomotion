@@ -6,6 +6,7 @@
 
 #include <vector>
 #include <stdexcept>
+#include <memory>
 
 
 class FeedForwardNeuralNet :
@@ -20,6 +21,8 @@ public:
 	virtual ~FeedForwardNeuralNet() { 
 		if (m_topology)
 			delete m_topology;
+		destroyLayers();
+
 	}
 
 	virtual void setTopology(LayeredTopology* topology) {
@@ -31,13 +34,12 @@ public:
 	}
 
 	virtual void constructFromTopology() {
-		//deallocate layer memory first when pointer
-		m_layers.clear();
+		destroyLayers();
 		m_layers.reserve(m_topology->getNumberOfLayers());
 
 ;
-		Layer inputLayer(m_topology->getLayerSize( 0 ), 0);
-		m_layers.push_back(std::move(inputLayer));
+		Layer* inputLayer = new Layer(m_topology->getLayerSize( 0 ), 0);
+		m_layers.push_back(inputLayer);
 
 		//construct network from topology
 		for (int i = 1; i < m_topology->getNumberOfLayers(); i++) {
@@ -45,32 +47,32 @@ public:
 			int layerSize = m_topology->getLayerSize(i);
 			checkLayerArgs(layerSize, numberOfInputs);
 
-			Layer newLayer(layerSize, numberOfInputs);
-			m_layers.push_back(std::move(newLayer));
+			Layer* newLayer = new Layer(layerSize, numberOfInputs);
+			m_layers.push_back(newLayer);
 		}
 	}
 
 	virtual void initializeRandomWeights() {
 		for (auto & layer : m_layers)
-			layer.setRandom();
+			layer->setRandom();
 	}
 
 	virtual void input(const MatrixType& x) {
 		checkEmptyNetwork();
 
 		//Load input layer 
-		m_layers.front().output() = x;//Remove this copy in future
+		m_layers.front()->output() = x;//Remove this copy in future
 
 		//Propagate forward
 		for (int i = 1; i < m_layers.size(); i++) {
-			m_layers[i].input(m_layers[i-1].output());
+			m_layers[i]->input(m_layers[i-1]->output());
 		}
 	}
 
 	virtual MatrixType& output() {
 		checkEmptyNetwork();
 
-		return m_layers.back().output();
+		return m_layers.back()->output();
 	}
 
 	virtual void save(const char* toFile) { }
@@ -91,7 +93,17 @@ protected:
 #endif // _NEURALNET_DEBUG
 	}
 
-	std::vector<Layer> m_layers;
+	void destroyLayers()
+	{
+		for (size_t i = 0; i < m_layers.size(); i++)
+			if (m_layers[i]) {
+				//std::cout << "deleted:" << m_layers[i] << std::endl;
+				delete m_layers[i];
+			}
+		m_layers.clear();
+	}
+
+	std::vector<Layer*> m_layers;//replace with shared_ptr<Layer>
 private:
 	void checkTopology(LayeredTopology* topology)
 	{

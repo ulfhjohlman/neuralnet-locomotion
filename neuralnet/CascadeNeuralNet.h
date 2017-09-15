@@ -19,8 +19,8 @@ public:
 		clearMembers();
 		checkTopology(m_topology);
 
-		Layer inputLayer(m_topology->getLayerSize(0), 0);
-		m_layers.push_back(std::move(inputLayer));
+		Layer* inputLayer = new Layer(m_topology->getLayerSize(0), 0);
+		m_layers.push_back(inputLayer);
 		m_numberOfLayerInputs.push_back(0);
 		
 		size_t numberOfLayers = m_topology->getNumberOfLayers();
@@ -32,8 +32,8 @@ public:
 			int layerSize = m_topology->getLayerSize(i);
 			checkLayerArgs(layerSize, numberOfInputs);
 
-			Layer newLayer(layerSize, numberOfInputs);
-			m_layers.push_back(std::move(newLayer));
+			Layer* newLayer = new Layer(layerSize, numberOfInputs);
+			m_layers.push_back(newLayer);
 		}
 	}
 
@@ -42,14 +42,14 @@ public:
 		const int numberOfCols = x.cols();
 
 		//Load first layer
-		m_layers.front().output() = x;//Remove this copy in future
+		m_layers.front()->output() = x;//Remove this copy in future
 
-		MatrixType xi;
+		MatrixType xi; 
 		//Propagate forward
 		for (int i = 1; i < m_layers.size(); i++) {
 			xi.resize(m_numberOfLayerInputs[i], numberOfCols);
 			loadInput(i, xi, numberOfCols);
-			m_layers[i].input(xi);
+			m_layers[i]->input(xi);
 		}
 	}
 
@@ -85,12 +85,13 @@ private:
 	void loadInput(int i, MatrixType &xi, int numberOfCols) {
 		int row = 0;
 		for (const auto& layerIndex : m_topology->getLayerConnections(i)) {
-			auto numberOfRows = m_layers[layerIndex].output().rows();
+			auto numberOfRows = m_layers[layerIndex]->output().rows();
 			//Unnecessary copy, if we can operate on weights matrix in chunks instead.
-			xi.block(row, 0, numberOfRows, numberOfCols) = m_layers[layerIndex].output();
+			xi.block(row, 0, numberOfRows, numberOfCols) = m_layers[layerIndex]->output();
 			row += numberOfRows;
 		}
 	}
+
 	void clearMembers()
 	{
 		size_t numberOfLayers = m_topology->getNumberOfLayers();
@@ -98,7 +99,7 @@ private:
 		m_numberOfLayerInputs.clear();
 		m_numberOfLayerInputs.reserve(numberOfLayers);
 
-		m_layers.clear();
+		destroyLayers();
 		m_layers.reserve(numberOfLayers);
 	}
 
