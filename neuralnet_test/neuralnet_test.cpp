@@ -61,7 +61,7 @@ int main()
 	std::cout.sync_with_stdio(true); // make cout thread-safe
 
 	std::cout << cascadeNeuralNet_test() << std::endl;
-	//std::cout << feedForwardNeuralNet_test();
+	std::cout << feedForwardNeuralNet_test();
 	
 	//test 
 	//single_threaded_tests();

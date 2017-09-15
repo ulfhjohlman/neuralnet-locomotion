@@ -13,7 +13,7 @@ class FeedForwardNeuralNet :
 {
 public:
 	FeedForwardNeuralNet() : m_topology(nullptr) { }
-	FeedForwardNeuralNet(LayeredTopology * topology) {
+	FeedForwardNeuralNet(LayeredTopology * topology) : m_topology(nullptr) {
 		setTopology(topology);
 		constructFromTopology();
 	}

@@ -93,7 +93,7 @@ private:
 	}
 	void clearMembers()
 	{
-		auto numberOfLayers = m_topology->getNumberOfLayers();
+		size_t numberOfLayers = m_topology->getNumberOfLayers();
 
 		m_numberOfLayerInputs.clear();
 		m_numberOfLayerInputs.reserve(numberOfLayers);
