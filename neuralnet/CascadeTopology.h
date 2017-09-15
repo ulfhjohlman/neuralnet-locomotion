@@ -48,7 +48,7 @@ protected:
 			});
 		};
 
-		int nLayers = this->getNumberOfLayers();
+		size_t nLayers = this->getNumberOfLayers();
 		bool bConnectionOk = validConnection(layerConnection, index, nLayers);
 
 		if (!bConnectionOk)

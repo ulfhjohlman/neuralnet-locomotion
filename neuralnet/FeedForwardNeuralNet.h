@@ -13,7 +13,7 @@ class FeedForwardNeuralNet :
 {
 public:
 	FeedForwardNeuralNet() : m_topology(nullptr) { }
-	FeedForwardNeuralNet(LayeredTopology * topology) : FeedForwardNeuralNet() {
+	FeedForwardNeuralNet(LayeredTopology * topology) {
 		setTopology(topology);
 		constructFromTopology();
 	}
@@ -23,8 +23,9 @@ public:
 	}
 
 	virtual void setTopology(LayeredTopology* topology) {
-		checkTopology(topology);
-		if (topology == m_topology) return;
+		checkTopology(topology); 
+		//new topology ok.
+		//delete old if there is one.
 		if (m_topology) delete m_topology;
 		m_topology = topology;
 	}
@@ -80,13 +81,6 @@ protected:
 		if (m_layers.empty()) throw NeuralNetException("Empty neural net");
 #endif // _NEURALNET_DEBUG
 	}
-	void checkTopology(LayeredTopology* topology)
-	{
-#ifdef _NEURALNET_DEBUG
-		if (topology == nullptr) throw std::invalid_argument("topology nullptr");
-		if (topology->getNumberOfLayers() < 2) throw std::invalid_argument("input not specified.");
-#endif // _NEURALNET_DEBUG
-	}
 	void checkLayerArgs(int layerSize, int numberOfInputs)
 	{
 #ifdef _NEURALNET_DEBUG
@@ -99,6 +93,16 @@ protected:
 
 	std::vector<Layer> m_layers;
 private:
+	void checkTopology(LayeredTopology* topology)
+	{
+#ifdef _NEURALNET_DEBUG
+		if (topology == nullptr) throw std::invalid_argument("topology nullptr");
+		if (topology->getNumberOfLayers() < 2) throw std::invalid_argument("input not specified.");
+		if (topology == m_topology) return;
+#endif // _NEURALNET_DEBUG
+	}
+
+
 	LayeredTopology* m_topology;
 };
 

@@ -32,10 +32,10 @@ protected:
 		auto validRange = [](const std::vector<int>& vec, int maxIndex) 
 		{ return std::all_of(vec.begin(), vec.end(), [&maxIndex](int i) { return i < maxIndex; }); };
 
-		int fromSize = m_topologies.back()->getNumberOfLayers();
+		size_t fromSize = m_topologies.back()->getNumberOfLayers();
 		bool bfromLayers = fromLayers.size() > -1 && validRange(fromLayers, fromSize);
 
-		int toSize = m_topologies[toTopology]->getNumberOfLayers();
+		size_t toSize = m_topologies[toTopology]->getNumberOfLayers();
 		bool btoLayers = toLayers.size() > -1 && validRange(toLayers, toSize);
 
 		if(!bfromLayers || !btoLayers)

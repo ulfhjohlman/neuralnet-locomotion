@@ -203,8 +203,6 @@ std::string feedForwardNeuralNet_test() {
 
 	MatrixType m(n_inputs, 1);
 	m.setRandom();
-	m.array() = m.array() * 10;
-	m.array() = m.array().floor();
 
 	ffnn.input(m);
 	output << ffnn.output() << std::endl; 
@@ -221,15 +219,13 @@ std::string cascadeNeuralNet_test() {
 		CascadeTopology * top = new CascadeTopology{ n_inputs, 2, 2, 1 };
 		top->addLayerConnection(1, { 0 });
 		top->addLayerConnection(2, { 0, 1 });
-		top->addLayerConnection(3, { 0, 2 });
-		CascadeNeuralNet cnn(top);
+		top->addLayerConnection(3, { 0, 1, 2 });
 
+		CascadeNeuralNet cnn(top);
 		cnn.initializeRandomWeights();
 
 		MatrixType m(n_inputs, 1);
 		m.setRandom();
-		m.array() = m.array() * 10;
-		m.array() = m.array().floor();
 
 		cnn.input(m);
 		output << cnn.output() << std::endl;
@@ -240,12 +236,11 @@ std::string cascadeNeuralNet_test() {
 	}
 	catch (NeuralNetException e) {
 		output << e.what() << std::endl;
-		output << "Cascade test failed.\n";
 	}
 	catch (std::invalid_argument e) {
 		output << e.what() << std::endl;
-		output << "Cascade test failed.\n";
 	}
+	output << "Cascade test failed.\n";
 	return output.str();
 }
 

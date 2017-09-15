@@ -48,10 +48,7 @@ public:
 
 	virtual void setRandom() {
 		m_weights.setRandom();
-		m_weights.array() = m_weights.array() * 10;
-		m_weights.array() = m_weights.array().floor();
-		//m_bias.setRandom();
-		m_bias.setZero();
+		m_bias.setRandom();
 	}
 
 	virtual void setLayer(int size, int inputSize) {
@@ -74,13 +71,9 @@ public:
 		m_outputs.array().colwise() += m_bias.array();
 		
 		//Add separate neuron activation here in the future
-		//m_outputs.array() = m_outputs.array().tanh();
+		m_outputs.array() = m_outputs.array().tanh();
 
-		std::cout << m_weights << std::endl;
-		std::cout << x << std::endl << "=\n";
-		std::cout << m_outputs << std::endl;
-
-		std::cout << std::endl;
+		//printOperations(x);
 	}
 
 	virtual MatrixType& output() {
@@ -128,6 +121,13 @@ protected:
 #endif
 	}
 
+	void printOperations(const MatrixType& x)
+	{
+		std::cout << m_weights << std::endl;
+		std::cout << x << std::endl << "=\n";
+		std::cout << m_outputs << std::endl;
+		std::cout << std::endl;
+	}
 private:
 	MatrixType m_weights;
 	MatrixType m_outputs;
