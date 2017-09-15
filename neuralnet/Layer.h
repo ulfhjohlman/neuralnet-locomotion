@@ -48,7 +48,10 @@ public:
 
 	virtual void setRandom() {
 		m_weights.setRandom();
-		m_bias.setRandom();
+		m_weights.array() = m_weights.array() * 10;
+		m_weights.array() = m_weights.array().floor();
+		//m_bias.setRandom();
+		m_bias.setZero();
 	}
 
 	virtual void setLayer(int size, int inputSize) {
@@ -71,8 +74,15 @@ public:
 		m_outputs.array().colwise() += m_bias.array();
 		
 		//Add separate neuron activation here in the future
-		m_outputs.array() = m_outputs.array().tanh();
+		//m_outputs.array() = m_outputs.array().tanh();
+
+		std::cout << m_weights << std::endl;
+		std::cout << x << std::endl << "=\n";
+		std::cout << m_outputs << std::endl;
+
+		std::cout << std::endl;
 	}
+
 	virtual MatrixType& output() {
 		return m_outputs;
 	}
@@ -83,7 +93,7 @@ protected:
 
 	inline void checkSize(int size) {
 #ifdef _NEURALNET_DEBUG
-		if (size < 1) { throw NeuralNetException("Must be non-zero layer\n"); }
+		if (size < 0) { throw NeuralNetException("Must be >=0 sized layer\n"); }
 #endif // _NEURALNET_DEBUG
 	}
 
@@ -106,7 +116,7 @@ protected:
 		bool resultMismatch = y.cols() != x.cols();
 		if (neuronMismatch) {
 			std::ostringstream os;
-			os << " Weights do not match input " << __LINE__ << " at " << __FILE__ << std::endl;
+			os << " Weights do not match input " << A.cols() << " != " << x.rows() << std::endl;
 			throw NeuralNetException(os.str().c_str());
 		}
 		else if (resultMismatch) {
@@ -123,6 +133,6 @@ private:
 	MatrixType m_outputs;
 	VectorType m_bias;
 
-	viennacl::matrix<ScalarType> m_gpu_weights; //Append bias to this
+	viennacl::matrix<ScalarType> m_gpu_weights; //Appends bias
 	viennacl::vector<ScalarType> m_gpu_outputs;
 };

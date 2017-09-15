@@ -78,6 +78,12 @@
     <ClInclude Include="RecurrentTopology.h">
       <Filter>Header Files\Structures</Filter>
     </ClInclude>
+    <ClInclude Include="CascadeNeuralNet.h">
+      <Filter>Header Files\Neural Nets</Filter>
+    </ClInclude>
+    <ClInclude Include="CascadeTopology.h">
+      <Filter>Header Files\Structures</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

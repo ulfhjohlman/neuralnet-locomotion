@@ -10,6 +10,8 @@
 #include "../neuralnet/NeuralNet.h"
 #include "../neuralnet/FeedForwardNeuralNet.h"
 #include "../neuralnet/LayeredTopology.h"
+#include "../neuralnet/CascadeNeuralNet.h"
+#include "../neuralnet/RecurrentTopology.h"
 
 #include "../lib/Eigen/dense"
 
@@ -48,6 +50,7 @@ std::string XMLWrapper_test();
 std::string dataprinter_test();
 std::string dataset_test();
 std::string feedForwardNeuralNet_test();
+std::string cascadeNeuralNet_test();
 
 void multi_threaded_tests();
 void parallel_for_test();
@@ -57,7 +60,8 @@ int main()
 {
 	std::cout.sync_with_stdio(true); // make cout thread-safe
 
-	std::cout << feedForwardNeuralNet_test();
+	std::cout << cascadeNeuralNet_test() << std::endl;
+	//std::cout << feedForwardNeuralNet_test();
 	
 	//test 
 	//single_threaded_tests();
@@ -191,18 +195,57 @@ std::string dataset_test()
 
 std::string feedForwardNeuralNet_test() {
 	std::ostringstream output;
-	const int n_inputs = 20000;
-	LayeredTopology * top = new LayeredTopology{ n_inputs, 20000, 2000, 200, 200, 200, 20 };
+	const int n_inputs = 2;
+	LayeredTopology * top = new LayeredTopology{ n_inputs, 2, 3, 1 };
+
 	FeedForwardNeuralNet ffnn(top);
-	
+	ffnn.initializeRandomWeights();
 
 	MatrixType m(n_inputs, 1);
 	m.setRandom();
+	m.array() = m.array() * 10;
+	m.array() = m.array().floor();
 
 	ffnn.input(m);
 	output << ffnn.output() << std::endl; 
 
 	output << "FFNN test passed.\n";
+	return output.str();
+}
+
+std::string cascadeNeuralNet_test() {
+	std::ostringstream output;
+	const int n_inputs = 2;
+
+	try {
+		CascadeTopology * top = new CascadeTopology{ n_inputs, 2, 2, 1 };
+		top->addLayerConnection(1, { 0 });
+		top->addLayerConnection(2, { 0, 1 });
+		top->addLayerConnection(3, { 0, 2 });
+		CascadeNeuralNet cnn(top);
+
+		cnn.initializeRandomWeights();
+
+		MatrixType m(n_inputs, 1);
+		m.setRandom();
+		m.array() = m.array() * 10;
+		m.array() = m.array().floor();
+
+		cnn.input(m);
+		output << cnn.output() << std::endl;
+
+
+		output << "CNN test passed.\n";
+		return output.str();
+	}
+	catch (NeuralNetException e) {
+		output << e.what() << std::endl;
+		output << "Cascade test failed.\n";
+	}
+	catch (std::invalid_argument e) {
+		output << e.what() << std::endl;
+		output << "Cascade test failed.\n";
+	}
 	return output.str();
 }
 

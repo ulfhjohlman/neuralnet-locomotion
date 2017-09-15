@@ -9,10 +9,13 @@ class LayeredTopology : private Topology
 {
 public:
 	LayeredTopology() = default;
-	LayeredTopology(int reserveLayers) { m_layerSizes.reserve(reserveLayers); }
+	LayeredTopology(std::vector<int>& layerSize) : m_layerSizes(layerSize) { }
 	LayeredTopology(std::initializer_list<int> layerSize) : m_layerSizes(layerSize) { }
 	virtual ~LayeredTopology() = default;
 	
+	virtual void reserveLayers(int numberOfLayers) {
+		m_layerSizes.reserve(numberOfLayers);
+	}
 	virtual void addLayer(int size) {
 		checkSize(size);
 		m_layerSizes.push_back(size);

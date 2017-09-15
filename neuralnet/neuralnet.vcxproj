@@ -145,6 +145,8 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CascadeNeuralNet.h" />
+    <ClInclude Include="CascadeTopology.h" />
     <ClInclude Include="ContinousTimeRecurrentNeuralNet.h" />
     <ClInclude Include="ConvolutionalNeuralNet.h" />
     <ClInclude Include="Dataset.h" />
