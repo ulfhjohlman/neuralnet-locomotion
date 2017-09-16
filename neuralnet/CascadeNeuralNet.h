@@ -7,7 +7,7 @@
 
 /// <summary>
 /// Blev ej super logiskt. FeedForwardNerualNet är egentligen 
-/// ett subset av denna klass konceptuellt. Får fixa senare
+/// ett subset av denna klass konceptuellt. Ska fixa senare
 /// </summary>
 class CascadeNeuralNet : public FeedForwardNeuralNet
 {
@@ -23,7 +23,7 @@ public:
 		clearMembers();
 		checkTopology(m_topology);
 
-		Layer* inputLayer = LayerFactory::constructLayer(m_topology->getLayerSize(0), 0, Layer::noActivation);
+		Layer* inputLayer = LayerFactory::constructLayer(m_topology->getLayerSize(0), 0, m_topology->getLayerType(0));
 		m_layers.push_back(inputLayer);
 		m_numberOfLayerInputs.push_back(0);
 		
@@ -31,13 +31,12 @@ public:
 		//construct network from topology
 		for (int i = 1; i < numberOfLayers; i++) {
 			int numberOfInputs = getLayerInputs(i);
-			m_numberOfLayerInputs.push_back(numberOfInputs);
-
 			int layerSize = m_topology->getLayerSize(i);
-			checkLayerArgs(layerSize, numberOfInputs);
+			int layerType = m_topology->getLayerType(i);
 
-			Layer* newLayer = LayerFactory::constructLayer(layerSize, numberOfInputs, Layer::noActivation);
+			Layer* newLayer = LayerFactory::constructLayer(layerSize, numberOfInputs, layerType);
 			m_layers.push_back(newLayer);
+			m_numberOfLayerInputs.push_back(numberOfInputs);
 		}
 	}
 

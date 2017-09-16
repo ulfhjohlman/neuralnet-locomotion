@@ -196,18 +196,36 @@ std::string dataset_test()
 std::string feedForwardNeuralNet_test() {
 	std::ostringstream output;
 	const int n_inputs = 2;
-	LayeredTopology * top = new LayeredTopology{ n_inputs, 2, 3, 1 };
 
-	FeedForwardNeuralNet ffnn(top);
-	ffnn.initializeRandomWeights();
+	try
+	{
+		std::vector<int> layerSizes = { n_inputs,		   2, 3, 1 };
+		std::vector<int> layerTypes = { Layer::inputLayer, 0, 0, 0 };
+		LayeredTopology * top = new LayeredTopology(layerSizes, layerTypes);
 
-	MatrixType m(n_inputs, 1);
-	m.setRandom();
+		FeedForwardNeuralNet ffnn(top);
+		ffnn.initializeRandomWeights();
 
-	ffnn.input(m);
-	output << ffnn.output() << std::endl; 
+		MatrixType m(n_inputs, 1);
+		m.setRandom();
 
-	output << "FFNN test passed.\n";
+		ffnn.input(m);
+		output << ffnn.output() << std::endl;
+
+		output << "FFNN test passed.\n";
+		return output.str();
+	}
+	catch (NeuralNetException e) {
+		output << e.what() << std::endl;
+	}
+	catch (const FactoryException e) {
+		output << e.what() << std::endl;
+	}
+	catch (std::invalid_argument e) {
+		output << e.what() << std::endl;
+	}
+	
+	output << "FFNN failed.\n";
 	return output.str();
 }
 
@@ -216,7 +234,9 @@ std::string cascadeNeuralNet_test() {
 	const int n_inputs = 2;
 
 	try {
-		CascadeTopology * top = new CascadeTopology{ n_inputs, 2, 2, 1 };
+		std::vector<int> layerSizes = { n_inputs,		   2, 3, 1 };
+		std::vector<int> layerTypes = { Layer::inputLayer, 0, 0, 0 };
+		CascadeTopology * top = new CascadeTopology(layerSizes, layerTypes);
 		top->addLayerConnection(1, { 0 });
 		top->addLayerConnection(2, { 0, 1 });
 		top->addLayerConnection(3, { 0, 1, 2 });
@@ -235,6 +255,9 @@ std::string cascadeNeuralNet_test() {
 		return output.str();
 	}
 	catch (NeuralNetException e) {
+		output << e.what() << std::endl;
+	}
+	catch (FactoryException e) {
 		output << e.what() << std::endl;
 	}
 	catch (std::invalid_argument e) {

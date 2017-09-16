@@ -10,7 +10,5 @@ class Topology
 public:
 	Topology() = default;
 	virtual ~Topology() = default;
-
-
 private:
 };

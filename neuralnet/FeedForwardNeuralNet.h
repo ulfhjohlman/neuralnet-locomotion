@@ -23,7 +23,6 @@ public:
 		if (m_topology)
 			delete m_topology;
 		destroyLayers();
-
 	}
 
 	virtual void setTopology(LayeredTopology* topology) {
@@ -38,16 +37,16 @@ public:
 		destroyLayers();
 		m_layers.reserve(m_topology->getNumberOfLayers());
 
-		Layer* inputLayer = LayerFactory::constructLayer(m_topology->getLayerSize(0), 0, Layer::noActivation);
+		Layer* inputLayer = LayerFactory::constructLayer(m_topology->getLayerSize(0), 0, m_topology->getLayerType(0));
 		m_layers.push_back(inputLayer);
 
 		//construct network from topology
 		for (int i = 1; i < m_topology->getNumberOfLayers(); i++) {
 			int numberOfInputs = m_topology->getLayerSize(i - 1);
 			int layerSize = m_topology->getLayerSize(i);
-			checkLayerArgs(layerSize, numberOfInputs);
-
-			Layer* newLayer = LayerFactory::constructLayer(layerSize, numberOfInputs, Layer::noActivation);
+			int layerType = m_topology->getLayerType(i);
+			
+			Layer* newLayer = LayerFactory::constructLayer(layerSize, numberOfInputs, layerType);
 			m_layers.push_back(newLayer);
 		}
 	}
@@ -83,16 +82,6 @@ protected:
 		if (m_layers.empty()) throw NeuralNetException("Empty neural net");
 #endif // _NEURALNET_DEBUG
 	}
-	void checkLayerArgs(int layerSize, int numberOfInputs)
-	{
-#ifdef _NEURALNET_DEBUG
-		if (numberOfInputs < 1)
-			throw NeuralNetException("Layer with no inputs.");
-		if (layerSize < 1)
-			throw NeuralNetException("Layer with no neurons.");
-#endif // _NEURALNET_DEBUG
-	}
-
 	void destroyLayers()
 	{
 		for (size_t i = 0; i < m_layers.size(); i++)
@@ -110,7 +99,7 @@ private:
 #ifdef _NEURALNET_DEBUG
 		if (topology == nullptr) throw std::invalid_argument("topology nullptr");
 		if (topology->getNumberOfLayers() < 2) throw std::invalid_argument("input not specified.");
-		if (topology == m_topology) return;
+		if (topology == m_topology) throw std::invalid_argument("self topology assignment.");;
 #endif // _NEURALNET_DEBUG
 	}
 

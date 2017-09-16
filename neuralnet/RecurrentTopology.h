@@ -9,8 +9,8 @@ public:
 		m_topologies.push_back(this);
 		m_topologyConnections.push_back(std::vector<int>());
 	}
-	RecurrentTopology(std::initializer_list<int> baseLayerSize) :
-		LayeredTopology(baseLayerSize), m_timeDelayLevels(0) { }
+	//RecurrentTopology(std::initializer_list<int> baseLayerSize) :
+	//	LayeredTopology(baseLayerSize), m_timeDelayLevels(0) { }
 	virtual ~RecurrentTopology() = default;
 
 	virtual void addRecurrentLayeredTopology( LayeredTopology* topology, 

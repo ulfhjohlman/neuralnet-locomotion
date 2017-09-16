@@ -5,9 +5,13 @@
 class CascadeTopology : public LayeredTopology
 {
 public:
-	CascadeTopology() { }
-	CascadeTopology(std::vector<int>& layerSize) : LayeredTopology(layerSize) {  }
-	CascadeTopology(std::initializer_list<int> layerSize) : LayeredTopology(layerSize) { }
+	CascadeTopology() = default;
+	CascadeTopology(const std::vector<int>& layerSize,
+					const std::vector<int>& layerType)
+					: LayeredTopology(layerSize, layerType) {  }
+	CascadeTopology(std::initializer_list<int> layerSize,
+					std::initializer_list<int> layerType)
+					: LayeredTopology(layerSize, layerType) { }
 	virtual ~CascadeTopology() = default;
 
 	virtual void addLayerConnection(int index,
@@ -37,8 +41,8 @@ public:
 protected:
 	inline void checkConnection(int index, const std::vector<int>& layerConnection) {
 #ifdef _NEURALNET_DEBUG
-		bool bindex = index < this->getNumberOfLayers();
-		if (!bindex)
+		bool indexOk = index < this->getNumberOfLayers();
+		if (!indexOk)
 			throw std::invalid_argument("layer index out of bounds.");
 
 		auto validConnection = [](const std::vector<int>& vec, int index, int maxLayer)
@@ -49,9 +53,9 @@ protected:
 		};
 
 		size_t nLayers = this->getNumberOfLayers();
-		bool bConnectionOk = validConnection(layerConnection, index, nLayers);
+		bool connectionOk = validConnection(layerConnection, index, nLayers);
 
-		if (!bConnectionOk)
+		if (!connectionOk)
 			throw std::invalid_argument("Connection not valid.");
 #endif // _NEURALNET_DEBUG
 	}

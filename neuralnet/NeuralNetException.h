@@ -1,11 +1,11 @@
 #pragma once
-#include <exception>
+#include <stdexcept>
 
-class NeuralNetException : public std::exception
+class NeuralNetException : public std::runtime_error
 {
 public:
-	NeuralNetException() : std::exception("A neural net exception occured.") { }
-	NeuralNetException(const char* what) : std::exception(what) {}
+	NeuralNetException() : std::runtime_error("A neural net exception occurred.") { }
+	NeuralNetException(const char* what) : std::runtime_error(what) {}
 	virtual ~NeuralNetException() = default;
 private:
 };

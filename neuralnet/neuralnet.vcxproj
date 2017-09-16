@@ -151,6 +151,7 @@
     <ClInclude Include="ConvolutionalNeuralNet.h" />
     <ClInclude Include="Dataset.h" />
     <ClInclude Include="DatasetException.h" />
+    <ClInclude Include="FactoryException.h" />
     <ClInclude Include="FeedForwardNeuralNet.h" />
     <ClInclude Include="Layer.h" />
     <ClInclude Include="LayeredTopology.h" />

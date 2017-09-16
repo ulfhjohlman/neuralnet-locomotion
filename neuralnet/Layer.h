@@ -76,7 +76,8 @@ public:
 		sigmoid = 2,
 		relu = 3,
 		inputLayer = 4,
-		scalingLayer = 5
+		scalingLayer = 5,
+		noLayer = 6 //always last for errorChecking
 	};
 protected:
 
@@ -119,8 +120,9 @@ protected:
 
 	void printOperations(const MatrixType& x)
 	{
+		std::cout << "format: A\n x \n +\n b\n =\n y\n";
 		std::cout << m_weights << std::endl;
-		std::cout << x << std::endl << "=\n";
+		std::cout << x << "+\n" << m_bias << std::endl << "=\n";
 		std::cout << m_outputs << std::endl;
 		std::cout << std::endl;
 	}
