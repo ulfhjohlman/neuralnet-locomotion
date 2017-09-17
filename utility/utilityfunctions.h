@@ -62,7 +62,7 @@ struct Loop < 0, Function, Args... >
 };
 
 template <typename Function, typename ...Args>
-auto time(Function f, Args && ...args)
+auto time_template(Function f, Args && ...args)
 {
 	static_assert( !std::is_void<decltype(f(args...))>::value, "Call time_void if return type is void!");
 	using namespace std::chrono;

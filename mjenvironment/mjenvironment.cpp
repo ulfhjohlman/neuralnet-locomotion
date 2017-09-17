@@ -1,4 +1,6 @@
 #include "stdafx.h"
+#include "FeedForwardNeuralNet.h"
+#include "LayeredTopology.h"
 
 
 #include "mujoco.h"
@@ -7,6 +9,25 @@
 #include "stdlib.h"
 #include "string.h"
 #include <iostream>
+#include <memory>
+
+
+#include <stdio.h>      /* printf, NULL */
+#include <stdlib.h>     /* srand, rand */
+#include <time.h>       /* time */
+
+
+
+#ifdef _DEBUG
+#pragma comment(lib, "../x64/Debug/neuralnet.lib")
+#else
+#pragma comment(lib, "../x64/Release/neuralnet.lib")
+#endif // _DEBUG
+
+const int n_inputs = 5;
+FeedForwardNeuralNet* ffnn = nullptr;
+FeedForwardNeuralNet* feedbacknn = nullptr;
+MatrixType insignal(n_inputs, 1);
 
 
 // MuJoCo data structures
@@ -17,7 +38,10 @@ mjvOption opt;                      // visualization options
 mjvScene scn;                       // abstract scene
 mjrContext con;                     // custom GPU context
 
+mjvFigure figsensor; //sensor figure
+
 									// mouse interaction
+bool controller_on = false;
 bool button_left = false;
 bool button_middle = false;
 bool button_right = false;
@@ -25,6 +49,145 @@ double lastx = 0;
 double lasty = 0;
 
 int sign = 1;
+
+void createNeuralController() {
+	std::vector<int> layerSizes = { n_inputs,		   40, 4000, 400, 40, 21 };
+	std::vector<int> layerTypes = { Layer::inputLayer, 0,  0,  0,  0,  0 };
+	LayeredTopology* top  = new LayeredTopology(layerSizes, layerTypes);
+
+	ffnn = new FeedForwardNeuralNet(top); //memory is managed by network
+	ffnn->initializeRandomWeights();
+
+	std::vector<int> layerSizesfeedback = { 21, 40, 40, 40, 40, 3 };
+	LayeredTopology* feedbacktop = new LayeredTopology(layerSizesfeedback, layerTypes);
+
+	feedbacknn = new FeedForwardNeuralNet(feedbacktop);
+	feedbacknn->initializeRandomWeights();
+}
+
+void destroyNeuralController() {
+	if (ffnn)
+		delete ffnn;
+	ffnn = nullptr;
+	if (feedbacknn)
+		delete feedbacknn;
+	feedbacknn = nullptr;
+}
+
+// load mjb or xml model
+void loadmodel(const char* filename)
+{
+	// make sure filename is given
+	if (!filename)
+		return;
+
+	// load and compile
+	char error[1000] = "could not load binary model";
+	mjModel* mnew = 0;
+	if (strlen(filename) > 4 && !strcmp(filename + strlen(filename) - 4, ".mjb"))
+		mnew = mj_loadModel(filename, 0);
+	else
+		mnew = mj_loadXML(filename, 0, error, 1000);
+	if (!mnew)
+	{
+		printf("%s\n", error);
+		return;
+	}
+
+	// delete old model, assign new
+	mj_deleteData(d);
+	mj_deleteModel(m);
+	m = mnew;
+	d = mj_makeData(m);
+	mj_forward(m, d);
+}
+
+// init sensor figure
+void sensorinit(void)
+{
+	// set figure to default
+	mjv_defaultFigure(&figsensor);
+
+	// set flags
+	figsensor.flg_extend = 1;
+	figsensor.flg_barplot = 1;
+
+	// title
+	strcpy(figsensor.title, "Sensor data");
+
+	// y-tick nubmer format
+	strcpy(figsensor.yformat, "%.0f");
+
+	// grid size
+	figsensor.gridsize[0] = 2;
+	figsensor.gridsize[1] = 3;
+
+	// minimum range
+	figsensor.range[0][0] = 0;
+	figsensor.range[0][1] = 0;
+	figsensor.range[1][0] = -1;
+	figsensor.range[1][1] = 1;
+}
+
+// update sensor figure
+void sensorupdate(void)
+{
+	static const int maxline = 10;
+
+	// clear linepnt
+	for (int i = 0; i < maxline; i++)
+		figsensor.linepnt[i] = 0;
+
+	// start with line 0
+	int lineid = 0;
+
+	// loop over sensors
+	for (int n = 0; n < m->nsensor; n++)
+	{
+		// go to next line if type is different
+		if (n > 0 && m->sensor_type[n] != m->sensor_type[n - 1])
+			lineid = mjMIN(lineid + 1, maxline - 1);
+
+		// get info about this sensor
+		mjtNum cutoff = (m->sensor_cutoff[n] > 0 ? m->sensor_cutoff[n] : 1);
+		int adr = m->sensor_adr[n];
+		int dim = m->sensor_dim[n];
+
+		// data pointer in line
+		int p = figsensor.linepnt[lineid];
+
+		// fill in data for this sensor
+		for (int i = 0; i < dim; i++)
+		{
+			// check size
+			if ((p + 2 * i) >= mjMAXLINEPNT / 2)
+				break;
+
+			// x
+			figsensor.linedata[lineid][2 * p + 4 * i] = (float)(adr + i);
+			figsensor.linedata[lineid][2 * p + 4 * i + 2] = (float)(adr + i);
+
+			// y
+			figsensor.linedata[lineid][2 * p + 4 * i + 1] = 0;
+			figsensor.linedata[lineid][2 * p + 4 * i + 3] = (float)(d->sensordata[adr + i] / cutoff);
+		}
+
+		// update linepnt
+		figsensor.linepnt[lineid] = mjMIN(mjMAXLINEPNT - 1,
+			figsensor.linepnt[lineid] + 2 * dim);
+	}
+}
+
+// show sensor figure
+void sensorshow(mjrRect rect)
+{
+	// render figure on the right
+	mjrRect viewport = { rect.width - rect.width / 4, rect.bottom, rect.width / 4, rect.height / 3 };
+	mjr_figure(viewport, &figsensor, &con);
+}
+
+
+
 // keyboard callback
 void keyboard(GLFWwindow* window, int key, int scancode, int act, int mods)
 {
@@ -35,20 +198,38 @@ void keyboard(GLFWwindow* window, int key, int scancode, int act, int mods)
 		mj_forward(m, d);
 	}
 
-	// backspace: reset simulation
+	if (act == GLFW_PRESS && key == GLFW_KEY_Q) {
+		controller_on = !controller_on;
+	}
+
+	if (act == GLFW_PRESS && key == GLFW_KEY_U) {
+		
+	}
+
 	if (act == GLFW_PRESS && key == GLFW_KEY_R)
 	{
-		std::cout << m->names << std::endl;
-		std::cout << m->nu << std::endl;
-
-		for (int i = 0; i < 2*m->nu; i+=2) {
-			std::cout << *(m->actuator_ctrlrange+i) << " " << *(m->actuator_ctrlrange + i+1) << std::endl;
-
-			sign = -sign;
-			*(d->act+i) = sign*0.4;
-			*(d->act+i+1) = sign*0.4;
-		}
+		// load and compile model
+		loadmodel("humanoid.xml");
 	}
+
+	if (act == GLFW_PRESS && key == GLFW_KEY_W)
+	{
+		insignal(0, 0) = 1;
+	}
+	if (act == GLFW_PRESS && key == GLFW_KEY_S)
+	{
+		insignal(0, 0) = -1;
+	}
+	if (act == GLFW_PRESS && key == GLFW_KEY_A)
+	{
+		insignal(1, 0) = 1;
+	}
+	if (act == GLFW_PRESS && key == GLFW_KEY_D)
+	{
+		insignal(1, 0) = -1;
+	}
+	
+
 }
 
 
@@ -111,17 +292,28 @@ void scroll(GLFWwindow* window, double xoffset, double yoffset)
 // simple controller applying damping to each dof
 void test_controller(const mjModel* m, mjData* d)
 {
-	if (m->nu == m->nv)
-		mju_scl(d->ctrl, d->qvel, -0.1, m->nv);
-
-	sign = -sign;
-	*(d->actuator_force+1) = sign*0.4;
+	if (controller_on) {
+		feedbacknn->input(ffnn->output());
+		insignal.block(2, 0, 3, 1) = feedbacknn->output();
+		ffnn->input(insignal);
+		const MatrixType& outsignal = ffnn->output();
+		//std::cout << outsignal;
+		for (int i = 0; i < m->nu; i++) {
+			*(d->act + i) = outsignal(i, 0);
+		}
+	}
+	else {
+		for (int i = 0; i < m->nu; i++) {
+			*(d->act + i) = 0;
+		}
+	}
 }
 
 
 // main function
 int main(int argc, const char** argv)
 {
+	srand(time(NULL));
 	// activate software
 	int activate_result = mj_activate("mjkey.txt");
 	if (activate_result == 0) {
@@ -130,14 +322,8 @@ int main(int argc, const char** argv)
 		return 1;
 	}
 
-	// load and compile model
-	char error[1000] = "Could not load binary model";
-	m = mj_loadXML("humanoid100.xml", 0, error, 1000);
-	if (!m)
-		mju_error_s("Load model error: %s", error);
-
-	// make data
-	d = mj_makeData(m);
+	//load and compile model
+	loadmodel("humanoid.xml");
 
 	// init GLFW
 	if (!glfwInit())
@@ -160,8 +346,13 @@ int main(int argc, const char** argv)
 	glfwSetCursorPosCallback(window, mouse_move);
 	glfwSetMouseButtonCallback(window, mouse_button);
 	glfwSetScrollCallback(window, scroll);
-
+	
+	//Create controller and hook callback to mj_step.
+	createNeuralController();
 	mjcb_control = test_controller;
+
+	//sensors init
+	sensorinit();
 
 	// run main loop, target real-time simulation and 60 fps rendering
 	while (!glfwWindowShouldClose(window))
@@ -171,7 +362,7 @@ int main(int argc, const char** argv)
 		//  this loop will finish on time for the next frame to be rendered at 60 fps.
 		//  Otherwise add a cpu timer and exit this loop when it is time to render.
 		mjtNum simstart = d->time;
-		while (d->time - simstart < 1.0 / 1.0)
+		while (d->time - simstart < 1.0 / 60.0)
 			mj_step(m, d);
 
 		// get framebuffer viewport
@@ -187,7 +378,17 @@ int main(int argc, const char** argv)
 
 		// process pending GUI events, call GLFW callbacks
 		glfwPollEvents();
+
+		// get current framebuffer rectangle
+		mjrRect rect = { 0, 0, 0, 0 };
+		glfwGetFramebufferSize(window, &rect.width, &rect.height);
+		mjrRect smallrect = rect;
+
+		sensorupdate();
+		sensorshow(smallrect);
+
 	}
+	destroyNeuralController();
 
 	// close GLFW, free visualization storage
 	glfwTerminate();

@@ -22,3 +22,12 @@ Element 'motor', line 116, column 17
 Fri Sep  1 20:18:55 2017
 WARNING: Nan, Inf or huge value in QACC at DOF 312. The simulation is unstable. Time = 16.1730.
 
+Sun Sep 17 16:40:44 2017
+ERROR: Load model error: XML parse error at line 136, column 58:
+Error reading Attributes.
+
+
+Sun Sep 17 16:45:30 2017
+ERROR: Load model error: Error: unrecognized name of sensorized object in sensor 'touchsensor' (id = 0)
+Object name = touchsensor, id = 0
+

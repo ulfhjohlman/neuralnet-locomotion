@@ -36,6 +36,7 @@ public:
 	virtual void setRandom() {
 		m_weights.setRandom();
 		m_bias.setRandom();
+		m_outputs.setZero();
 	}
 
 	virtual void setLayer(int size, int inputSize) {
@@ -58,6 +59,7 @@ public:
 		m_outputs.array().colwise() += m_bias.array();
 		
 		//Subclass for separate neuron activation here
+		m_outputs.array() = m_outputs.array().tanh() / 2;
 
 		//printOperations(x);
 	}

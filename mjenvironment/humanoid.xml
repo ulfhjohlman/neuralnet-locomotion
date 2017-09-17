@@ -43,7 +43,8 @@
 
             <freejoint name="root"/>
             <geom name='torso1' type='capsule' fromto='0 -.07 0 0 .07 0'  size='0.07'/>
-            <geom name='head' type='sphere' pos='0 0 .19' size='.09'/>
+            <geom name='head' type='sphere' pos='0 0 0.19' size='.09'/>
+	    <site name="head" pos="0 0 0.19" size="0.10" type="sphere" rgba="0.3 0.2 0.1 0.3"/>
             <geom name='uwaist' type='capsule' fromto='-.01 -.06 -.12 -.01 .06 -.12' size='0.06'/>
             <body name='lwaist' pos='-.01 0 -0.260' quat='1.000 0 -0.002 0' >
                 <geom name='lwaist' type='capsule' fromto='0 -.06 0 0 .06 0'  size='0.06' />
@@ -65,6 +66,7 @@
                                 <joint name='right_ankle_x' type='hinge' pos='0 0 0.04' axis='1 0 0.5' range='-50 50' stiffness='1'  armature='0.0006' />
                                 <geom name='right_foot_cap1' type='capsule' fromto='-.07 -0.02 0 0.14 -0.04 0'  size='0.027' />
                                 <geom name='right_foot_cap2' type='capsule' fromto='-.07 0 0 0.14  0.02 0'  size='0.027' />
+				<site name="rightfoot" pos="0.035 -0.01 0.01" size=".13 .05 .04" type="box" rgba="0.3 0.2 0.1 0.3"/>
                             </body>
                         </body>
                     </body>
@@ -81,6 +83,7 @@
                                 <joint name='left_ankle_x' type='hinge' pos='0 0 0.04' axis='1 0 0.5' range='-50 50'  stiffness='1'  armature='0.0006' />
                                 <geom name='left_foot_cap1' type='capsule' fromto='-.07 0.02 0 0.14 0.04 0'  size='0.027' />
                                 <geom name='left_foot_cap2' type='capsule' fromto='-.07 0 0 0.14  -0.02 0'  size='0.027' />
+  				<site name="leftfoot" pos="0.035 0.01 0.01" size=".13 .05 .04" type="box" rgba="0.3 0.2 0.1 0.3"/>
                             </body>
                         </body>
                     </body>
@@ -108,6 +111,12 @@
             </body>
         </body>
     </worldbody>
+    <sensor>
+    	<touch name="rightfoottouch" site="rightfoot" />
+	<touch name="leftfoottouch" site="leftfoot" />
+	<accelerometer name="accHead" site="head" />
+	<gyro name="gyroHead" site="head" />
+    </sensor>
 
     <actuator>
         <motor name='abdomen_y'       gear='200' joint='abdomen_y' />
@@ -132,5 +141,6 @@
         <motor name='left_shoulder2'  gear='100' joint='left_shoulder2' />
         <motor name='left_elbow'      gear='200' joint='left_elbow' />
     </actuator>
+    
 
 </mujoco>
