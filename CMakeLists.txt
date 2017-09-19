@@ -11,6 +11,7 @@ include_directories("${PROJECT_SOURCE_DIR}/lib/Eigen"
  "${PROJECT_SOURCE_DIR}/neuralnet"
  "${PROJECT_SOURCE_DIR}/evolutionaryalgorithm"
  "${PROJECT_SOURCE_DIR}/utility"
+ "${PROJECT_SOURCE_DIR}/testclasses"
  "${PROJECT_SOURCE_DIR}/lib/tinyxml2")
 
 #add library subdirectories -> executes subs CMakeLists.txt

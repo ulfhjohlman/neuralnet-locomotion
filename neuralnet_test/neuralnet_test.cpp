@@ -9,18 +9,16 @@
 #include "FeedForwardNeuralNet.h"
 #include "LayeredTopology.h"
 #include "CascadeNeuralNet.h"
-#include"RecurrentTopology.h"
+#include "RecurrentTopology.h"
 
-#include "../lib/Eigen/Dense"
+#include "Stopwatch.h"
+#include "XMLException.h"
+#include "DataPrinter.h"
+#include "XMLWrapper.h"
+#include "utilityfunctions.h"
+#include "ThreadPoolv2.h"
 
-#include "../utility/Stopwatch.h"
-#include "../utility/XMLException.h"
-#include "../utility/DataPrinter.h"
-#include "../utility/XMLWrapper.h"
-#include "../utility/utilityfunctions.h"
-#include "../utility/ThreadPoolv2.h"
-
-#include "../testclasses/StopwatchTest.h"
+#include "StopwatchTest.h"
 
 //c++ standard includes
 #include <iostream>
@@ -48,18 +46,11 @@ int main()
 {
 	std::cout.sync_with_stdio(true); // make cout thread-safe
 
-<<<<<<< HEAD
 	std::cout << cascadeNeuralNet_test() << std::endl;
 	std::cout << feedForwardNeuralNet_test();
 
 	//test
 	//single_threaded_tests();
-=======
-	//std::cout << feedForwardNeuralNet_test();
-
-	//test
-	single_threaded_tests();
->>>>>>> Purged VS things. Introduced CMake
 	//multi_threaded_tests();
 
 	std::cout << "Tests done." << std::endl;
@@ -192,7 +183,6 @@ std::string dataset_test()
 
 std::string feedForwardNeuralNet_test() {
 	std::ostringstream output;
-<<<<<<< HEAD
 	const int n_inputs = 2;
 
 	try
@@ -241,23 +231,12 @@ std::string cascadeNeuralNet_test() {
 
 		CascadeNeuralNet cnn(top);
 		cnn.initializeRandomWeights();
-=======
-	const int n_inputs = 20000;
-	LayeredTopology * top = new LayeredTopology{ n_inputs, 20000, 2000, 200, 200, 200, 20 };
-	FeedForwardNeuralNet ffnn(top);
-
->>>>>>> Purged VS things. Introduced CMake
 
 		MatrixType m(n_inputs, 1);
 		m.setRandom();
 
-<<<<<<< HEAD
 		cnn.input(m);
 		output << cnn.output() << std::endl;
-=======
-	ffnn.input(m);
-	output << ffnn.output() << std::endl;
->>>>>>> Purged VS things. Introduced CMake
 
 
 		output << "CNN test passed.\n";
