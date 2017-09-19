@@ -1,11 +1,11 @@
 #pragma once
-#ifdef  _DEBUG 
+#ifdef  _DEBUG
 #define _NEURALNET_DEBUG //Use this for error checking in subclasses.
 #endif //  _DEBUG
 
 #include "Dataset.h"
 #include "NeuralNetException.h"
-#include "Eigen/dense"
+#include "../lib/Eigen/Dense"
 typedef Eigen::MatrixXf MatrixType;
 typedef Eigen::VectorXf VectorType;
 typedef float			ScalarType;
@@ -31,4 +31,3 @@ public:
 	virtual void save(const char* toFile) = 0;
 	virtual void load(const char* fromFile) = 0;
 };
-

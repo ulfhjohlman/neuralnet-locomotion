@@ -1,19 +1,17 @@
-#include "stdafx.h"
-
 #include <algorithm>
 #include <numeric>
 #include <type_traits>
 #include <sstream>
 
-#include "../neuralnet/Dataset.h"
-#include "../neuralnet/DatasetException.h"
-#include "../neuralnet/NeuralNet.h"
-#include "../neuralnet/FeedForwardNeuralNet.h"
-#include "../neuralnet/LayeredTopology.h"
-#include "../neuralnet/CascadeNeuralNet.h"
-#include "../neuralnet/RecurrentTopology.h"
+#include "Dataset.h"
+#include "DatasetException.h"
+#include "NeuralNet.h"
+#include "FeedForwardNeuralNet.h"
+#include "LayeredTopology.h"
+#include "CascadeNeuralNet.h"
+#include"RecurrentTopology.h"
 
-#include "../lib/Eigen/dense"
+#include "../lib/Eigen/Dense"
 
 #include "../utility/Stopwatch.h"
 #include "../utility/XMLException.h"
@@ -23,16 +21,6 @@
 #include "../utility/ThreadPoolv2.h"
 
 #include "../testclasses/StopwatchTest.h"
-
-#ifdef _DEBUG
-#pragma comment(lib, "../x64/Debug/neuralnet.lib")
-#pragma comment(lib, "../x64/Debug/testclasses.lib")
-#pragma comment(lib, "../x64/Debug/utility.lib")
-#else
-#pragma comment(lib, "../x64/Release/neuralnet.lib")
-#pragma comment(lib, "../x64//Release/testclasses.lib")
-#pragma comment(lib, "../x64/Release/utility.lib")
-#endif // _DEBUG
 
 //c++ standard includes
 #include <iostream>
@@ -60,32 +48,41 @@ int main()
 {
 	std::cout.sync_with_stdio(true); // make cout thread-safe
 
+<<<<<<< HEAD
 	std::cout << cascadeNeuralNet_test() << std::endl;
 	std::cout << feedForwardNeuralNet_test();
-	
-	//test 
+
+	//test
 	//single_threaded_tests();
+=======
+	//std::cout << feedForwardNeuralNet_test();
+
+	//test
+	single_threaded_tests();
+>>>>>>> Purged VS things. Introduced CMake
 	//multi_threaded_tests();
 
-	std::cout << "Neural net tests done." << std::endl;
-	std::cin.get();
+	std::cout << "Tests done." << std::endl;
+	//std::cin.get();
 	return 0;
 }
 
 /// <summary>
-/// 
+///
 /// </summary>
 void single_threaded_tests()
 {
 	ThreadPool pool;
 
+	StopwatchTest sw_test;
 	//methods, pass: &function == temporary pointer to function.
 	auto test_dataprinter      = pool.submit(&dataprinter_test);
 	auto test_XMLWrapper       = pool.submit(&XMLWrapper_test);
 	auto test_dataset          = pool.submit(&dataset_test);
 
+
 	//TestFramework
-	StopwatchTest sw_test;
+
 	pool.addWork(sw_test);
 
 	while (!pool.isDone()) { pool.help(); }
@@ -113,12 +110,12 @@ std::string XMLWrapper_test()
 		std::vector<float> floats = { 1, 2, 3, 4, 5, 6.005f, 42.01f }; //Will not be exact representation
 		d.insertNewElements<float>("floats", floats);
 		d.insertDate();
-		
+
 		d.selectRootNode("newRoot");
 		d.selectCurrentElement("floats");
 		output << "item count: " << d.getNumberOfItems() << "==" << floats.size() << std::endl;
 
-		//d.print();
+		d.print();
 		output << "Dataset test passed" << std::endl;
 		return output.str();
 	}
@@ -165,7 +162,7 @@ std::string dataset_test()
 		int i = 0;
 		std::generate(x.begin(), x.end(), [&i] { return ++i; });
 		std::transform(x.begin(), x.end(), y.begin(), [](float f) { return sin(f); });
-		
+
 		dp.write<float>(x);
 		dp.write<float>(y);
 		d.setInputData(dp.getString().c_str(), "float");
@@ -195,6 +192,7 @@ std::string dataset_test()
 
 std::string feedForwardNeuralNet_test() {
 	std::ostringstream output;
+<<<<<<< HEAD
 	const int n_inputs = 2;
 
 	try
@@ -224,7 +222,7 @@ std::string feedForwardNeuralNet_test() {
 	catch (std::invalid_argument e) {
 		output << e.what() << std::endl;
 	}
-	
+
 	output << "FFNN failed.\n";
 	return output.str();
 }
@@ -243,12 +241,23 @@ std::string cascadeNeuralNet_test() {
 
 		CascadeNeuralNet cnn(top);
 		cnn.initializeRandomWeights();
+=======
+	const int n_inputs = 20000;
+	LayeredTopology * top = new LayeredTopology{ n_inputs, 20000, 2000, 200, 200, 200, 20 };
+	FeedForwardNeuralNet ffnn(top);
+
+>>>>>>> Purged VS things. Introduced CMake
 
 		MatrixType m(n_inputs, 1);
 		m.setRandom();
 
+<<<<<<< HEAD
 		cnn.input(m);
 		output << cnn.output() << std::endl;
+=======
+	ffnn.input(m);
+	output << ffnn.output() << std::endl;
+>>>>>>> Purged VS things. Introduced CMake
 
 
 		output << "CNN test passed.\n";
@@ -283,7 +292,7 @@ T calculate_error(const std::vector<T>& v1, const std::vector<T>& v2)
 }
 
 void parallel_for_test() {
-	auto print_time = [](const double message) { std::cout << message << std::endl; };
+	//auto print_time = [](const double message) { std::cout << message << std::endl; };
 	auto f = [](double& u) { u = std::sin(u) + std::tanh(u); };
 	Stopwatch<> timer;
 
@@ -311,7 +320,7 @@ void parallel_for_test() {
 	timer.getLapTime();
 #pragma omp parallel for
 	for (int i = 0; i < z.size(); i++) {
-		z[i] = std::sin(z[i]) + std::tanh(z[i]); 
+		z[i] = std::sin(z[i]) + std::tanh(z[i]);
 	}
 	double openmp_time = timer.getLapTime();
 

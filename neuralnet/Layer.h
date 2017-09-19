@@ -5,10 +5,6 @@
 //STL
 #include <sstream>
 
-
-
-// ViennaCL headers
-
 class Layer : public NeuralNet
 {
 public:
@@ -17,11 +13,11 @@ public:
 		setLayer(size, inputSize);
 	}
 	virtual ~Layer() = default;
-	
+
 	Layer(const Layer& copy_this) : m_weights( copy_this.m_weights ), m_outputs( copy_this.m_outputs ){
 		//std::cout << "Layer copy constructor\n";
 	}
-	
+
 	Layer(Layer&& move_this) {
 		//std::cout << "Layer move constructor\n";
 
@@ -57,7 +53,7 @@ public:
 
 		//Add bias to each neuron
 		m_outputs.array().colwise() += m_bias.array();
-		
+
 		//Subclass for separate neuron activation here
 		m_outputs.array() = m_outputs.array().tanh() / 2;
 

@@ -8,5 +8,5 @@ public:
 	DatasetException(const char* what) : std::runtime_error(what) { }
 	virtual ~DatasetException() = default;
 private:
+	const char* str;
 };
-

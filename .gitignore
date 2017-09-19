@@ -5,6 +5,8 @@
 
 mjkey.txt
 OpenCL.lib
+bin/
+LocalCrap/
 
 # User-specific files
 *.suo

@@ -1,6 +1,4 @@
 #pragma once
-
-#pragma once
 #include "../lib/tinyxml2/tinyxml2.h"
 #include "XMLException.h"
 #include "Stopwatch.h"
@@ -13,21 +11,22 @@
 #include <cassert> //assert
 #include <iomanip> //std::tm
 #include <ctime> //localtime
+#include <stdexcept> //runtime_exception
 
 /// <summary>
-/// <para/>A class for wrapping tinyxml2 features into a object that can store data. 
+/// <para/>A class for wrapping tinyxml2 features into a object that can store data.
 /// Throws exceptions in both debug and release build. So it's meant to handle errors regardless
-/// of operation. 
-/// 
+/// of operation.
+///
 /// <para/>Is not thread safe. Locking might be implemented for client use in two specific functions.
 /// Can not handle large sets(> memory) of data. And does not buffer anything.
-/// 
+///
 /// <para/>Not completed.
 /// </summary>
 class XMLWrapper
 {
 public:
-	XMLWrapper() : m_doc(nullptr), m_rootNode(nullptr), m_currentElement(nullptr) { }
+	XMLWrapper() : m_doc(false), m_rootNode(nullptr), m_currentElement(nullptr) { }
 
 	virtual ~XMLWrapper() = default;
 
@@ -100,16 +99,16 @@ public:
 	virtual void insertDate() {
 		tinyxml2::XMLElement* date = m_doc.NewElement("Date");
 
-#pragma warning(disable:4996)
+//#pragma warning(disable:4996)
 		auto t = std::time(nullptr);
 		auto tm = *std::localtime(&t);
-#pragma  warning(default:4996)
+//#pragma  warning(default:4996)
 
 		date->SetAttribute("day", tm.tm_mday);
 		date->SetAttribute("month", tm.tm_mon + 1);
 		date->SetAttribute("year", tm.tm_year + 1900);
 
-		date->SetAttribute("hour", tm.tm_hour); 
+		date->SetAttribute("hour", tm.tm_hour);
 		date->SetAttribute("min", tm.tm_min);
 		date->SetAttribute("second", tm.tm_sec);
 
@@ -136,7 +135,7 @@ public:
 		checkRootNode();
 
 		const size_t size = elements.size();
-		if (size < 1) throw DatasetException("Empty vector.");
+		if (size < 1) throw std::runtime_error("Empty vector.");
 
 		m_currentElement = m_doc.NewElement(listName);
 
@@ -162,7 +161,7 @@ public:
 		assert(data.size() < UINT32_MAX);
 #endif // _DEBUG
 		const unsigned int size = data.size();
-		if (size < 1) throw DatasetException("Empty vector.");
+		if (size < 1) throw std::runtime_error("Empty vector.");
 
 		m_currentElement = m_doc.NewElement(dataName);
 		m_dataprinter.write<T>(data);
@@ -183,7 +182,7 @@ public:
 
 
 	/// <summary>
-	/// Inserts attribute at current selected element. Last modified or 
+	/// Inserts attribute at current selected element. Last modified or
 	/// </summary>
 	/// <param name="attributeName"></param>
 	/// <param name="attribute"></param>
@@ -286,10 +285,10 @@ protected:
 	}
 	void checkRootNode() const {
 		if (m_rootNode == nullptr)
-			throw std::exception("No root node present.");
+			throw std::runtime_error("No root node present.");
 	}
 	void checkCurrentElement() const {
 		if (m_currentElement == nullptr)
-			throw std::exception("No element selected.");
+			throw std::runtime_error("No element selected.");
 	}
 };

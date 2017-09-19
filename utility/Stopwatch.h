@@ -3,7 +3,7 @@
 #include <chrono>
 #include <string>
 
-template< typename unit = std::ratio< 1i64, 1i64 > >
+template< typename unit = std::ratio< 1ul, 1ul > >
 class Stopwatch final
 {
 public:

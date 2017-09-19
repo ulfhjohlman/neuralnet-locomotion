@@ -1,7 +1,4 @@
-#include "stdafx.h"
 #include "Dataset.h"
-
-
 
 void Dataset::createDataset(const char* name)
 {
@@ -29,7 +26,7 @@ void Dataset::setOutputInfo(int number_of_variables, int number_of_points)
 }
 
  void Dataset::setInputData(const char * data, const char * type) {
-	if (type == "double" || type == "float" || type == "int") {
+	if (type == std::string("double") || type == std::string("float") || type == std::string("int")) {
 		m_doc.insertData("input data", data);
 		m_doc.insertAttribute<const char*>("typename", type);
 	}
@@ -38,7 +35,7 @@ void Dataset::setOutputInfo(int number_of_variables, int number_of_points)
 }
 
  void Dataset::setResultData(const char * data, const char * type) {
-	if (type == "double" || type == "float" || type == "int") {
+	if (type == std::string("double") || type == std::string("float") || type == std::string("int")) {
 		m_doc.insertData("output data", data);
 		m_doc.insertAttribute<const char*>("typename", type);
 	}

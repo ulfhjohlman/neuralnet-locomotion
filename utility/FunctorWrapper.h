@@ -1,22 +1,26 @@
 #pragma once
 
 #include <memory>
-
+#include <iostream>
 /// <summary>
 /// A concrete class able to call the explicit functor
 /// from a family of functors.
 /// </summary>
 class FunctorWrapper
 {
-public:	
+public:
 	FunctorWrapper() = default;
 
 	template<typename F>
 	FunctorWrapper(F&& f) : //wraps the functor to the type family.
-		implementation(new type<F>(std::move(f))) {} //move ownership
+		implementation(new type<F>(std::forward<F>(f))) {
+			std::cout << "TEMPLATE WRAPPER MOVED\n";
+		} //move ownership
 
 	FunctorWrapper(FunctorWrapper&& move_this) : //move "move_this" implementation
-		implementation(std::move(move_this.implementation)) { }
+		implementation(std::move(move_this.implementation)) {
+		std::cout << "\nWRAPPER MOVED\n";
+	}
 
 	FunctorWrapper& operator=(FunctorWrapper&& move_this) { //same as 1 above
 		implementation = std::move(move_this.implementation);
@@ -45,10 +49,9 @@ private:
 	struct type : type_family
 	{
 		F m_f;
-		type(F&& f) : m_f( std::move(f) ) {} // move constructor
+		type(F&& f) : m_f( std::forward<F>(f) ) {} // move constructor
 		void call() { m_f(); }
 	};
 
 	std::unique_ptr<type_family> implementation;
 };
-
