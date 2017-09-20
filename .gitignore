@@ -8,6 +8,15 @@ OpenCL.lib
 bin/
 LocalCrap/
 
+
+*.vcxproj
+*.filters
+CMakeCache.txt
+CMakeFiles/
+*.cmake
+neuralnet_locomotion.sln
+config.h
+
 # User-specific files
 *.suo
 *.user
