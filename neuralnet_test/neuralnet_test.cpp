@@ -185,8 +185,7 @@ std::string feedForwardNeuralNet_test() {
 	std::ostringstream output;
 	const int n_inputs = 2;
 
-	try
-	{
+	try {
 		std::vector<int> layerSizes = { n_inputs,		   2, 3, 1 };
 		std::vector<int> layerTypes = { Layer::inputLayer, 0, 0, 0 };
 		LayeredTopology * top = new LayeredTopology(layerSizes, layerTypes);

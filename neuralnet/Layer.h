@@ -4,7 +4,6 @@
 
 //STL
 #include <sstream>
-
 class Layer : public NeuralNet
 {
 public:
@@ -14,13 +13,10 @@ public:
 	}
 	virtual ~Layer() = default;
 
-	Layer(const Layer& copy_this) : m_weights( copy_this.m_weights ), m_outputs( copy_this.m_outputs ){
-		//std::cout << "Layer copy constructor\n";
+	Layer(const Layer& copy_this) : m_weights( copy_this.m_weights ), m_outputs( copy_this.m_outputs ) {
 	}
 
 	Layer(Layer&& move_this) {
-		//std::cout << "Layer move constructor\n";
-
 		m_weights.swap(move_this.m_weights);
 		m_outputs.swap(move_this.m_outputs);
 		m_bias.swap(move_this.m_bias);
@@ -55,7 +51,6 @@ public:
 		m_outputs.array().colwise() += m_bias.array();
 
 		//Subclass for separate neuron activation here
-		m_outputs.array() = m_outputs.array().tanh() / 2;
 
 		//printOperations(x);
 	}
@@ -124,8 +119,10 @@ protected:
 		std::cout << m_outputs << std::endl;
 		std::cout << std::endl;
 	}
+
+	
+	MatrixType m_outputs;
 private:
 	MatrixType m_weights;
-	MatrixType m_outputs;
 	VectorType m_bias;
 };

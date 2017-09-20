@@ -32,11 +32,13 @@ MatrixType insignal(n_inputs, 1);
 
 // MuJoCo data structures
 mjModel* m = NULL;                  // MuJoCo model
+mjModel* m2 = NULL;
 mjData* d = NULL;                   // MuJoCo data
+mjData* d2 = NULL;
 mjvCamera cam;                      // abstract camera
 mjvOption opt;                      // visualization options
 mjvScene scn;                       // abstract scene
-mjrContext con;                     // custom GPU context
+mjrContext con,con2;                     // custom GPU context
 
 mjvFigure figsensor; //sensor figure
 
@@ -47,7 +49,6 @@ bool button_middle = false;
 bool button_right = false;
 double lastx = 0;
 double lasty = 0;
-
 int sign = 1;
 
 void createNeuralController() {
@@ -100,6 +101,21 @@ void loadmodel(const char* filename)
 	m = mnew;
 	d = mj_makeData(m);
 	mj_forward(m, d);
+
+	mj_saveModel(m, "asd.mjb", NULL, 0);
+	//mj_deleteModel(m2);
+	//mj_deleteData(d2);
+	//d2 = 0;
+	//m2 = 0;
+	//m2 = mj_loadXML("humanoid100.xml", 0, error, 1000);
+
+	//if (!mnew) {
+	//	printf("%s\n", error);
+	//	return;
+	//}
+
+	//d2 = mj_makeData(m2);
+	//mj_forward(m2, d2);
 }
 
 // init sensor figure
@@ -203,7 +219,15 @@ void keyboard(GLFWwindow* window, int key, int scancode, int act, int mods)
 	}
 
 	if (act == GLFW_PRESS && key == GLFW_KEY_U) {
-		
+		std::cout << "1: " << d->sensordata[0] << std::endl;
+		std::cout << "2: " << d->sensordata[1] << std::endl;
+		std::cout << "acc x: " << d->sensordata[2] << std::endl;
+		std::cout << "acc y: " << d->sensordata[3] << std::endl;
+		std::cout << "acc z: " << d->sensordata[4] << std::endl;
+
+		std::cout << "gyro x: " << d->sensordata[5] << std::endl;
+		std::cout << "gyro y: " << d->sensordata[6] << std::endl;
+		std::cout << "gyro z: " << d->sensordata[7] << std::endl;
 	}
 
 	if (act == GLFW_PRESS && key == GLFW_KEY_R)
@@ -334,19 +358,18 @@ int main(int argc, const char** argv)
 	glfwMakeContextCurrent(window);
 	glfwSwapInterval(1);
 
+	glfwSetKeyCallback(window, keyboard);
+	glfwSetCursorPosCallback(window, mouse_move);
+	glfwSetMouseButtonCallback(window, mouse_button);
+	glfwSetScrollCallback(window, scroll);
+
 	// initialize visualization data structures
 	mjv_defaultCamera(&cam);
 	mjv_defaultOption(&opt);
 	mjr_defaultContext(&con);
 	mjv_makeScene(&scn, 1000);                   // space for 1000 objects
 	mjr_makeContext(m, &con, mjFONTSCALE_100);   // model-specific context
-
 												 // install GLFW mouse and keyboard callbacks
-	glfwSetKeyCallback(window, keyboard);
-	glfwSetCursorPosCallback(window, mouse_move);
-	glfwSetMouseButtonCallback(window, mouse_button);
-	glfwSetScrollCallback(window, scroll);
-	
 	//Create controller and hook callback to mj_step.
 	createNeuralController();
 	mjcb_control = test_controller;
@@ -372,13 +395,7 @@ int main(int argc, const char** argv)
 		// update scene and render
 		mjv_updateScene(m, d, &opt, NULL, &cam, mjCAT_ALL, &scn);
 		mjr_render(viewport, &scn, &con);
-
-		// swap OpenGL buffers (blocking call due to v-sync)
-		glfwSwapBuffers(window);
-
-		// process pending GUI events, call GLFW callbacks
-		glfwPollEvents();
-
+		
 		// get current framebuffer rectangle
 		mjrRect rect = { 0, 0, 0, 0 };
 		glfwGetFramebufferSize(window, &rect.width, &rect.height);
@@ -386,6 +403,14 @@ int main(int argc, const char** argv)
 
 		sensorupdate();
 		sensorshow(smallrect);
+
+		// swap OpenGL buffers (blocking call due to v-sync)
+		glfwSwapBuffers(window);
+
+		// process pending GUI events, call GLFW callbacks
+		glfwPollEvents();
+
+
 
 	}
 	destroyNeuralController();

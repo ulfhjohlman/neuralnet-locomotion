@@ -60,7 +60,7 @@ public:
 		checkEmptyNetwork();
 
 		//Load input layer 
-		m_layers.front()->output() = x;//Remove this copy in future
+		m_layers.front()->output() = x;//Remove this copy in future, by using input(x)
 
 		//Propagate forward
 		for (int i = 1; i < m_layers.size(); i++) {

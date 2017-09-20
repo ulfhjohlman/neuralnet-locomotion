@@ -1,5 +1,0 @@
-<RCC>
-  <qresource prefix="GraphicsEngine">
-    <file>Resources/dark.stylesheet</file>
-  </qresource>
-</RCC>

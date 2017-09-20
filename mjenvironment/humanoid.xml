@@ -3,9 +3,14 @@
 
     <default>
         <joint limited='true' damping='1' armature='0'/>
+	<default class="object2">
+            <geom type="ellipsoid" material="geom" rgba=".4 .6 .9 1" size="0.15 0.1 0.07"/>
+        </default>
         <geom contype='1' conaffinity='1' condim='1' rgba='0.8 0.6 .4 1'
         	margin="0.001" solref=".02 1" solimp=".8 .8 .01" material="geom"/>
         <motor ctrlrange='-.4 .4' ctrllimited='true'/>
+        <default class="humanoid">
+        </default>
     </default>
 
     <option timestep='0.002' iterations="50" tolerance="1e-10" solver="Newton" jacobian="dense" cone="elliptic"/>
@@ -31,22 +36,23 @@
     </asset>
 
     <worldbody>
-        <geom name='floor' pos='0 0 0' size='5 5 .125' type='plane' material="MatPlane" condim='3'/>
+        <geom name='floor' pos='0 0 -10' size='5 5 .125' type='plane' material="MatPlane" condim='3'/>
 
         <light mode='targetbodycom' target='torso' directional='false' diffuse='.8 .8 .8' specular='0.3 0.3 0.3' pos='0 0 4.0' dir='0 0 -1'/>
 
 		<camera name='targeting' pos='1 1 2' mode='targetbodycom' target='torso'/>
 
-        <body name='torso' pos='0 0 1.4'>
+        <body name='torso' pos='0 0 1.4' childclass="humanoid">
 
 			<camera name='tracking' pos='1 1 2' zaxis="1 2 3" mode='trackcom'/>
 
             <freejoint name="root"/>
             <geom name='torso1' type='capsule' fromto='0 -.07 0 0 .07 0'  size='0.07'/>
-            <geom name='head' type='sphere' pos='0 0 0.19' size='.09'/>
+            <geom name='head' type='sphere' pos='0 0 0.19' size='0.09'/>
 	    <site name="head" pos="0 0 0.19" size="0.10" type="sphere" rgba="0.3 0.2 0.1 0.3"/>
             <geom name='uwaist' type='capsule' fromto='-.01 -.06 -.12 -.01 .06 -.12' size='0.06'/>
             <body name='lwaist' pos='-.01 0 -0.260' quat='1.000 0 -0.002 0' >
+		<site name="lowerwaist" pos="0 0 0.19" size="0.10" type="sphere" rgba="0.3 0.2 0.1 0.3"/>
                 <geom name='lwaist' type='capsule' fromto='0 -.06 0 0 .06 0'  size='0.06' />
                 <joint name='abdomen_z' type='hinge' pos='0 0 0.065' axis='0 0 1' range='-45 45' damping='5' stiffness='20' armature='0.02' />
                 <joint name='abdomen_y' type='hinge' pos='0 0 0.065' axis='0 1 0' range='-75 30' damping='5' stiffness='10' armature='0.02' />
@@ -110,6 +116,11 @@
                 </body>
             </body>
         </body>
+
+	<body pos="-1 -2 2" quat="-0.316228 -0.632456 0.632456 0.316228">
+            <freejoint/>
+            <geom class="object2"/>
+        </body>
     </worldbody>
     <sensor>
     	<touch name="rightfoottouch" site="rightfoot" />
@@ -141,6 +152,7 @@
         <motor name='left_shoulder2'  gear='100' joint='left_shoulder2' />
         <motor name='left_elbow'      gear='200' joint='left_elbow' />
     </actuator>
+    
     
 
 </mujoco>

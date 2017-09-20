@@ -1,21 +1,15 @@
 #pragma once
 
 #include "Layer.h"
+#include "HyperbolicTangentLayer.h"
+#include "InputLayer.h"
+#include "RectifiedLinearUnitLayer.h"
 #include "FactoryException.h"
 
 
 class LayerFactory 
 {
 public:
-	LayerFactory() = delete;
-	~LayerFactory() = default;
-	
-	LayerFactory(const LayerFactory& copy_this) = delete;
-	LayerFactory& operator=(const LayerFactory& copy_this) = delete;
-	
-	LayerFactory(LayerFactory&& move_this) = delete;
-	LayerFactory& operator=(LayerFactory&& move_this) = delete;
-
 	static Layer* constructLayer(int layerSize, int numberOfInputs, int layerType) {
 		Layer* layer = nullptr;
 
@@ -26,13 +20,15 @@ public:
 			layer = new Layer(layerSize, numberOfInputs);
 			break;
 		case Layer::tanh:
+			layer = new HyperbolicTangentLayer(layerSize, numberOfInputs);
 			break;
 		case Layer::sigmoid:
 			break;
 		case Layer::relu:
+			layer = new RectifiedLinearUnitLayer(layerSize, numberOfInputs);
 			break;
 		case Layer::inputLayer:
-			layer = new Layer(layerSize, numberOfInputs); // for now
+			layer = new InputLayer(layerSize, numberOfInputs); // for now
 			break;
 		case Layer::scalingLayer:
 			break;
@@ -59,4 +55,14 @@ private:
 			throw FactoryException("Invalid layer type.");
 #endif // _NEURALNET_DEBUG
 	}
+
+public:
+	LayerFactory() = delete;
+	~LayerFactory() = default;
+
+	LayerFactory(const LayerFactory& copy_this) = delete;
+	LayerFactory& operator=(const LayerFactory& copy_this) = delete;
+
+	LayerFactory(LayerFactory&& move_this) = delete;
+	LayerFactory& operator=(LayerFactory&& move_this) = delete;
 };
