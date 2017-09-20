@@ -1,2 +1,2 @@
-add_executable(nnTestApp neuralnet_test.cpp)
-target_link_libraries (nnTestApp ${LIBS})
+add_executable(neuralnet_test neuralnet_test.cpp)
+target_link_libraries (neuralnet_test ${LIBS})

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 
 # VS name
-project(neuralWalker)
+project(neuralnet_locomotion)
 
 #sets cpp standard to "std=c++14"
 set(CMAKE_CXX_STANDARD 14)
@@ -18,9 +18,10 @@ include_directories("${PROJECT_SOURCE_DIR}/lib/Eigen"
 add_subdirectory("${PROJECT_SOURCE_DIR}/neuralnet")
 add_subdirectory("${PROJECT_SOURCE_DIR}/evolutionaryalgorithm")
 add_subdirectory("${PROJECT_SOURCE_DIR}/lib/tinyxml2")
+add_subdirectory("${PROJECT_SOURCE_DIR}/utility")
 
 #add libraries LIBS macro
-set(LIBS ${LIBS} nn evoalg tinyxml)
+set(LIBS ${LIBS} neuralnet evo_alg tinyxml utility)
 
 #Turn on options by invoking $cmake -D<option_name>=ON <src path>
 #aka $cmake -DDEBUG=ON ..
