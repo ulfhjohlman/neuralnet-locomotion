@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "FeedForwardNeuralNet.h"
 #include "LayeredTopology.h"
 
@@ -16,13 +15,6 @@
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
 
-
-
-#ifdef _DEBUG
-#pragma comment(lib, "../x64/Debug/neuralnet.lib")
-#else
-#pragma comment(lib, "../x64/Release/neuralnet.lib")
-#endif // _DEBUG
 
 const int n_inputs = 5;
 FeedForwardNeuralNet* ffnn = nullptr;

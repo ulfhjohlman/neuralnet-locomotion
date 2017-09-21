@@ -1,14 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug|Win32">
-      <Configuration>Debug</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|Win32">
-      <Configuration>Release</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
       <Platform>x64</Platform>
@@ -17,155 +9,335 @@
       <Configuration>Release</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{EFE02A73-5C27-4887-B012-04C52D32DBEF}</ProjectGuid>
-    <Keyword>Win32Proj</Keyword>
-    <RootNamespace>mjenvironment</RootNamespace>
+    <ProjectGuid>{37D38C8E-6CB0-3F36-AA2E-B4DDD83AEE7B}</ProjectGuid>
     <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>x64</Platform>
+    <ProjectName>mjenvironment</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
-  <ImportGroup Label="Shared">
-  </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+  <ImportGroup Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LinkIncremental>true</LinkIncremental>
-    <ExecutablePath>$(ExecutablePath)</ExecutablePath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LinkIncremental>false</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LinkIncremental>false</LinkIncremental>
-    <ExecutablePath>$(ExecutablePath)</ExecutablePath>
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">mjenvironment.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">mjenvironment</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">mjenvironment.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">mjenvironment</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">mjenvironment.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">mjenvironment</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">mjenvironment.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">mjenvironment</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</GenerateManifest>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
+      <AdditionalIncludeDirectories>C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\Eigen;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\neuralnet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\evolutionaryalgorithm;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\utility;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\testframework;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\tinyxml2;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\mjpro150\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>Debug/</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\lib\;..\neuralnet;..\lib\mjpro150\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-    <Link>
-      <SubSystem>Console</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\lib\mjpro150\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>mujoco150.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
     </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\Eigen;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\neuralnet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\evolutionaryalgorithm;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\utility;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\testframework;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\tinyxml2;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\mjpro150\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\Eigen;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\neuralnet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\evolutionaryalgorithm;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\utility;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\testframework;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\tinyxml2;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\mjpro150\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <AdditionalDependencies>mujoco150.lib;mujoco150.lib;glfw3.lib;glfw3.lib;..\neuralnet\Debug\neuralnet.lib;..\evolutionaryalgorithm\Debug\evo_alg.lib;..\lib\tinyxml2\Debug\tinyxml.lib;..\utility\Debug\utility.lib;..\testframework\Debug\testframework.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/lib/mjpro150/bin;C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/lib/mjpro150/bin/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
-    </ClCompile>
-    <Link>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/mjenvironment/Debug/mjenvironment.lib</ImportLibrary>
+      <ProgramDataBaseFile>C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/mjenvironment/Debug/mjenvironment.pdb</ProgramDataBaseFile>
       <SubSystem>Console</SubSystem>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <Version></Version>
     </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
+      <AdditionalIncludeDirectories>C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\Eigen;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\neuralnet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\evolutionaryalgorithm;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\utility;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\testframework;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\tinyxml2;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\mjpro150\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>Release/</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <Optimization>MaxSpeed</Optimization>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\lib\;..\neuralnet;..\lib\mjpro150\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat></DebugInformationFormat>
     </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\Eigen;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\neuralnet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\evolutionaryalgorithm;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\utility;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\testframework;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\tinyxml2;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\mjpro150\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\Eigen;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\neuralnet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\evolutionaryalgorithm;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\utility;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\testframework;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\tinyxml2;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\mjpro150\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
     <Link>
+      <AdditionalDependencies>mujoco150.lib;mujoco150.lib;glfw3.lib;glfw3.lib;..\neuralnet\Release\neuralnet.lib;..\evolutionaryalgorithm\Release\evo_alg.lib;..\lib\tinyxml2\Release\tinyxml.lib;..\utility\Release\utility.lib;..\testframework\Release\testframework.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/lib/mjpro150/bin;C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/lib/mjpro150/bin/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/mjenvironment/Release/mjenvironment.lib</ImportLibrary>
+      <ProgramDataBaseFile>C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/mjenvironment/Release/mjenvironment.pdb</ProgramDataBaseFile>
       <SubSystem>Console</SubSystem>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\lib\mjpro150\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>mujoco150.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <Version></Version>
     </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\Eigen;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\neuralnet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\evolutionaryalgorithm;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\utility;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\testframework;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\tinyxml2;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\mjpro150\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>MinSizeRel/</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR="MinSizeRel";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat></DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"MinSizeRel\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\Eigen;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\neuralnet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\evolutionaryalgorithm;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\utility;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\testframework;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\tinyxml2;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\mjpro150\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\Eigen;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\neuralnet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\evolutionaryalgorithm;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\utility;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\testframework;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\tinyxml2;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\mjpro150\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>mujoco150.lib;mujoco150.lib;glfw3.lib;glfw3.lib;..\neuralnet\MinSizeRel\neuralnet.lib;..\evolutionaryalgorithm\MinSizeRel\evo_alg.lib;..\lib\tinyxml2\MinSizeRel\tinyxml.lib;..\utility\MinSizeRel\utility.lib;..\testframework\MinSizeRel\testframework.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/lib/mjpro150/bin;C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/lib/mjpro150/bin/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/mjenvironment/MinSizeRel/mjenvironment.lib</ImportLibrary>
+      <ProgramDataBaseFile>C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/mjenvironment/MinSizeRel/mjenvironment.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+      <Version></Version>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\Eigen;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\neuralnet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\evolutionaryalgorithm;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\utility;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\testframework;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\tinyxml2;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\mjpro150\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>RelWithDebInfo/</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR="RelWithDebInfo";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"RelWithDebInfo\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\Eigen;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\neuralnet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\evolutionaryalgorithm;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\utility;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\testframework;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\tinyxml2;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\mjpro150\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\Eigen;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\neuralnet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\evolutionaryalgorithm;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\utility;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\testframework;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\tinyxml2;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\mjpro150\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>mujoco150.lib;mujoco150.lib;glfw3.lib;glfw3.lib;..\neuralnet\RelWithDebInfo\neuralnet.lib;..\evolutionaryalgorithm\RelWithDebInfo\evo_alg.lib;..\lib\tinyxml2\RelWithDebInfo\tinyxml.lib;..\utility\RelWithDebInfo\utility.lib;..\testframework\RelWithDebInfo\testframework.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/lib/mjpro150/bin;C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/lib/mjpro150/bin/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/mjenvironment/RelWithDebInfo/mjenvironment.lib</ImportLibrary>
+      <ProgramDataBaseFile>C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/mjenvironment/RelWithDebInfo/mjenvironment.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+      <Version></Version>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
+    <CustomBuild Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\CMakeLists.txt">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/mjenvironment/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" "-HC:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo" "-BC:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo" --check-stamp-file "C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/mjenvironment/CMakeFiles/generate.stamp"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/mjenvironment/CMakeLists.txt;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\CMakeLists.txt;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/mjenvironment/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" "-HC:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo" "-BC:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo" --check-stamp-file "C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/mjenvironment/CMakeFiles/generate.stamp"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/mjenvironment/CMakeLists.txt;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\CMakeLists.txt;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/mjenvironment/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" "-HC:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo" "-BC:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo" --check-stamp-file "C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/mjenvironment/CMakeFiles/generate.stamp"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/mjenvironment/CMakeLists.txt;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\CMakeLists.txt;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/mjenvironment/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" "-HC:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo" "-BC:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo" --check-stamp-file "C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/mjenvironment/CMakeFiles/generate.stamp"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/mjenvironment/CMakeLists.txt;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\CMakeLists.txt;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="targetver.h" />
+    <ClCompile Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\mjenvironment.cpp"  />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="mjenvironment.cpp" />
-    <ClCompile Include="stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
+    <ProjectReference Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\ZERO_CHECK.vcxproj">
+      <Project>{24EA8B63-E3B0-3704-BCA0-DDE461BCB1B5}</Project>
+      <Name>ZERO_CHECK</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\evolutionaryalgorithm\evo_alg.vcxproj">
+      <Project>{FB4E7920-788B-3A99-9DD5-976011F8DBA8}</Project>
+      <Name>evo_alg</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\neuralnet\neuralnet.vcxproj">
+      <Project>{F480AC50-399D-3FB6-93A8-7B52C2BAF7F1}</Project>
+      <Name>neuralnet</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\testframework\testframework.vcxproj">
+      <Project>{F0535290-0EAA-36B2-8AB4-2CCFC1023A2B}</Project>
+      <Name>testframework</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\tinyxml2\tinyxml.vcxproj">
+      <Project>{1BC49FC1-0DBA-3AAC-A1DD-12B2EF70A98F}</Project>
+      <Name>tinyxml</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\utility\utility.vcxproj">
+      <Project>{0BEB3724-A879-3E87-A420-C1B3D7BBF2B2}</Project>
+      <Name>utility</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

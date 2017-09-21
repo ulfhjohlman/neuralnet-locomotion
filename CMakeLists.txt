@@ -32,6 +32,7 @@ add_subdirectory("${PROJECT_SOURCE_DIR}/lib/tinyxml2")
 add_subdirectory("${PROJECT_SOURCE_DIR}/utility")
 add_subdirectory("${PROJECT_SOURCE_DIR}/testframework")
 
+
 #add libraries LIBS macro
 set(LIBS ${LIBS} neuralnet evo_alg tinyxml utility testframework)
 
@@ -51,4 +52,10 @@ include_directories("${PROJECT_BINARY_DIR}")
 #add _test directories which build locally
 add_subdirectory("${PROJECT_SOURCE_DIR}/evolutionaryalgorithm_test")
 add_subdirectory("${PROJECT_SOURCE_DIR}/neuralnet_test")
+
+#Make visual studio specific projects
+IF(MSVC)
+	link_directories("${PROJECT_SOURCE_DIR}/lib/mjpro150/bin")
+	add_subdirectory("${PROJECT_SOURCE_DIR}/mjenvironment")
+ENDIF()
 
