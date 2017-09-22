@@ -1,0 +1,6 @@
+Fri Sep 22 15:27:39 2017
+WARNING: Unknown warning type Time = 11.7180.
+
+Fri Sep 22 15:28:03 2017
+WARNING: Unknown warning type Time = 3.8720.
+

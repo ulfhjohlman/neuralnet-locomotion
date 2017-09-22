@@ -10,11 +10,11 @@ public:
 	Layer() = default;
 	Layer(int size, int inputSize) {
 		setLayer(size, inputSize);
+
 	}
 	virtual ~Layer() = default;
 
-	Layer(const Layer& copy_this) : m_weights( copy_this.m_weights ), m_outputs( copy_this.m_outputs ) {
-	}
+	Layer(const Layer& copy_this) : m_weights( copy_this.m_weights ), m_outputs( copy_this.m_outputs ) { }
 
 	Layer(Layer&& move_this) {
 		m_weights.swap(move_this.m_weights);
