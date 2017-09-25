@@ -10,6 +10,7 @@ public:
 	Layer() = default;
 	Layer(int size, int inputSize) {
 		setLayer(size, inputSize);
+
 	}
 	virtual ~Layer() = default;
 
@@ -20,8 +21,7 @@ public:
 		m_outputs_pre_activation( copy_this.m_outputs_pre_activation),
 		m_gradients_inputs( copy_this.m_gradients_inputs),
 		m_gradients_weights( copy_this.m_gradients_weights),
-		m_gradients_bias(copy_this.m_gradients_bias)  {
-	}
+		m_gradients_bias(copy_this.m_gradients_bias)  { }
 
 	Layer(Layer&& move_this) {
 		m_weights.swap(move_this.m_weights);

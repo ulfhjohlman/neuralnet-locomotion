@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "FeedForwardNeuralNet.h"
 #include "LayeredTopology.h"
 
@@ -15,14 +14,9 @@
 #include <stdio.h>      /* printf, NULL */
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
+#include <thread>
+#include <chrono>
 
-
-
-#ifdef _DEBUG
-#pragma comment(lib, "../x64/Debug/neuralnet.lib")
-#else
-#pragma comment(lib, "../x64/Release/neuralnet.lib")
-#endif // _DEBUG
 
 const int n_inputs = 5;
 FeedForwardNeuralNet* ffnn = nullptr;
@@ -53,7 +47,7 @@ int sign = 1;
 
 void createNeuralController() {
 	std::vector<int> layerSizes = { n_inputs,		   40, 4000, 400, 40, 21 };
-	std::vector<int> layerTypes = { Layer::inputLayer, 0,  0,  0,  0,  0 };
+	std::vector<int> layerTypes = { Layer::inputLayer, 1,  1,  1,  1,  1 };
 	LayeredTopology* top  = new LayeredTopology(layerSizes, layerTypes);
 
 	ffnn = new FeedForwardNeuralNet(top); //memory is managed by network
@@ -92,6 +86,7 @@ void loadmodel(const char* filename)
 	if (!mnew)
 	{
 		printf("%s\n", error);
+		using namespace std::chrono_literals;
 		return;
 	}
 
@@ -102,20 +97,7 @@ void loadmodel(const char* filename)
 	d = mj_makeData(m);
 	mj_forward(m, d);
 
-	mj_saveModel(m, "asd.mjb", NULL, 0);
-	//mj_deleteModel(m2);
-	//mj_deleteData(d2);
-	//d2 = 0;
-	//m2 = 0;
-	//m2 = mj_loadXML("humanoid100.xml", 0, error, 1000);
-
-	//if (!mnew) {
-	//	printf("%s\n", error);
-	//	return;
-	//}
-
-	//d2 = mj_makeData(m2);
-	//mj_forward(m2, d2);
+	
 }
 
 // init sensor figure
@@ -158,7 +140,7 @@ void sensorupdate(void)
 	int lineid = 0;
 
 	// loop over sensors
-	for (int n = 0; n < m->nsensor; n++)
+	for (int n = 4; n < m->nsensor; n++)
 	{
 		// go to next line if type is different
 		if (n > 0 && m->sensor_type[n] != m->sensor_type[n - 1])
@@ -219,15 +201,17 @@ void keyboard(GLFWwindow* window, int key, int scancode, int act, int mods)
 	}
 
 	if (act == GLFW_PRESS && key == GLFW_KEY_U) {
-		std::cout << "1: " << d->sensordata[0] << std::endl;
-		std::cout << "2: " << d->sensordata[1] << std::endl;
-		std::cout << "acc x: " << d->sensordata[2] << std::endl;
-		std::cout << "acc y: " << d->sensordata[3] << std::endl;
-		std::cout << "acc z: " << d->sensordata[4] << std::endl;
+		std::cout << "rightfoot: " << d->sensordata[0] << std::endl;
+		std::cout << "leftfoot: " << d->sensordata[1] << std::endl;
+		std::cout << "righthand: " << d->sensordata[2] << std::endl;
+		std::cout << "lefthand: " << d->sensordata[3] << std::endl;
+		//std::cout << "acc x: " << d->sensordata[2] << std::endl;
+		//std::cout << "acc y: " << d->sensordata[3] << std::endl;
+		//std::cout << "acc z: " << d->sensordata[4] << std::endl;
 
-		std::cout << "gyro x: " << d->sensordata[5] << std::endl;
-		std::cout << "gyro y: " << d->sensordata[6] << std::endl;
-		std::cout << "gyro z: " << d->sensordata[7] << std::endl;
+		//std::cout << "gyro x: " << d->sensordata[5] << std::endl;
+		//std::cout << "gyro y: " << d->sensordata[6] << std::endl;
+		//std::cout << "gyro z: " << d->sensordata[7] << std::endl;
 	}
 
 	if (act == GLFW_PRESS && key == GLFW_KEY_R)
