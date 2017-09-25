@@ -1,4 +1,4 @@
-#pragma once
+prev_layer_outputs#pragma once
 //This library
 #include "NeuralNet.h"
 
@@ -13,13 +13,24 @@ public:
 	}
 	virtual ~Layer() = default;
 
-	Layer(const Layer& copy_this) : m_weights( copy_this.m_weights ), m_outputs( copy_this.m_outputs ) {
+	Layer(const Layer& copy_this) :
+		m_weights( copy_this.m_weights ),
+		m_outputs( copy_this.m_outputs ),
+	 	m_bias( copy_this.m_bias),
+		m_outputs_pre_activation( copy_this.m_outputs_pre_activation),
+		m_gradients_inputs( copy_this.m_gradients_inputs),
+		m_gradients_weights( copy_this.m_gradients_weights),
+		m_gradients_bias(copy_this.m_gradients_bias)  {
 	}
 
 	Layer(Layer&& move_this) {
 		m_weights.swap(move_this.m_weights);
 		m_outputs.swap(move_this.m_outputs);
 		m_bias.swap(move_this.m_bias);
+		m_outputs_pre_activation.swap(move_this.m_outputs_pre_activation);
+		m_gradients_weights.swap(move_this.m_gradients_weights);
+		m_gradients_inputs.swap(move_this.m_gradients_inputs);
+		m_gradients_bias.swap(move_this.m_gradients_bias);
 	}
 
 	Layer& operator=(const Layer& copy_this) = delete;
@@ -29,6 +40,10 @@ public:
 		m_weights.setRandom();
 		m_bias.setRandom();
 		m_outputs.setZero();
+		m_gradients_weights.setZero();
+		m_gradients_inputs.setZero();
+		m_gradients_bias.setZero();
+		m_outputs_pre_activation.setZero();
 	}
 
 	virtual void setLayer(int size, int inputSize) {
@@ -36,8 +51,15 @@ public:
 		checkSize(inputSize);
 
 		m_outputs.resize(size, 1);
+		m_outputs_pre_activation.resizeLike(m_outputs);
+
 		m_weights.resize(size, inputSize);
 		m_bias.resize(size);
+
+		m_gradients_weights.resizeLike(m_weights);
+		m_gradients_bias.resizeLike(m_bias);
+		m_gradients_inputs.resize(inputSize,1);
+
 	}
 
 	virtual void input(const MatrixType& x) {
@@ -50,9 +72,25 @@ public:
 		//Add bias to each neuron
 		m_outputs.array().colwise() += m_bias.array();
 
+		m_outputs_pre_activation = m_outputs;
+
 		//Subclass for separate neuron activation here
 
 		//printOperations(x);
+	}
+	virtual void backprop(const MatrixType& backpass_gradients, const MatrixType& prev_layer_outputs)
+	{
+		// backpass_gradients is a vector of dL/dY where L is scalar loss
+		// and Y a vector of this layers outputs
+		// prev_layer_outputs == this layers inputs
+		updateGradients(backpass_gradients.array() * m_outputs_pre_activation.array(), prev_layer_outputs);
+	}
+
+	void updateWeights(float learning_rate)
+	{
+		// updates weights proportionaly to their currently stored gradients
+		m_weights += learning_rate * m_gradients_weights;
+		m_bias += learning_rate * m_gradients_bias;
 	}
 
 	virtual MatrixType& output() {
@@ -70,7 +108,8 @@ public:
 		relu = 3,
 		inputLayer = 4,
 		scalingLayer = 5,
-		noLayer = 6 //always last for errorChecking
+		softmax = 6,
+		noLayer = 7 //always last for errorChecking
 	};
 protected:
 
@@ -93,7 +132,7 @@ protected:
 	}
 
 	//y=A*x
-	inline void checkNeuronMismatch(const MatrixType& y, MatrixType& A, const MatrixType& x) {
+	inline void checkNeuronMismatch(const MatrixType& y, const MatrixType& A, const MatrixType& x) {
 #ifdef _NEURALNET_DEBUG
 		bool neuronMismatch = A.cols() != x.rows(); //y = A*x, y in R^(wxm), A in R^(wxn) , x in R^(nxm)
 		bool resultMismatch = y.cols() != x.cols();
@@ -120,9 +159,24 @@ protected:
 		std::cout << std::endl;
 	}
 
-	
+	void updateGradients(const MatrixType& modified_backpass_gradients, const MatrixType& prev_layer_outputs)
+	{
+		//modified_backpass_gradients is activationlayer dependant
+		checkNeuronMismatch(m_gradients_inputs,m_weights,modified_backpass_gradients);
+		checkNeuronMismatch(m_gradients_weights,modified_backpass_gradients,prev_layer_outputs.transpose());
+		checkMatchingSize(m_gradients_bias,modified_backpass_gradients);
+		m_gradients_inputs.noalias() = m_weights * modified_backpass_gradients;
+		m_gradients_weights.noalias() = modified_backpass_gradients * prev_layer_outputs.transpose();
+		m_gradients_bias.noalias() = modified_backpass_gradients;
+	}
+
 	MatrixType m_outputs;
+	MatrixType m_outputs_pre_activation;
 private:
 	MatrixType m_weights;
 	VectorType m_bias;
+
+	MatrixType m_gradients_weights;
+	MatrixType m_gradients_inputs;
+	VectorType m_gradients_bias;
 };

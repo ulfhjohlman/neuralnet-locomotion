@@ -4,10 +4,11 @@
 #include "HyperbolicTangentLayer.h"
 #include "InputLayer.h"
 #include "RectifiedLinearUnitLayer.h"
+#include "SoftmaxLayer.h"
 #include "FactoryException.h"
 
 
-class LayerFactory 
+class LayerFactory
 {
 public:
 	static Layer* constructLayer(int layerSize, int numberOfInputs, int layerType) {
@@ -32,6 +33,9 @@ public:
 			break;
 		case Layer::scalingLayer:
 			break;
+		case Layer::softmax:
+			layer = new SoftmaxLayer(layerSize, numberOfInputs);
+			break;
 		case Layer::noLayer:
 			break;
 		default:
@@ -42,7 +46,7 @@ public:
 
 		return layer;
 	}
-	
+
 private:
 	static void checkLayerArgs(int layerSize, int numberOfInputs, int layerType)
 	{

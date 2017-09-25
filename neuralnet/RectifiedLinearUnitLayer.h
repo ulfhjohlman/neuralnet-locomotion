@@ -12,9 +12,18 @@ public:
 		Layer::input(x);
 
 		//Maybe add different model here
-		m_outputs.array().max(0);
+		m_outputs = m_outputs.array().max(0);
+		//m_outputs = std::move(m_outputs.array().max(0)); //compiler smart enough?
+	}
+
+	virtual void backprop(const MatrixType& backpass_gradients, const MatrixType& prev_layer_outputs)
+	{
+		Layer::updateGradients(backpass_gradients.array() * m_outputs_pre_activation.array().max(0),
+			prev_layer_outputs);
 	}
 private:
-	ScalarType alpha; //hyperparameter eg. leaky f(x) = max(ax, x);
+	/*  give these their own layer implementations
+	//ScalarType alpha; //hyperparameter eg. leaky f(x) = max(ax, x);
 	//std dist for noisy relu
+	*/
 };

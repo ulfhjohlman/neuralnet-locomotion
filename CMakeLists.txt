@@ -25,7 +25,7 @@ set(LIBS ${LIBS} neuralnet evo_alg tinyxml utility)
 
 #Turn on options by invoking $cmake -D<option_name>=ON <src path>
 #aka $cmake -DDEBUG=ON ..
-option(DEBUG "Flag for preprocessor to enable DEBUG macros" OFF)
+option(_DEBUG "Flag for preprocessor to enable DEBUG macros" ON)
 
 #reads config.h.in, outputs config.h
 configure_file (
