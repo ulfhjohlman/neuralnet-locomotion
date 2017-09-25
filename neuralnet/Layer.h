@@ -1,4 +1,4 @@
-prev_layer_outputs#pragma once
+#pragma once
 //This library
 #include "NeuralNet.h"
 
