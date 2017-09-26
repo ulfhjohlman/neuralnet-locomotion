@@ -6,7 +6,7 @@
 #include <set>
 
 /// <summary>
-/// Blev ej super logiskt. FeedForwardNerualNet är egentligen 
+/// Blev ej super logiskt. FeedForwardNerualNet ï¿½r egentligen
 /// ett subset av denna klass konceptuellt. Ska fixa senare
 /// </summary>
 class CascadeNeuralNet : public FeedForwardNeuralNet
@@ -26,7 +26,7 @@ public:
 		Layer* inputLayer = LayerFactory::constructLayer(m_topology->getLayerSize(0), 0, m_topology->getLayerType(0));
 		m_layers.push_back(inputLayer);
 		m_numberOfLayerInputs.push_back(0);
-		
+
 		size_t numberOfLayers = m_topology->getNumberOfLayers();
 		//construct network from topology
 		for (int i = 1; i < numberOfLayers; i++) {
@@ -45,7 +45,7 @@ public:
 		const int numberOfCols = x.cols();
 
 		//Load first layer
-		m_layers.front()->output() = x;//Remove this copy in future
+		m_layers.front()->setOutput(x);
 
 		MatrixType xi; //This should be fixed in future
 		//Propagate forward
@@ -67,7 +67,7 @@ protected:
 			}
 			const std::vector<int>& connections = m_topology->getLayerConnections(i);
 			//Copy to set, which is both unique and sorted.
-			std::set<int> unique_elements(connections.begin(), connections.end()); 
+			std::set<int> unique_elements(connections.begin(), connections.end());
 			if (unique_elements.size() < connections.size()) {
 				throw NeuralNetException("Multiple connections to same layer.");
 			}

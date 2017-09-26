@@ -38,13 +38,14 @@ public:
 
 	virtual void setRandom() {
 		m_weights.setRandom();
-		m_bias.setRandom();
+		m_bias.setZero();
 		m_outputs.setZero();
 		m_gradients_weights.setZero();
 		m_gradients_inputs.setZero();
 		m_gradients_bias.setZero();
 		m_outputs_pre_activation.setZero();
 	}
+
 
 	virtual void setLayer(int size, int inputSize) {
 		checkSize(size);
@@ -86,15 +87,23 @@ public:
 		updateGradients(backpass_gradients.array() * m_outputs_pre_activation.array(), prev_layer_outputs);
 	}
 
-	void updateWeights(float learning_rate)
+	void updateWeights(double learning_rate)
 	{
 		// updates weights proportionaly to their currently stored gradients
-		m_weights += learning_rate * m_gradients_weights;
-		m_bias += learning_rate * m_gradients_bias;
+		m_weights -= learning_rate * m_gradients_weights;
+		m_bias -= learning_rate * m_gradients_bias;
 	}
 
-	virtual MatrixType& output() {
+	virtual const MatrixType& output() {
 		return m_outputs;
+	}
+	virtual const MatrixType& getInputGradients() {
+		return m_gradients_inputs;
+	}
+
+	virtual void setOutput(const MatrixType& x)
+	{	//only overridden by InputLayer
+		throw NeuralNetException("Can only set Output of an 'Input Layer'\n");
 	}
 
 	virtual void save(const char* toFile) { }
@@ -135,17 +144,20 @@ protected:
 	inline void checkNeuronMismatch(const MatrixType& y, const MatrixType& A, const MatrixType& x) {
 #ifdef _NEURALNET_DEBUG
 		bool neuronMismatch = A.cols() != x.rows(); //y = A*x, y in R^(wxm), A in R^(wxn) , x in R^(nxm)
-		bool resultMismatch = y.cols() != x.cols();
+		bool resultMismatch = y.cols() != x.cols() || y.rows() != A.rows();
 		if (neuronMismatch) {
 			std::ostringstream os;
-			os << " Weights do not match input " << A.cols() << " != " << x.rows() << std::endl;
+			os << " Weights do not match input. A size: ("<<A.rows()<<","<<A.cols()<<"), X size: (" <<
+					x.rows()<<","<<x.cols()<<"). " << A.cols() << " != " << x.rows() << std::endl;
 			throw NeuralNetException(os.str().c_str());
 		}
 		else if (resultMismatch) {
 			std::ostringstream os;
-			os << " y = A*x, y not right dimension, gpu will fail. "<< std::endl;
+			os << " y = A*x, y not right dimension, gpu will fail. A size: (" << A.rows() << "," <<
+					A.cols() << "), X size: (" << x.rows() << "," << x.cols() << "), Y size: (" <<
+					y.rows() << "," << y.cols() << ")." << std::endl;
 			std::cout << os.str();
-			//throw NeuralNetException(os.str().c_str());
+			throw NeuralNetException(os.str().c_str());
 		}
 #endif
 	}
@@ -162,20 +174,20 @@ protected:
 	void updateGradients(const MatrixType& modified_backpass_gradients, const MatrixType& prev_layer_outputs)
 	{
 		//modified_backpass_gradients is activationlayer dependant
-		checkNeuronMismatch(m_gradients_inputs,m_weights,modified_backpass_gradients);
+		checkNeuronMismatch(m_gradients_inputs.transpose(),modified_backpass_gradients.transpose(),m_weights);
 		checkNeuronMismatch(m_gradients_weights,modified_backpass_gradients,prev_layer_outputs.transpose());
 		checkMatchingSize(m_gradients_bias,modified_backpass_gradients);
-		m_gradients_inputs.noalias() = m_weights * modified_backpass_gradients;
+		m_gradients_inputs.noalias() = (modified_backpass_gradients.transpose() * m_weights).transpose();
 		m_gradients_weights.noalias() = modified_backpass_gradients * prev_layer_outputs.transpose();
-		m_gradients_bias.noalias() = modified_backpass_gradients;
+		m_gradients_bias = modified_backpass_gradients;
 	}
 
 	MatrixType m_outputs;
 	MatrixType m_outputs_pre_activation;
-private:
 	MatrixType m_weights;
-	VectorType m_bias;
+private:
 
+	VectorType m_bias;
 	MatrixType m_gradients_weights;
 	MatrixType m_gradients_inputs;
 	VectorType m_gradients_bias;

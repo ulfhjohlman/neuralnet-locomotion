@@ -19,14 +19,14 @@ public:
 		setTopology(topology);
 		constructFromTopology();
 	}
-	virtual ~FeedForwardNeuralNet() { 
+	virtual ~FeedForwardNeuralNet() {
 		if (m_topology)
 			delete m_topology;
 		destroyLayers();
 	}
 
 	virtual void setTopology(LayeredTopology* topology) {
-		checkTopology(topology); 
+		checkTopology(topology);
 		//new topology ok.
 		//delete old if there is one.
 		if (m_topology) delete m_topology;
@@ -45,7 +45,7 @@ public:
 			int numberOfInputs = m_topology->getLayerSize(i - 1);
 			int layerSize = m_topology->getLayerSize(i);
 			int layerType = m_topology->getLayerType(i);
-			
+
 			Layer* newLayer = LayerFactory::constructLayer(layerSize, numberOfInputs, layerType);
 			m_layers.push_back(newLayer);
 		}
@@ -59,16 +59,33 @@ public:
 	virtual void input(const MatrixType& x) {
 		checkEmptyNetwork();
 
-		//Load input layer 
-		m_layers.front()->output() = x;//Remove this copy in future, by using input(x)
+		//Load input layer
+		m_layers.front()->setOutput(x);
 
 		//Propagate forward
 		for (int i = 1; i < m_layers.size(); i++) {
 			m_layers[i]->input(m_layers[i-1]->output());
 		}
 	}
+	virtual void backprop(const MatrixType& gradients)
+	{
+		checkEmptyNetwork();
+		int second_last_index = m_layers.size()-2;
+		m_layers.back()->backprop( gradients , m_layers[second_last_index]->output());
+		//for (int i = m_layers.size()-1; i > 0 ; i--)
+		{
+			//m_layers[i]->backprop( m_layers[i+1]->getInputGradients(), m_layers[i-1]->output());
+		}
+	}
+	virtual void updateWeights(double learning_rate)
+	{
+		for (auto& layer : m_layers)
+		{
+			layer->updateWeights(learning_rate);
+		}
+	}
 
-	virtual MatrixType& output() {
+	virtual const MatrixType& output() {
 		checkEmptyNetwork();
 
 		return m_layers.back()->output();
@@ -108,4 +125,3 @@ private:
 };
 
 typedef FeedForwardNeuralNet FFNN;
-

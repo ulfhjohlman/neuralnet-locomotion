@@ -23,7 +23,7 @@ public:
 	virtual ~NeuralNet() = default;
 
 	virtual void input(const MatrixType&) = 0;
-	virtual MatrixType& output() = 0;
+	virtual const MatrixType& output() = 0;
 
 	/*virtual void setDataset(const Dataset&) = 0;
 	virtual void train() = 0;*/

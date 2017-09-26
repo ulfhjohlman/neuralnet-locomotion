@@ -1,5 +1,6 @@
 #pragma once
 #include "Layer.h"
+#include "math.h"
 
 class RectifiedLinearUnitLayer : public Layer
 {
@@ -14,6 +15,12 @@ public:
 		//Maybe add different model here
 		m_outputs = m_outputs.array().max(0);
 		//m_outputs = std::move(m_outputs.array().max(0)); //compiler smart enough?
+	}
+
+	virtual void setRandom()
+	{
+		Layer::setRandom();
+		m_weights.array() *= sqrt(2/m_weights.rows());  //Xavier initialization for relu
 	}
 
 	virtual void backprop(const MatrixType& backpass_gradients, const MatrixType& prev_layer_outputs)

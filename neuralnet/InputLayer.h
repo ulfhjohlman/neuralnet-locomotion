@@ -11,6 +11,11 @@ public:
 	virtual void input(const MatrixType& x) {
 		m_pInput = &x;
 	}
+	virtual void setOutput(const MatrixType& x)
+	{
+		m_pInput = &x;
+	}
+
 private:
 	MatrixType const * m_pInput;
 };

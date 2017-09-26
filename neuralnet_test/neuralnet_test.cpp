@@ -3,6 +3,7 @@
 #include <type_traits>
 #include <sstream>
 
+#include "config.h"
 #include "Dataset.h"
 #include "DatasetException.h"
 #include "NeuralNet.h"
@@ -10,6 +11,8 @@
 #include "LayeredTopology.h"
 #include "CascadeNeuralNet.h"
 #include "RecurrentTopology.h"
+
+
 
 #include "Stopwatch.h"
 #include "XMLException.h"
@@ -27,6 +30,8 @@
 #include <thread>
 #include <chrono>
 #include <functional>
+#include <utility>
+#include <cstdlib>
 #include <sstream> //ostringstream
 #include <iomanip> //std::get_time
 
@@ -37,6 +42,7 @@ std::string dataprinter_test();
 std::string dataset_test();
 std::string feedForwardNeuralNet_test();
 std::string cascadeNeuralNet_test();
+std::string relu_ff_test();
 
 void multi_threaded_tests();
 void parallel_for_test();
@@ -46,9 +52,19 @@ int main()
 {
 	std::cout.sync_with_stdio(true); // make cout thread-safe
 
-	std::cout << cascadeNeuralNet_test() << std::endl;
-	std::cout << feedForwardNeuralNet_test();
-
+	#ifdef _DEBUG
+			std::cout << "_DEBUG FLAG ON\n";
+	#else
+			std::cout << "_DEBUG FLAG OFF\n";
+	#endif
+	#ifdef _NEURALNET_DEBUG
+			std::cout << "_NEURALNET_DEBUG FLAG ON" << std::endl;
+	#else
+			std::cout << "_NEURALNET_DEBUG FLAG OFF" << std::endl;
+	#endif
+	//std::cout << cascadeNeuralNet_test() << std::endl;
+	//std::cout << feedForwardNeuralNet_test();
+	std::cout << relu_ff_test() << std::endl;
 	//test
 	//single_threaded_tests();
 	//multi_threaded_tests();
@@ -58,10 +74,61 @@ int main()
 	return 0;
 }
 
+std::string relu_ff_test()
+// generic test using softmax, relu layers and calling forward/backwardpass
+{
+	std::ostringstream output;
+
+	try
+	{
+		std::vector<int> layerSizes {2,8,16,4};
+		int relu = Layer::LayerType::relu;
+		int inputLayer = Layer::LayerType::inputLayer;
+		int softmax = Layer::LayerType::softmax;
+		std::vector<int> layerTypes {inputLayer,relu,relu,softmax};
+		LayeredTopology* top = new LayeredTopology(layerSizes,layerTypes);
+
+		//new random seed every run
+		std::srand(static_cast<unsigned int>(time(0)));
+		FeedForwardNeuralNet ffnn(top);
+		ffnn.initializeRandomWeights();
+		MatrixType input_matrix(layerSizes[0], 1);
+		input_matrix.setRandom();
+		output << "Input:\n " << input_matrix << std::endl;
+		ffnn.input(input_matrix);
+		output << "Output:\n " << ffnn.output() <<std::endl;
+		output << "Total Prob = " << ffnn.output().sum() << std::endl;
+
+
+		MatrixType x;
+		x.resize(layerSizes.back(),1);
+		x.setRandom();
+		output << "Backproping random gradients:\n" << x <<"\n";
+		ffnn.backprop( x );
+		output << "Updating weights\n";
+		double learning_rate = 10e-4;
+		ffnn.updateWeights(learning_rate);
+
+		output << "relu_ff_test() test ended\n";
+		return output.str();
+	}
+	catch (NeuralNetException e) {
+		output << e.what() << std::endl;
+	}
+	catch (const FactoryException e) {
+		output << e.what() << std::endl;
+	}
+	catch (std::invalid_argument e) {
+		output << e.what() << std::endl;
+	}
+	output << "relu_ff_test() failed\n";
+	return output.str();
+}
+
 /// <summary>
 ///
 /// </summary>
-void single_threaded_tests()
+/*void single_threaded_tests()
 {
 	ThreadPool pool;
 
@@ -302,7 +369,8 @@ void parallel_for_test() {
 	}
 	double openmp_time = timer.getLapTime();
 
-	std::cout << "single to multi speed up: " << single_thread_time / multi_thread_time << "x" << "\nopenmp to multi speed up: " << openmp_time / multi_thread_time << "x" << std::endl;
+	std::cout << "single to multi speed up: " << single_thread_time / multi_thread_time <<
+	 "x" << "\nopenmp to multi speed up: " << openmp_time / multi_thread_time << "x" << std::endl;
 
 	if (std::equal(x.begin(), x.end(), y.begin()))
 		std::cout << "single == multi, success\n";
@@ -316,7 +384,8 @@ void parallel_for_test() {
 	else {
 		std::cout << "single != openmp, fail\n";
 		//Error only in release build of 10^-9.
-		std::cout << calculate_error<double>(x, z) << " total open mp error, where the hell is this error coming from?\n";
+		std::cout << calculate_error<double>(x, z) << " total open mp error,
+			where the hell is this error coming from?\n";
 	}
 }
 
@@ -324,3 +393,4 @@ void multi_threaded_tests()
 {
 	parallel_for_test();
 }
+*/
