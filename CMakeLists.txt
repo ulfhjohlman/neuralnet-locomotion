@@ -55,7 +55,7 @@ add_subdirectory("${PROJECT_SOURCE_DIR}/neuralnet_test")
 
 #Make visual studio specific projects
 IF(MSVC)
-	link_directories("${PROJECT_SOURCE_DIR}/lib/mjpro150/bin")
+	#link_directories("${PROJECT_SOURCE_DIR}/lib/mjpro150/bin")
 	add_subdirectory("${PROJECT_SOURCE_DIR}/mjenvironment")
 ENDIF()
 
