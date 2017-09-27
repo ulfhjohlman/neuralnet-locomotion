@@ -43,6 +43,7 @@ std::string dataset_test();
 std::string feedForwardNeuralNet_test();
 std::string cascadeNeuralNet_test();
 std::string relu_ff_test();
+std::string training_XOR_test();
 
 void multi_threaded_tests();
 void parallel_for_test();
@@ -64,7 +65,8 @@ int main()
 	#endif
 	//std::cout << cascadeNeuralNet_test() << std::endl;
 	//std::cout << feedForwardNeuralNet_test();
-	std::cout << relu_ff_test() << std::endl;
+	//std::cout << relu_ff_test() << std::endl;
+	std::cout << training_XOR_test() << std::endl;
 	//test
 	//single_threaded_tests();
 	//multi_threaded_tests();
@@ -99,7 +101,6 @@ std::string relu_ff_test()
 		output << "Output:\n " << ffnn.output() <<std::endl;
 		output << "Total Prob = " << ffnn.output().sum() << std::endl;
 
-
 		MatrixType x;
 		x.resize(layerSizes.back(),1);
 		x.setRandom();
@@ -124,11 +125,79 @@ std::string relu_ff_test()
 	output << "relu_ff_test() failed\n";
 	return output.str();
 }
+std::string training_XOR_test()
+// training single hiddenlayer network to learn nonlinear XOR function
+{
+	std::ostringstream output;
+	output << "XOR training started\n";
+	try
+	{
+		std::vector<int> layerSizes {2,8,2};
+		int relu = Layer::LayerType::relu;
+		int inputLayer = Layer::LayerType::inputLayer;
+		int softmax = Layer::LayerType::softmax;
+		std::vector<int> layerTypes {inputLayer,relu,softmax};
+		LayeredTopology* top = new LayeredTopology(layerSizes,layerTypes);
+
+		//new random seed every run
+		std::srand(static_cast<unsigned int>(time(0)));
+		FeedForwardNeuralNet ffnn(top);
+		ffnn.initializeRandomWeights();
+		MatrixType input_matrix(layerSizes[0], 1);
+		MatrixType error_gradient(layerSizes.back(),1);
+		int sample;
+		float error;
+		double running_error = 1;
+		double learning_rate = 10e-2;
+		double ffnn_out;
+		int selected_out;
+
+		// Training Data:
+		int train_data[4][3] {{0,0,0},{0,1,1},{1,0,1},{1,1,0}};
+		for(int i = 0; i < 1000 && running_error>0.1 ; i++)
+		{
+			//forwardpass
+			sample = std::rand() % 4;
+			input_matrix << train_data[sample][0],
+							train_data[sample][1];
+			ffnn.input(input_matrix);
+			//output << "input_matrix: \n" << input_matrix << std::endl;
+
+			//backpass
+			ffnn_out =ffnn.output()(0,0); // (we only use output 0 since sum(probabilities)=1 anyways
+			selected_out = (std::rand()%100 > ffnn_out*100); //random selection,
+
+			error = pow(ffnn_out - train_data[sample][2],2); // L2 norm error
+			running_error = running_error*0.99 + error;
+			error_gradient << 2*(ffnn_out - train_data[sample][2]),
+								0;
+			output << "output : " << ffnn_out << "\n";
+			//output << "error_gradient : " << error_gradient<< "\n";
+			ffnn.backprop( error_gradient );
+			ffnn.updateWeights(learning_rate);
+
+			output << "Iteration: " << i << ". Running_error = " << running_error << "\n";
+		}
+		output << "training_XOR_test() test ended\n";
+		return output.str();
+	}
+	catch (NeuralNetException e) {
+		output << e.what() << std::endl;
+	}
+	catch (const FactoryException e) {
+		output << e.what() << std::endl;
+	}
+	catch (std::invalid_argument e) {
+		output << e.what() << std::endl;
+	}
+	output << "training_XOR_test failed\n";
+	return output.str();
+}
 
 /// <summary>
 ///
 /// </summary>
-/*void single_threaded_tests()
+void single_threaded_tests()
 {
 	ThreadPool pool;
 
@@ -384,8 +453,7 @@ void parallel_for_test() {
 	else {
 		std::cout << "single != openmp, fail\n";
 		//Error only in release build of 10^-9.
-		std::cout << calculate_error<double>(x, z) << " total open mp error,
-			where the hell is this error coming from?\n";
+		std::cout << calculate_error<double>(x, z) << " total open mp error, where the hell is this error coming from?\n";
 	}
 }
 
@@ -393,4 +461,3 @@ void multi_threaded_tests()
 {
 	parallel_for_test();
 }
-*/

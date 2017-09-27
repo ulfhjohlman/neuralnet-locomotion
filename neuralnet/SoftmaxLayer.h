@@ -15,4 +15,9 @@ public:
 		//Broadcasting divison incase of batch input
 		m_outputs = m_outputs.array().rowwise() / normFactor.transpose().array();
 	}
+	virtual void backprop(const MatrixType& backpass_gradients, const MatrixType& prev_layer_outputs)
+	{
+		Layer::updateGradients(backpass_gradients.array() * m_outputs.array(),
+			prev_layer_outputs);
+	}
 };

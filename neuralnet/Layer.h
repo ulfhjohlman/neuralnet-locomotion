@@ -177,6 +177,8 @@ protected:
 		checkNeuronMismatch(m_gradients_inputs.transpose(),modified_backpass_gradients.transpose(),m_weights);
 		checkNeuronMismatch(m_gradients_weights,modified_backpass_gradients,prev_layer_outputs.transpose());
 		checkMatchingSize(m_gradients_bias,modified_backpass_gradients);
+
+		// alternativly transpose weight matrix: (A*B)^T = A^T*B^T
 		m_gradients_inputs.noalias() = (modified_backpass_gradients.transpose() * m_weights).transpose();
 		m_gradients_weights.noalias() = modified_backpass_gradients * prev_layer_outputs.transpose();
 		m_gradients_bias = modified_backpass_gradients;
