@@ -13,7 +13,7 @@ public:
 		Layer::input(x);
 
 		//Maybe add different model here
-		m_outputs = m_outputs.array().max(0);
+		m_outputs.array() = m_outputs.array().max(0);
 		//m_outputs = std::move(m_outputs.array().max(0)); //compiler smart enough?
 	}
 

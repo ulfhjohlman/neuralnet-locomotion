@@ -10,12 +10,14 @@
 #include <iostream>
 #include <memory>
 
-
 #include <stdio.h>      /* printf, NULL */
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
 #include <thread>
 #include <chrono>
+
+#include "glfwWrapper.h"
+#include "MujocoWrapper.h"
 
 
 const int n_inputs = 5;
@@ -26,13 +28,14 @@ MatrixType insignal(n_inputs, 1);
 
 // MuJoCo data structures
 mjModel* m = NULL;                  // MuJoCo model
-mjModel* m2 = NULL;
 mjData* d = NULL;                   // MuJoCo data
-mjData* d2 = NULL;
+mjModel* extra_model = NULL;
+mjData* extra_data = NULL;
+
 mjvCamera cam;                      // abstract camera
 mjvOption opt;                      // visualization options
 mjvScene scn;                       // abstract scene
-mjrContext con,con2;                     // custom GPU context
+mjrContext con;                     // custom GPU context
 
 mjvFigure figsensor; //sensor figure
 
@@ -55,7 +58,7 @@ void createNeuralController() {
 
 	std::vector<int> layerSizesfeedback = { 21, 40, 40, 40, 40, 3 };
 	LayeredTopology* feedbacktop = new LayeredTopology(layerSizesfeedback, layerTypes);
-
+	
 	feedbacknn = new FeedForwardNeuralNet(feedbacktop);
 	feedbacknn->initializeRandomWeights();
 }
@@ -96,8 +99,6 @@ void loadmodel(const char* filename)
 	m = mnew;
 	d = mj_makeData(m);
 	mj_forward(m, d);
-
-	
 }
 
 // init sensor figure
@@ -172,7 +173,7 @@ void sensorupdate(void)
 
 		// update linepnt
 		figsensor.linepnt[lineid] = mjMIN(mjMAXLINEPNT - 1,
-			figsensor.linepnt[lineid] + 2 * dim);
+		figsensor.linepnt[lineid] + 2 * dim);
 	}
 }
 
@@ -201,17 +202,17 @@ void keyboard(GLFWwindow* window, int key, int scancode, int act, int mods)
 	}
 
 	if (act == GLFW_PRESS && key == GLFW_KEY_U) {
-		std::cout << "rightfoot: " << d->sensordata[0] << std::endl;
-		std::cout << "leftfoot: " << d->sensordata[1] << std::endl;
-		std::cout << "righthand: " << d->sensordata[2] << std::endl;
-		std::cout << "lefthand: " << d->sensordata[3] << std::endl;
-		//std::cout << "acc x: " << d->sensordata[2] << std::endl;
-		//std::cout << "acc y: " << d->sensordata[3] << std::endl;
-		//std::cout << "acc z: " << d->sensordata[4] << std::endl;
-
-		//std::cout << "gyro x: " << d->sensordata[5] << std::endl;
-		//std::cout << "gyro y: " << d->sensordata[6] << std::endl;
-		//std::cout << "gyro z: " << d->sensordata[7] << std::endl;
+		std::cout << "right foot: " << d->sensordata[0] << std::endl;
+		std::cout << "left foot: " << d->sensordata[1] << std::endl;
+		std::cout << "right hand: " << d->sensordata[2] << std::endl;
+		std::cout << "left hand: " << d->sensordata[3] << std::endl;
+		
+		for (int i = 0; i < m->ngeom * 3; i+=3) {
+			std::cout << d->geom_xpos[i+0] << " " ;
+			std::cout << d->geom_xpos[i+1] << " " ;
+			std::cout << d->geom_xpos[i+2] << std::endl;
+		}
+		std::cout << m->nsite;
 	}
 
 	if (act == GLFW_PRESS && key == GLFW_KEY_R)
@@ -330,6 +331,21 @@ int main(int argc, const char** argv)
 		return 1;
 	}
 
+	glfwWrapper test;
+	MujocoWrapper mj_wrap;
+	//mj_wrap.setup("humanoid100.xml");
+
+	char error[1000] = "could not load binary model";
+	extra_model = mj_loadXML("humanoid100.xml", 0, error, 1000);
+	if (!extra_model)
+	{
+		printf("%s\n", error);
+		return 1;
+	}
+	extra_data = mj_makeData(extra_model);
+	mj_forward(extra_model, extra_data);
+	
+
 	//load and compile model
 	loadmodel("humanoid.xml");
 
@@ -351,6 +367,7 @@ int main(int argc, const char** argv)
 	mjv_defaultCamera(&cam);
 	mjv_defaultOption(&opt);
 	mjr_defaultContext(&con);
+
 	mjv_makeScene(&scn, 1000);                   // space for 1000 objects
 	mjr_makeContext(m, &con, mjFONTSCALE_100);   // model-specific context
 												 // install GLFW mouse and keyboard callbacks
@@ -369,15 +386,23 @@ int main(int argc, const char** argv)
 		//  this loop will finish on time for the next frame to be rendered at 60 fps.
 		//  Otherwise add a cpu timer and exit this loop when it is time to render.
 		mjtNum simstart = d->time;
-		while (d->time - simstart < 1.0 / 60.0)
+		while (d->time - simstart < 1.0 / 30.0) {
 			mj_step(m, d);
+			mj_step(extra_model, extra_data);
+		}
 
 		// get framebuffer viewport
 		mjrRect viewport = { 0, 0, 0, 0 };
 		glfwGetFramebufferSize(window, &viewport.width, &viewport.height);
 
+		
 		// update scene and render
+		glfwMakeContextCurrent(window);
+
+	
 		mjv_updateScene(m, d, &opt, NULL, &cam, mjCAT_ALL, &scn);
+		mjv_addGeoms(extra_model, extra_data, &opt, NULL, mjCAT_ALL, &scn);
+		
 		mjr_render(viewport, &scn, &con);
 		
 		// get current framebuffer rectangle
@@ -394,8 +419,8 @@ int main(int argc, const char** argv)
 		// process pending GUI events, call GLFW callbacks
 		glfwPollEvents();
 
-
-
+		//mj_wrap.simulatePhysics();
+		//mj_wrap.render(test.getWindow());
 	}
 	destroyNeuralController();
 
@@ -407,6 +432,10 @@ int main(int argc, const char** argv)
 	// free MuJoCo model and data, deactivate
 	mj_deleteData(d);
 	mj_deleteModel(m);
+
+	mj_deleteData(extra_data);
+	mj_deleteModel(extra_model);
+	
 	mj_deactivate();
 
 	return 1;

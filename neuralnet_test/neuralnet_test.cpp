@@ -209,7 +209,6 @@ void single_threaded_tests()
 
 
 	//TestFramework
-
 	pool.addWork(sw_test);
 
 	while (!pool.isDone()) { pool.help(); }
