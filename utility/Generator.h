@@ -81,7 +81,7 @@ private: //global class variables
 
 //Init static class variables
 //Make a copy and drop unique ptr.
-RandomEngine Generator::c_engine_g = RandomEngine(std::random_device()());
+RandomEngine Generator::c_engine_g = *RandomEngineFactory::requestEngine();
 std::mutex Generator::c_mutex_g;
 
 namespace example {
