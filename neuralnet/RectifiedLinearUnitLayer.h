@@ -20,13 +20,12 @@ public:
 	virtual void setRandom()
 	{
 		Layer::setRandom();
-		m_weights.array() *= sqrt(2/m_weights.rows());  //Xavier initialization for relu
+		m_weights.array() *= static_cast<ScalarType>(sqrt(2.0/m_weights.rows()));  //Xavier initialization for relu
 	}
 
 	virtual void backprop(const MatrixType& backpass_gradients, const MatrixType& prev_layer_outputs)
 	{
-		Layer::updateGradients(backpass_gradients.array() * m_outputs_pre_activation.array().max(0),
-			prev_layer_outputs);
+		Layer::updateGradients((m_outputs.array() != 0).select(backpass_gradients,m_outputs), prev_layer_outputs); // is there a better function for this masking in eigen?
 	}
 private:
 	/*  give these their own layer implementations

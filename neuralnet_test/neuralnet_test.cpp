@@ -72,7 +72,7 @@ int main()
 	//multi_threaded_tests();
 
 	std::cout << "Tests done." << std::endl;
-	//std::cin.get();
+	std::cin.get();
 	return 0;
 }
 
@@ -132,11 +132,13 @@ std::string training_XOR_test()
 	output << "XOR training started\n";
 	try
 	{
-		std::vector<int> layerSizes {2,8,2};
+		std::vector<int> layerSizes {2,5,1};
 		int relu = Layer::LayerType::relu;
 		int inputLayer = Layer::LayerType::inputLayer;
+		int noactiv = Layer::noActivation;
 		int softmax = Layer::LayerType::softmax;
-		std::vector<int> layerTypes {inputLayer,relu,softmax};
+		int sigmoid= Layer::LayerType::sigmoid;
+		std::vector<int> layerTypes {inputLayer,noactiv,sigmoid};
 		LayeredTopology* top = new LayeredTopology(layerSizes,layerTypes);
 
 		//new random seed every run
@@ -148,36 +150,43 @@ std::string training_XOR_test()
 		int sample;
 		float error;
 		double running_error = 1;
-		double learning_rate = 10e-2;
+		double learning_rate = 0.001;
 		double ffnn_out;
 		int selected_out;
 
 		// Training Data:
-		int train_data[4][3] {{0,0,0},{0,1,1},{1,0,1},{1,1,0}};
+		double train_data[4][3] {{0,0,0},{0,1,1},{1,0,1},{1,1,0}};
 		for(int i = 0; i < 1000 && running_error>0.1 ; i++)
 		{
 			//forwardpass
 			sample = std::rand() % 4;
+			//sample = 1;
 			input_matrix << train_data[sample][0],
 							train_data[sample][1];
 			ffnn.input(input_matrix);
-			//output << "input_matrix: \n" << input_matrix << std::endl;
 
 			//backpass
-			ffnn_out =ffnn.output()(0,0); // (we only use output 0 since sum(probabilities)=1 anyways
-			selected_out = (std::rand()%100 > ffnn_out*100); //random selection,
+			ffnn_out =ffnn.output()(0,0); //likelihood of 1
 
-			error = pow(ffnn_out - train_data[sample][2],2); // L2 norm error
+			selected_out = (std::rand()%1000 < ffnn_out*1000); //random selection,
+
+			error = pow(selected_out - train_data[sample][2], 2); // L2 norm error
+
 			running_error = running_error*0.99 + error;
-			error_gradient << 2*(ffnn_out - train_data[sample][2]),
-								0;
-			output << "output : " << ffnn_out << "\n";
-			//output << "error_gradient : " << error_gradient<< "\n";
+			error_gradient << 2.0 * (ffnn_out - train_data[sample][2]);
+
 			ffnn.backprop( error_gradient );
 			ffnn.updateWeights(learning_rate);
-
+			//ffnn.print_layer_outputs();
+			//ffnn.print_layer_weights();
+			//ffnn.print_layer_bias();
+			//ffnn.print_layer_weight_gradients();
+			//ffnn.print_layer_input_gradients();
 			output << "Iteration: " << i << ". Running_error = " << running_error << "\n";
 		}
+		ffnn.printLayerOutputs();
+		ffnn.printLayerWeights();
+		ffnn.printLayerBias();
 		output << "training_XOR_test() test ended\n";
 		return output.str();
 	}
@@ -195,7 +204,7 @@ std::string training_XOR_test()
 }
 
 /// <summary>
-///
+///	
 /// </summary>
 void single_threaded_tests()
 {

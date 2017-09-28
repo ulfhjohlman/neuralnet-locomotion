@@ -18,7 +18,7 @@ public:
 		m_weights( copy_this.m_weights ),
 		m_outputs( copy_this.m_outputs ),
 	 	m_bias( copy_this.m_bias),
-		m_outputs_pre_activation( copy_this.m_outputs_pre_activation),
+		//m_outputs_pre_activation( copy_this.m_outputs_pre_activation),
 		m_gradients_inputs( copy_this.m_gradients_inputs),
 		m_gradients_weights( copy_this.m_gradients_weights),
 		m_gradients_bias(copy_this.m_gradients_bias)  { }
@@ -27,7 +27,7 @@ public:
 		m_weights.swap(move_this.m_weights);
 		m_outputs.swap(move_this.m_outputs);
 		m_bias.swap(move_this.m_bias);
-		m_outputs_pre_activation.swap(move_this.m_outputs_pre_activation);
+		//m_outputs_pre_activation.swap(move_this.m_outputs_pre_activation);
 		m_gradients_weights.swap(move_this.m_gradients_weights);
 		m_gradients_inputs.swap(move_this.m_gradients_inputs);
 		m_gradients_bias.swap(move_this.m_gradients_bias);
@@ -43,7 +43,7 @@ public:
 		m_gradients_weights.setZero();
 		m_gradients_inputs.setZero();
 		m_gradients_bias.setZero();
-		m_outputs_pre_activation.setZero();
+		//m_outputs_pre_activation.setZero();
 	}
 
 
@@ -52,7 +52,7 @@ public:
 		checkSize(inputSize);
 
 		m_outputs.resize(size, 1);
-		m_outputs_pre_activation.resizeLike(m_outputs);
+		//m_outputs_pre_activation.resizeLike(m_outputs);
 
 		m_weights.resize(size, inputSize);
 		m_bias.resize(size);
@@ -73,7 +73,7 @@ public:
 		//Add bias to each neuron
 		m_outputs.array().colwise() += m_bias.array();
 
-		m_outputs_pre_activation = m_outputs;
+		//m_outputs_pre_activation = m_outputs;
 
 		//Subclass for separate neuron activation here
 
@@ -84,7 +84,7 @@ public:
 		// backpass_gradients is a vector of dL/dY where L is scalar loss
 		// and Y a vector of this layers outputs
 		// prev_layer_outputs == this layers inputs
-		updateGradients(backpass_gradients.array() * m_outputs_pre_activation.array(), prev_layer_outputs);
+		updateGradients(backpass_gradients, prev_layer_outputs);
 	}
 
 	void updateWeights(double learning_rate)
@@ -100,6 +100,7 @@ public:
 	virtual const MatrixType& getInputGradients() {
 		return m_gradients_inputs;
 	}
+
 
 	virtual void setOutput(const MatrixType& x)
 	{	//only overridden by InputLayer
@@ -120,6 +121,18 @@ public:
 		softmax = 6,
 		noLayer = 7 //always last for errorChecking
 	};
+	const MatrixType& getWeights()
+	{
+		return m_weights;
+	}
+	const VectorType& getBias()
+	{
+		return m_bias;
+	}
+	const MatrixType& getWeightGradients()
+	{
+		return m_gradients_weights;
+	}
 protected:
 
 	inline void checkSize(int size) {
@@ -185,7 +198,7 @@ protected:
 	}
 
 	MatrixType m_outputs;
-	MatrixType m_outputs_pre_activation;
+	//MatrixType m_outputs_pre_activation;
 	MatrixType m_weights;
 private:
 

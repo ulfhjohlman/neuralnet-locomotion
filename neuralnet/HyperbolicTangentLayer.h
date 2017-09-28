@@ -18,7 +18,7 @@ public:
 	virtual void backprop(const MatrixType& backpass_gradients, const MatrixType& prev_layer_outputs)
 	{
 		// d/dx(tanh(x)) = 1-tanh^2(x)
-		updateGradients(backpass_gradients.array() * (1-m_outputs_pre_activation.array().tanh().square()),
+		updateGradients(backpass_gradients.array() * (1-m_outputs.array().square()),
 		 			prev_layer_outputs);
 	}
 private:

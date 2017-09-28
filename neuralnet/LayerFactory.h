@@ -5,6 +5,7 @@
 #include "InputLayer.h"
 #include "RectifiedLinearUnitLayer.h"
 #include "SoftmaxLayer.h"
+#include "SigmoidLayer.h"
 #include "FactoryException.h"
 
 
@@ -24,6 +25,7 @@ public:
 			layer = new HyperbolicTangentLayer(layerSize, numberOfInputs);
 			break;
 		case Layer::sigmoid:
+			layer = new SigmoidLayer(layerSize, numberOfInputs);
 			break;
 		case Layer::relu:
 			layer = new RectifiedLinearUnitLayer(layerSize, numberOfInputs);

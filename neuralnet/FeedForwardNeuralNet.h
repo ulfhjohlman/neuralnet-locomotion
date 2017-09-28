@@ -70,11 +70,11 @@ public:
 	virtual void backprop(const MatrixType& gradients)
 	{
 		checkEmptyNetwork();
-		int second_last_index = m_layers.size()-2;
+		size_t second_last_index = m_layers.size()-2;
 		m_layers.back()->backprop( gradients , m_layers[second_last_index]->output());
-		//for (int i = m_layers.size()-1; i > 0 ; i--)
+		for (int i = second_last_index; i > 0 ; i--)
 		{
-			//m_layers[i]->backprop( m_layers[i+1]->getInputGradients(), m_layers[i-1]->output());
+			m_layers[i]->backprop( m_layers[i+1]->getInputGradients(), m_layers[i-1]->output());
 		}
 	}
 	virtual void updateWeights(double learning_rate)
@@ -90,7 +90,46 @@ public:
 
 		return m_layers.back()->output();
 	}
-
+	void printLayerOutputs()
+	{
+		std::cout << "Printing layer outputs:\n";
+		for (auto& layer : m_layers)
+		{
+			std::cout << layer->output() << "\n\n";
+		}
+	}
+	void printLayerWeights()
+	{
+		std::cout << "Printing layer weights:\n";
+		for (auto& layer : m_layers)
+		{
+			std::cout << layer->getWeights() << "\n\n";
+		}
+	}
+	void printLayerBias()
+	{
+		std::cout << "Printing layer bias:\n";
+		for (auto& layer : m_layers)
+		{
+			std::cout << layer->getBias() << "\n\n";
+		}
+	}
+	void printLayerWeightGradients()
+	{
+		std::cout << "Printing layer weight gradients:\n";
+		for (auto& layer : m_layers)
+		{
+			std::cout << layer->getWeightGradients() << "\n\n";
+		}
+	}
+	void printLayerInputGradients()
+	{
+		std::cout << "Printing layer input gradients:\n";
+		for (auto& layer : m_layers)
+		{
+			std::cout << layer->getInputGradients() << "\n\n";
+		}
+	}
 	virtual void save(const char* toFile) { }
 	virtual void load(const char* fromFile) { }
 protected:
@@ -108,6 +147,7 @@ protected:
 			}
 		m_layers.clear();
 	}
+	
 
 	std::vector<Layer*> m_layers;//replace with shared_ptr<Layer>
 private:
