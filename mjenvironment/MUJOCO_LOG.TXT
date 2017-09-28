@@ -4,3 +4,9 @@ WARNING: Unknown warning type Time = 11.7180.
 Fri Sep 22 15:28:03 2017
 WARNING: Unknown warning type Time = 3.8720.
 
+Tue Sep 26 19:07:49 2017
+WARNING: Model missing header ID
+
+Tue Sep 26 19:36:39 2017
+ERROR: mjvScene frustum_near too small in mjr_render
+

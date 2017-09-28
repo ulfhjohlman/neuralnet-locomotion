@@ -10,7 +10,6 @@ public:
 	Layer() = default;
 	Layer(int size, int inputSize) {
 		setLayer(size, inputSize);
-
 	}
 	virtual ~Layer() = default;
 
@@ -105,6 +104,10 @@ public:
 	virtual void setOutput(const MatrixType& x)
 	{	//only overridden by InputLayer
 		throw NeuralNetException("Can only set Output of an 'Input Layer'\n");
+	}
+
+	virtual ScalarType* data() {
+		return m_weights.data();
 	}
 
 	virtual void save(const char* toFile) { }

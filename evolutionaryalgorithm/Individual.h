@@ -1,24 +1,25 @@
 #pragma once
 #include<memory>
+#include
 #include<string>
 
-template<typename Genome>
+
 class Individual 
 {
 public:
 	Individual() = default;
-	~Individual() = default;
+	virtual ~Individual() = default;
 
-	void decode();
-	void destroyDecoding();
+	virtual void decode() = 0;
+	virtual void destroyDecoding() = 0;
 
-	void loadGenome();
-	void unloadGenome();
+	virtual void loadGenome() = 0;
+	virtual void unloadGenome() = 0;
 
-	void save(const char* path);
+	virtual void save(const char* path);
 
-	bool operator<(const Individual& rhs) const { return this->m_fitness < rhs.m_fitness; }
-	bool operator>(const Individual& rhs) const { return this->m_fitness > rhs.m_fitness; }
+	virtual bool operator<(const Individual& rhs) const { return this->m_fitness < rhs.m_fitness; }
+	virtual bool operator>(const Individual& rhs) const { return this->m_fitness > rhs.m_fitness; }
 protected:
 	double m_fitness;
 	int m_rank;

@@ -1,9 +1,14 @@
-#include <bitset>
 #include <iostream>
-
+#include "RandomEngineFactory.h"
+#include "Generator.h"
 
 int main()
 {
-	std::cout << ((5 ^ 3)^3) << std::endl;
+	RandomEngineFactory::initialize(); //optional
+	example::uniformrealdist_hist_example();
+	example::normaldist_histogram_example();
+	example::exponentialdist_hist_example();
+	example::generator_example();
+
 	return 0;
 }
