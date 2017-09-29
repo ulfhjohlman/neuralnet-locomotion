@@ -125,6 +125,27 @@ std::string relu_ff_test()
 	output << "relu_ff_test() failed\n";
 	return output.str();
 }
+
+double xor_classification_error(FFNN& ffnn, bool print=false)
+{
+	double err_sum=0;
+	double train_data[4][3] {{0,0,0},{0,1,1},{1,0,1},{1,1,0}};
+	MatrixType in(2,1);
+	MatrixType out(1,1);
+	for( int i=0;i<4;i++)
+	{
+		in << train_data[i][0],
+						 train_data[i][1];
+		ffnn.input(in);
+		out = ffnn.output();
+		err_sum += std::abs(out(0,0)-train_data[i][2]);
+		if(print)
+		{
+			std::cout << "Input ("<<in(0,0)<<","<<in(1,0)<<") -> "<< out(0,0) << "\n";
+		}
+	}
+	return err_sum/4;
+}
 std::string training_XOR_test()
 // training single hiddenlayer network to learn nonlinear XOR function
 {
@@ -132,13 +153,13 @@ std::string training_XOR_test()
 	output << "XOR training started\n";
 	try
 	{
-		std::vector<int> layerSizes {2,5,1};
+		std::vector<int> layerSizes {2,4,8,1};
 		int relu = Layer::LayerType::relu;
 		int inputLayer = Layer::LayerType::inputLayer;
 		int noactiv = Layer::noActivation;
 		int softmax = Layer::LayerType::softmax;
 		int sigmoid= Layer::LayerType::sigmoid;
-		std::vector<int> layerTypes {inputLayer,noactiv,sigmoid};
+		std::vector<int> layerTypes {inputLayer,relu,relu,sigmoid};
 		LayeredTopology* top = new LayeredTopology(layerSizes,layerTypes);
 
 		//new random seed every run
@@ -150,13 +171,16 @@ std::string training_XOR_test()
 		int sample;
 		float error;
 		double running_error = 1;
-		double learning_rate = 0.001;
+		double learning_rate = 0.05;
 		double ffnn_out;
 		int selected_out;
 
 		// Training Data:
 		double train_data[4][3] {{0,0,0},{0,1,1},{1,0,1},{1,1,0}};
-		for(int i = 0; i < 1000 && running_error>0.1 ; i++)
+		std::cout << "Start classification:\n ";
+		xor_classification_error(ffnn,true);
+		double classification_error;
+		for(int i = 0; i < 10000 && running_error>0.1 ; i++)
 		{
 			//forwardpass
 			sample = std::rand() % 4;
@@ -177,17 +201,12 @@ std::string training_XOR_test()
 
 			ffnn.backprop( error_gradient );
 			ffnn.updateWeights(learning_rate);
-			//ffnn.print_layer_outputs();
-			//ffnn.print_layer_weights();
-			//ffnn.print_layer_bias();
-			//ffnn.print_layer_weight_gradients();
-			//ffnn.print_layer_input_gradients();
-			output << "Iteration: " << i << ". Running_error = " << running_error << "\n";
+			classification_error = xor_classification_error(ffnn);
+			std::cout << "Iteration: " << i << ". Running Error = " << running_error << " Classification Error = " << classification_error << "\n";
 		}
-		ffnn.printLayerOutputs();
-		ffnn.printLayerWeights();
-		ffnn.printLayerBias();
 		output << "training_XOR_test() test ended\n";
+		std::cout << "End classification:\n ";
+		xor_classification_error(ffnn,true);
 		return output.str();
 	}
 	catch (NeuralNetException e) {
@@ -203,8 +222,9 @@ std::string training_XOR_test()
 	return output.str();
 }
 
+
 /// <summary>
-///	
+///
 /// </summary>
 void single_threaded_tests()
 {
