@@ -1,15 +1,17 @@
 #pragma once
+#include "Individual.h"
+#include "NeuralNetGenome.h"
 
-template<typename Individual>
+template<typename T>
 class Mutation 
 {
 public:
-	Mutation() = default;
+	Mutation(ScalarType mutation_probability) : m_mutation_probability(mutation_probability) {}
 	~Mutation() = default;
 
-	void operator>>(Individual& mutate_this) {
-
+	void operator>>(std::shared_ptr< Individual<T> > mutate_this) {
+		mutate_this->getGenome()->mutate(m_mutation_probability);
 	}
 private:
-	
+	ScalarType m_mutation_probability;
 };

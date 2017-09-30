@@ -11,10 +11,11 @@
 #include <iostream>
 #include <string>
 
-typedef std::ranlux48 RandomEngine; //slower, 48-bit advancement, good quality, has theory
-//typedef std::ranlux24 RandomEngine; //slower, 24-bit advancement, has theory
-//typedef std::mt19937_64 RandomEngine; //slow, big on memory
-//typedef std::minstd_rand RandomEngine; //fast, but poor quality
+typedef std::ranlux48 RandomEngine;			//slower, 48-bit advancement, good quality, has theory
+//typedef std::ranlux24 RandomEngine;		//slower, 24-bit advancement, good quality, has theory
+//typedef std::mt19937_64 RandomEngine;		//slow, big on memory, 64-bit, medium quality
+//typedef std::mt19937 RandomEngine;		//slow, big on memory, 32-bit, medium quality
+//typedef std::minstd_rand RandomEngine;	//fast, but poor quality
 
 //This way ensures mainstream routines for large scale random number generation.
 //Is thread safe. Singleton. Break it by returning null engine ptr, don't do that.
@@ -28,8 +29,10 @@ public:
 	//You better return it !
 	static std::unique_ptr< RandomEngine > requestEngine() {
 		std::lock_guard<std::mutex> lk(c_mutex_rf);
+
 		if (c_engines_rf.empty())
 			constructNewEngine();
+
 		auto holder = std::move(c_engines_rf.front());
 		c_engines_rf.pop();
 		return holder;
@@ -43,16 +46,18 @@ public:
 
 	//Not needed, but can be used to make good seeds and build generators.
 	static void initialize() {
+		std::lock_guard<std::mutex> lk(c_mutex_rf);
+
 		//Take some random sources and feed them to seed_seq
 		unsigned int seed1 = std::chrono::system_clock::now().time_since_epoch().count();
 		unsigned int seed2 = c_device_rf();
 		//Make a ping packet response time, thread wait time, process id
-		std::seed_seq seq = { seed1, seed2 }; // add more randomness sources here!
+		std::seed_seq seq = { seed1, seed2 }; // consume entropy
 
-		
+		//This line might need tweaking on cluster. Do process get access to N cores or?
 		unsigned int number_of_threads = std::thread::hardware_concurrency();
 		std::vector<unsigned int> seeds(number_of_threads);
-		//Generate seeds from a random entropy sources.
+		//Generate seeds from randomness sources.
 		seq.generate(seeds.begin(), seeds.end());
 
 		//Construct a engine for each available core on system.
@@ -82,9 +87,6 @@ std::mutex									RandomEngineFactory::c_mutex_rf;
 std::condition_variable						RandomEngineFactory::c_cond_rf;
 std::queue<std::unique_ptr<RandomEngine>>	RandomEngineFactory::c_engines_rf;
 std::random_device							RandomEngineFactory::c_device_rf;
-
-
-
 
 namespace example {
 

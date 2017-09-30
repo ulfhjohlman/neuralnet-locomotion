@@ -88,7 +88,7 @@ public:
 
 	void updateWeights(double learning_rate)
 	{
-		// updates weights proportionaly to their currently stored gradients
+		// updates weights proportionally to their currently stored gradients
 		m_weights -= learning_rate * m_gradients_weights;
 		m_bias -= learning_rate * m_gradients_bias;
 	}
@@ -98,12 +98,6 @@ public:
 	}
 	virtual const MatrixType& getInputGradients() {
 		return m_gradients_inputs;
-	}
-
-
-	virtual void setOutput(const MatrixType& x)
-	{	//only overridden by InputLayer
-		throw NeuralNetException("Can only set Output of an 'Input Layer'\n");
 	}
 
 	virtual ScalarType* data() {

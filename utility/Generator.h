@@ -54,6 +54,25 @@ public:
 			v[i] = distribution(*m_engine); //Change to =generate_normal<T>(mu, sigma)
 	}
 
+	//generate X~B(n, p), p can only be double.
+	int generate_binomial(const int n, const double p) {
+		std::binomial_distribution<int> distribution(n, p);
+		return distribution(*m_engine);
+	}
+	//generate int X ~ { a, a+1, ..., b } 
+	int generate_uniform_int(const int a, const int b) {
+		std::uniform_int_distribution<int> distribution(a, b);
+		return distribution(*m_engine);
+	}
+
+	void fill_vector_uniform_int(std::vector<int>& v, const int a, const int b) {
+		fill_vector_uniform_int(v.data(), v.size(), a, b);
+	}
+
+	void fill_vector_uniform_int(int* v, const int size, const int a, const int b) {
+		for (int i = 0; i < size; i++)
+			v[i] = generate_uniform_int(a, b);
+	}
 
 
 private:

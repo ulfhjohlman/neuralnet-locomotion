@@ -4,7 +4,9 @@
     <ClCompile Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\mjenvironment.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MujocoWrapper.cpp" />
+    <ClCompile Include="MujocoWrapper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\CMakeLists.txt" />
@@ -15,7 +17,11 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="glfwWrapper.h" />
-    <ClInclude Include="MujocoWrapper.h" />
+    <ClInclude Include="glfwWrapper.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MujocoWrapper.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -60,7 +60,7 @@ public:
 		checkEmptyNetwork();
 
 		//Load input layer
-		m_layers.front()->setOutput(x);
+		m_layers.front()->input(x);
 
 		//Propagate forward
 		for (int i = 1; i < m_layers.size(); i++) {
@@ -87,9 +87,16 @@ public:
 
 	virtual const MatrixType& output() {
 		checkEmptyNetwork();
-
 		return m_layers.back()->output();
 	}
+
+	virtual LayeredTopology * getTopology() const {
+		return m_topology;
+	}
+	virtual Layer* getLayer(int i) const {
+		return m_layers[i];
+	}
+
 	void printLayerOutputs()
 	{
 		std::cout << "Printing layer outputs:\n";
@@ -159,7 +166,6 @@ private:
 		if (topology == m_topology) throw std::invalid_argument("self topology assignment.");;
 #endif // _NEURALNET_DEBUG
 	}
-
 
 	LayeredTopology* m_topology;
 };

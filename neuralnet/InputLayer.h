@@ -9,17 +9,14 @@ public:
 	virtual ~InputLayer() = default;
 
 	virtual void input(const MatrixType& x) {
-		m_pInput = x;
+		m_pInput = &x;
 	}
-	virtual void setOutput(const MatrixType& x)
-	{
-		m_pInput = x;
-	}
+
 	virtual const MatrixType& output()
 	{
-		return m_pInput;
+		return *m_pInput;
 	}
 
 private:
-	MatrixType m_pInput;
+	MatrixType const* m_pInput;
 };

@@ -1,25 +1,30 @@
 #pragma once
 #include<memory>
-#include
 #include<string>
 
+#include"Genome.h"
 
+
+template<typename Solution>
 class Individual 
 {
 public:
 	Individual() = default;
 	virtual ~Individual() = default;
 
-	virtual void decode() = 0;
+	virtual Solution * decode() = 0; //ha ha this works, fucking retarded
 	virtual void destroyDecoding() = 0;
 
-	virtual void loadGenome() = 0;
-	virtual void unloadGenome() = 0;
+	virtual void setFitness(double fitness) { m_fitness = fitness; }
+	virtual double getFitness() const { return m_fitness; }
 
-	virtual void save(const char* path);
+	virtual void save(const char* path) = 0;
+	virtual void load(const char* path) = 0;
 
 	virtual bool operator<(const Individual& rhs) const { return this->m_fitness < rhs.m_fitness; }
 	virtual bool operator>(const Individual& rhs) const { return this->m_fitness > rhs.m_fitness; }
+
+	std::shared_ptr<Genome> getGenome() { return m_genome; }
 protected:
 	double m_fitness;
 	int m_rank;

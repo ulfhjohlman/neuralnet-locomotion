@@ -45,7 +45,7 @@ public:
 		const int numberOfCols = x.cols();
 
 		//Load first layer
-		m_layers.front()->setOutput(x);
+		m_layers.front()->input(x);
 
 		MatrixType xi; //This should be fixed in future
 		//Propagate forward
