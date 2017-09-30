@@ -1,0 +1,58 @@
+#pragma once
+
+#include "Individual.h"
+#include "FeedForwardNeuralNet.h"
+#include "NeuralNetGenome.h"
+
+class NNController : public Individual<FeedForwardNeuralNet>
+{
+public:
+	NNController(int n_inputs, int n_ouputs) : m_controller(nullptr),
+		m_number_of_inputs(n_inputs),
+		m_number_of_outputs(n_ouputs) {
+		createNeuralController();
+	}
+	virtual ~NNController() {
+		destroyNeuralController();
+	}
+
+	virtual FeedForwardNeuralNet * decode() { return m_controller; }
+	virtual void destroyDecoding() { }
+
+	virtual void save(const char* path) { }
+	virtual void load(const char* path) { }
+
+protected:
+	void createNeuralController() {
+		std::vector<int> layerSizes = { m_number_of_inputs, 400, 400, 400, m_number_of_outputs, m_number_of_outputs };
+		std::vector<int> layerTypes = { Layer::inputLayer, 1,  1,  1,  1,  1 };
+		LayeredTopology* top = new LayeredTopology(layerSizes, layerTypes);
+
+		m_controller = new FeedForwardNeuralNet(top); //memory is managed by network
+		m_controller->initializeRandomWeights();
+
+		Individual::m_genome = std::shared_ptr<Genome>( new NeuralNetGenome( m_controller ) );
+	}
+
+
+	void destroyNeuralController() {
+		if (m_controller)
+			delete m_controller;
+		m_controller = nullptr;
+	}
+
+	
+private:
+	FeedForwardNeuralNet * m_controller;
+	int m_number_of_inputs;
+	int m_number_of_outputs;
+
+
+public:
+	NNController() = delete;
+	NNController(const NNController& copy_this) = delete;
+	NNController& operator=(const NNController& copy_this) = delete;
+
+	NNController(NNController&& move_this) = delete;
+	NNController& operator=(NNController&& move_this) = delete;
+};
