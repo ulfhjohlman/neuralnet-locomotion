@@ -23,6 +23,15 @@ public:
 	virtual void load(const char* path) { }
 
 protected:
+
+
+	
+private:
+	FeedForwardNeuralNet * m_controller;
+	int m_number_of_inputs;
+	int m_number_of_outputs;
+
+private:
 	void createNeuralController() {
 		std::vector<int> layerSizes = { m_number_of_inputs, 400, 400, 400, m_number_of_outputs, m_number_of_outputs };
 		std::vector<int> layerTypes = { Layer::inputLayer, 1,  1,  1,  1,  1 };
@@ -31,7 +40,7 @@ protected:
 		m_controller = new FeedForwardNeuralNet(top); //memory is managed by network
 		m_controller->initializeRandomWeights();
 
-		Individual::m_genome = std::shared_ptr<Genome>( new NeuralNetGenome( m_controller ) );
+		Individual::m_genome = std::shared_ptr<Genome>(new NeuralNetGenome(m_controller));
 	}
 
 
@@ -40,13 +49,6 @@ protected:
 			delete m_controller;
 		m_controller = nullptr;
 	}
-
-	
-private:
-	FeedForwardNeuralNet * m_controller;
-	int m_number_of_inputs;
-	int m_number_of_outputs;
-
 
 public:
 	NeuralNetChromosome() = delete;

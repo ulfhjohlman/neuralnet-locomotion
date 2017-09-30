@@ -9,7 +9,7 @@
 #include <stdexcept>
 #include <memory>
 
-
+//Change to "LayeredNeuralNet"
 class FeedForwardNeuralNet :
 	public NeuralNet
 {
@@ -63,7 +63,7 @@ public:
 		m_layers.front()->input(x);
 
 		//Propagate forward
-		for (int i = 1; i < m_layers.size(); i++) {
+		for (size_t i = 1; i < m_layers.size(); i++) {
 			m_layers[i]->input(m_layers[i-1]->output());
 		}
 	}
@@ -72,7 +72,7 @@ public:
 		checkEmptyNetwork();
 		size_t second_last_index = m_layers.size()-2;
 		m_layers.back()->backprop( gradients , m_layers[second_last_index]->output());
-		for (int i = second_last_index; i > 0 ; i--)
+		for (size_t i = second_last_index; i > 0 ; i--)
 		{
 			m_layers[i]->backprop( m_layers[i+1]->getInputGradients(), m_layers[i-1]->output());
 		}
@@ -97,6 +97,40 @@ public:
 		return m_layers[i];
 	}
 
+	virtual void save(const char* toFile) { }
+	virtual void load(const char* fromFile) { }
+protected: //members
+	std::vector<Layer*> m_layers;//replace with shared_ptr<Layer>
+private:   //members
+	LayeredTopology* m_topology;
+
+protected: //Error checking
+	void checkEmptyNetwork() const {
+#ifdef _NEURALNET_DEBUG
+		if (m_layers.empty()) throw NeuralNetException("Empty neural net");
+#endif // _NEURALNET_DEBUG
+	}
+	void destroyLayers()
+	{
+		for (size_t i = 0; i < m_layers.size(); i++)
+			if (m_layers[i]) {
+				//std::cout << "deleted:" << m_layers[i] << std::endl;
+				delete m_layers[i];
+			}
+		m_layers.clear();
+	}
+
+private: //Error checking
+	void checkTopology(LayeredTopology* topology)
+	{
+#ifdef _NEURALNET_DEBUG
+		if (topology == nullptr) throw std::invalid_argument("topology nullptr");
+		if (topology->getNumberOfLayers() < 2) throw std::invalid_argument("input not specified.");
+		if (topology == m_topology) throw std::invalid_argument("self topology assignment.");;
+#endif // _NEURALNET_DEBUG
+	}
+
+public: //Print functions
 	void printLayerOutputs()
 	{
 		std::cout << "Printing layer outputs:\n";
@@ -137,37 +171,7 @@ public:
 			std::cout << layer->getInputGradients() << "\n\n";
 		}
 	}
-	virtual void save(const char* toFile) { }
-	virtual void load(const char* fromFile) { }
-protected:
-	void checkEmptyNetwork() const {
-#ifdef _NEURALNET_DEBUG
-		if (m_layers.empty()) throw NeuralNetException("Empty neural net");
-#endif // _NEURALNET_DEBUG
-	}
-	void destroyLayers()
-	{
-		for (size_t i = 0; i < m_layers.size(); i++)
-			if (m_layers[i]) {
-				//std::cout << "deleted:" << m_layers[i] << std::endl;
-				delete m_layers[i];
-			}
-		m_layers.clear();
-	}
-	
 
-	std::vector<Layer*> m_layers;//replace with shared_ptr<Layer>
-private:
-	void checkTopology(LayeredTopology* topology)
-	{
-#ifdef _NEURALNET_DEBUG
-		if (topology == nullptr) throw std::invalid_argument("topology nullptr");
-		if (topology->getNumberOfLayers() < 2) throw std::invalid_argument("input not specified.");
-		if (topology == m_topology) throw std::invalid_argument("self topology assignment.");;
-#endif // _NEURALNET_DEBUG
-	}
-
-	LayeredTopology* m_topology;
 };
 
 typedef FeedForwardNeuralNet FFNN;

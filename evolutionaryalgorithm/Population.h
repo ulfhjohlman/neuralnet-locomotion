@@ -10,10 +10,13 @@ class Population
 public:
 	Population() = default;
 	~Population() = default;
+
+	//Generate a initial population
+	virtual void initializePopulation() = 0;
 	
 
 private:
-	std::vector<std::shared_ptr<Individual<T>>> m_population;
+	std::vector<std::shared_ptr< Individual<T> >> m_population;
 
 private:
 	Population(const Population& copy_this) = delete;

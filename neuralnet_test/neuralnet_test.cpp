@@ -202,7 +202,7 @@ std::string training_XOR_test()
 			ffnn.backprop( error_gradient );
 			ffnn.updateWeights(learning_rate);
 			classification_error = xor_classification_error(ffnn);
-			std::cout << "Iteration: " << i << ". Running Error = " << running_error << " Classification Error = " << classification_error << "\n";
+			//std::cout << "Iteration: " << i << ". Running Error = " << running_error << " Classification Error = " << classification_error << "\n";
 		}
 		output << "training_XOR_test() test ended\n";
 		std::cout << "End classification:\n ";

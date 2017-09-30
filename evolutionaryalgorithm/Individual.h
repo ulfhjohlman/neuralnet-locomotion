@@ -24,10 +24,9 @@ public:
 	virtual bool operator<(const Individual& rhs) const { return this->m_fitness < rhs.m_fitness; }
 	virtual bool operator>(const Individual& rhs) const { return this->m_fitness > rhs.m_fitness; }
 
-	std::shared_ptr<Genome> getGenome() { return m_genome; }
+	std::shared_ptr<Genome> getGenome() const { return m_genome; }
 protected:
 	double m_fitness;
-	int m_rank;
 	int m_id;
 	std::shared_ptr<Genome> m_genome;
 private:

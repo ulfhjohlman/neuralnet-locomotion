@@ -2,6 +2,9 @@
 //This library
 #include "NeuralNet.h"
 
+//Utility
+#include "Generator.h"
+
 //STL
 #include <sstream>
 class Layer : public NeuralNet
@@ -36,8 +39,10 @@ public:
 	Layer& operator=(Layer&& move_this) = delete;
 
 	virtual void setRandom() {
-		m_weights.setRandom();
-		m_bias.setZero();
+		Generator generator; //Thread safe generation
+		generator.fill_vector_uniform<ScalarType>(m_weights.data(), m_weights.size(), -0.7, 0.7);
+		generator.fill_vector_uniform<ScalarType>(m_bias.data(), m_bias.size(), -1.0, 1.0);
+
 		m_outputs.setZero();
 		m_gradients_weights.setZero();
 		m_gradients_inputs.setZero();
@@ -131,7 +136,39 @@ public:
 		return m_gradients_weights;
 	}
 protected:
+	void updateGradients(const MatrixType& modified_backpass_gradients, const MatrixType& prev_layer_outputs)
+	{
+		//modified_backpass_gradients is activation layer dependent
+		checkNeuronMismatch(m_gradients_inputs.transpose(), modified_backpass_gradients.transpose(), m_weights);
+		checkNeuronMismatch(m_gradients_weights, modified_backpass_gradients, prev_layer_outputs.transpose());
+		checkMatchingSize(m_gradients_bias, modified_backpass_gradients);
 
+		// alternativly transpose weight matrix: (A*B)^T = A^T*B^T
+		m_gradients_inputs.noalias() = (modified_backpass_gradients.transpose() * m_weights).transpose();
+		m_gradients_weights.noalias() = modified_backpass_gradients * prev_layer_outputs.transpose();
+		m_gradients_bias = modified_backpass_gradients;
+	}
+	void printOperations(const MatrixType& x)
+	{
+		std::cout << "format: A\n x \n +\n b\n =\n y\n";
+		std::cout << m_weights << std::endl;
+		std::cout << x << "+\n" << m_bias << std::endl << "=\n";
+		std::cout << m_outputs << std::endl;
+		std::cout << std::endl;
+	}
+
+protected: //members
+	MatrixType m_outputs;
+	//MatrixType m_outputs_pre_activation;
+	MatrixType m_weights;
+
+private: //members
+	VectorType m_bias;
+	MatrixType m_gradients_weights;
+	MatrixType m_gradients_inputs;
+	VectorType m_gradients_bias;
+
+protected: //Error checking
 	inline void checkSize(int size) {
 #ifdef _NEURALNET_DEBUG
 		if (size < 0) { throw NeuralNetException("Must be >=0 sized layer\n"); }
@@ -171,36 +208,4 @@ protected:
 		}
 #endif
 	}
-
-	void printOperations(const MatrixType& x)
-	{
-		std::cout << "format: A\n x \n +\n b\n =\n y\n";
-		std::cout << m_weights << std::endl;
-		std::cout << x << "+\n" << m_bias << std::endl << "=\n";
-		std::cout << m_outputs << std::endl;
-		std::cout << std::endl;
-	}
-
-	void updateGradients(const MatrixType& modified_backpass_gradients, const MatrixType& prev_layer_outputs)
-	{
-		//modified_backpass_gradients is activationlayer dependant
-		checkNeuronMismatch(m_gradients_inputs.transpose(),modified_backpass_gradients.transpose(),m_weights);
-		checkNeuronMismatch(m_gradients_weights,modified_backpass_gradients,prev_layer_outputs.transpose());
-		checkMatchingSize(m_gradients_bias,modified_backpass_gradients);
-
-		// alternativly transpose weight matrix: (A*B)^T = A^T*B^T
-		m_gradients_inputs.noalias() = (modified_backpass_gradients.transpose() * m_weights).transpose();
-		m_gradients_weights.noalias() = modified_backpass_gradients * prev_layer_outputs.transpose();
-		m_gradients_bias = modified_backpass_gradients;
-	}
-
-	MatrixType m_outputs;
-	//MatrixType m_outputs_pre_activation;
-	MatrixType m_weights;
-private:
-
-	VectorType m_bias;
-	MatrixType m_gradients_weights;
-	MatrixType m_gradients_inputs;
-	VectorType m_gradients_bias;
 };
