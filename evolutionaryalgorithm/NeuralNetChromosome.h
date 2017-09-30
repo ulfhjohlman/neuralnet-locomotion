@@ -4,15 +4,15 @@
 #include "FeedForwardNeuralNet.h"
 #include "NeuralNetGenome.h"
 
-class NNController : public Individual<FeedForwardNeuralNet>
+class NeuralNetChromosome : public Individual<FeedForwardNeuralNet>
 {
 public:
-	NNController(int n_inputs, int n_ouputs) : m_controller(nullptr),
+	NeuralNetChromosome(int n_inputs, int n_ouputs) : m_controller(nullptr),
 		m_number_of_inputs(n_inputs),
 		m_number_of_outputs(n_ouputs) {
 		createNeuralController();
 	}
-	virtual ~NNController() {
+	virtual ~NeuralNetChromosome() {
 		destroyNeuralController();
 	}
 
@@ -49,10 +49,10 @@ private:
 
 
 public:
-	NNController() = delete;
-	NNController(const NNController& copy_this) = delete;
-	NNController& operator=(const NNController& copy_this) = delete;
+	NeuralNetChromosome() = delete;
+	NeuralNetChromosome(const NeuralNetChromosome& copy_this) = delete;
+	NeuralNetChromosome& operator=(const NeuralNetChromosome& copy_this) = delete;
 
-	NNController(NNController&& move_this) = delete;
-	NNController& operator=(NNController&& move_this) = delete;
+	NeuralNetChromosome(NeuralNetChromosome&& move_this) = delete;
+	NeuralNetChromosome& operator=(NeuralNetChromosome&& move_this) = delete;
 };
