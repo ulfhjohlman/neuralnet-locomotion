@@ -1,12 +1,12 @@
 #pragma once
-#include "FeedForwardNeuralNet.h"
+#include "LayeredNeuralNet.h"
 #include "RecurrentTopology.h"
 
 class RecurrentNeuralNet :
-	public FeedForwardNeuralNet
+	public LayeredNeuralNet
 {
 public:
-	RecurrentNeuralNet() : FeedForwardNeuralNet(), m_topology(nullptr) { }
+	RecurrentNeuralNet() : LayeredNeuralNet(), m_topology(nullptr) { }
 	RecurrentNeuralNet(RecurrentTopology* topology) : m_topology(topology) { }
 	virtual ~RecurrentNeuralNet() = default;
 

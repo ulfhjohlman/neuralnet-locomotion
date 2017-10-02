@@ -3,29 +3,24 @@
 
     <default>
         <joint limited='true' damping='1' armature='0'/>
-	<default class="object2">
-            <geom type="ellipsoid" material="geom" rgba=".4 .6 .9 1" size="0.15 0.1 0.07"/>
-        </default>
         <geom contype='1' conaffinity='1' condim='1' rgba='0.8 0.6 .4 1'
         	margin="0.001" solref=".02 1" solimp=".8 .8 .01" material="geom"/>
-        <motor ctrlrange='-.4 .4' ctrllimited='true'/>
+        <motor ctrlrange='-.99 .99' ctrllimited='true'/>
         <default class="humanoid">
         </default>
     </default>
+
+    <visual>
+        <map fogstart="3" fogend="5" force="0.1" znear="0.5"/>
+        <global offwidth="800" offheight="800"/>
+    </visual>
 
     <option timestep='0.002' iterations="50" tolerance="1e-10" solver="Newton" jacobian="dense" cone="elliptic"/>
 
     <size nstack="1000000"/>
 
-    <visual>
-        <map fogstart="3" fogend="5" force="0.1" znear="0.5"/>
-        <quality shadowsize="2048" offsamples="8"/>
-        <global offwidth="800" offheight="800"/>
-    </visual>
-
     <asset>
-        <texture type="skybox" builtin="gradient" width="128" height="128" rgb1=".4 .6 .8" 
-            rgb2="0 0 0"/>  
+	<texture type="skybox" builtin="gradient" width="128" height="128" rgb1=".4 .6 .8" rgb2="0 0 0"/>  
         <texture name="texgeom" type="cube" builtin="flat" mark="cross" width="127" height="1278" 
             rgb1="0.8 0.6 0.4" rgb2="0.8 0.6 0.4" markrgb="1 1 1" random="0.01"/>  
         <texture name="texplane" type="2d" builtin="checker" rgb1=".2 .3 .4" rgb2=".1 0.15 0.2" 
@@ -36,15 +31,14 @@
     </asset>
 
     <worldbody>
-        <geom name='floor' pos='0 0 -10' size='5 5 .125' type='plane' material="MatPlane" condim='3'/>
+	
+        <geom name='floor' pos='0 0 0' size='50 50 .125' type='plane' rgba="0.0 0.0 0.0 0.0" condim='3'/>
 
-        <light mode='targetbodycom' target='torso' directional='false' diffuse='.8 .8 .8' specular='0.3 0.3 0.3' pos='0 0 4.0' dir='0 0 -1'/>
-
-		<camera name='targeting' pos='1 1 2' mode='targetbodycom' target='torso'/>
+	<camera name='targeting' pos='1 1 2' mode='targetbodycom' target='torso'/>
 
         <body name='torso' pos='0 0 1.4' childclass="humanoid">
 
-			<camera name='tracking' pos='1 1 2' zaxis="1 2 3" mode='trackcom'/>
+	<camera name='tracking' pos='1 1 2' zaxis="1 2 3" mode='trackcom'/>
 
             <freejoint name="root"/>
             <geom name='torso1' type='capsule' fromto='0 -.07 0 0 .07 0'  size='0.07'/>
@@ -52,7 +46,6 @@
 	    <site name="head" pos="0 0 0.19" size="0.10" type="sphere" rgba="0.3 0.2 0.1 0.3"/>
             <geom name='uwaist' type='capsule' fromto='-.01 -.06 -.12 -.01 .06 -.12' size='0.06'/>
             <body name='lwaist' pos='-.01 0 -0.260' quat='1.000 0 -0.002 0' >
-		<site name="lowerwaist" pos="0 0 0.19" size="0.10" type="sphere" rgba="0.3 0.2 0.1 0.3"/>
                 <geom name='lwaist' type='capsule' fromto='0 -.06 0 0 .06 0'  size='0.06' />
                 <joint name='abdomen_z' type='hinge' pos='0 0 0.065' axis='0 0 1' range='-45 45' damping='5' stiffness='20' armature='0.02' />
                 <joint name='abdomen_y' type='hinge' pos='0 0 0.065' axis='0 1 0' range='-75 30' damping='5' stiffness='10' armature='0.02' />
@@ -117,11 +110,6 @@
 		    <site name="lefthand"  pos='.18 -.18 .18' size='.05 .05 .05' type="box" rgba="0.3 0.2 0.1 0.3"/>
                 </body>
             </body>
-        </body>
-
-	<body pos="-1 -2 2" quat="-0.316228 -0.632456 0.632456 0.316228">
-            <freejoint/>
-            <geom class="object2"/>
         </body>
     </worldbody>
     <sensor>

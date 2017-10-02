@@ -1,6 +1,6 @@
 #pragma once
 
-#include "FeedForwardNeuralNet.h"
+#include "LayeredNeuralNet.h"
 #include "CascadeTopology.h"
 #include <numeric>
 #include <set>
@@ -9,12 +9,12 @@
 /// Blev ej super logiskt. FeedForwardNerualNet �r egentligen
 /// ett subset av denna klass konceptuellt. Ska fixa senare
 /// </summary>
-class CascadeNeuralNet : public FeedForwardNeuralNet
+class CascadeNeuralNet : public LayeredNeuralNet
 {
 public:
 	CascadeNeuralNet() = default;
 	CascadeNeuralNet(CascadeTopology * topology) : m_topology(topology) {
-		FeedForwardNeuralNet::setTopology(topology);
+		LayeredNeuralNet::setTopology(topology);
 		constructFromTopology();
 	}
 	virtual ~CascadeNeuralNet() = default;

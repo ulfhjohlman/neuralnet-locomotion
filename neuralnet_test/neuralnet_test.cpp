@@ -7,7 +7,7 @@
 #include "Dataset.h"
 #include "DatasetException.h"
 #include "NeuralNet.h"
-#include "FeedForwardNeuralNet.h"
+#include "LayeredNeuralNet.h"
 #include "LayeredTopology.h"
 #include "CascadeNeuralNet.h"
 #include "RecurrentTopology.h"
@@ -92,7 +92,7 @@ std::string relu_ff_test()
 
 		//new random seed every run
 		std::srand(static_cast<unsigned int>(time(0)));
-		FeedForwardNeuralNet ffnn(top);
+		LayeredNeuralNet ffnn(top);
 		ffnn.initializeRandomWeights();
 		MatrixType input_matrix(layerSizes[0], 1);
 		input_matrix.setRandom();
@@ -159,19 +159,19 @@ std::string training_XOR_test()
 		int noactiv = Layer::noActivation;
 		int softmax = Layer::LayerType::softmax;
 		int sigmoid= Layer::LayerType::sigmoid;
-		std::vector<int> layerTypes {inputLayer,relu,relu,sigmoid};
+		std::vector<int> layerTypes {inputLayer, 1, 1, 1};
 		LayeredTopology* top = new LayeredTopology(layerSizes,layerTypes);
 
 		//new random seed every run
 		std::srand(static_cast<unsigned int>(time(0)));
-		FeedForwardNeuralNet ffnn(top);
+		LayeredNeuralNet ffnn(top);
 		ffnn.initializeRandomWeights();
 		MatrixType input_matrix(layerSizes[0], 1);
 		MatrixType error_gradient(layerSizes.back(),1);
 		int sample;
 		float error;
 		double running_error = 1;
-		double learning_rate = 0.05;
+		double learning_rate = 0.01;
 		double ffnn_out;
 		int selected_out;
 
@@ -180,7 +180,7 @@ std::string training_XOR_test()
 		std::cout << "Start classification:\n ";
 		xor_classification_error(ffnn,true);
 		double classification_error;
-		for(int i = 0; i < 10000 && running_error>0.1 ; i++)
+		for(int i = 0; i < 100000 && running_error>0.1 ; i++)
 		{
 			//forwardpass
 			sample = std::rand() % 4;
@@ -354,7 +354,7 @@ std::string feedForwardNeuralNet_test() {
 		std::vector<int> layerTypes = { Layer::inputLayer, 0, 0, 0 };
 		LayeredTopology * top = new LayeredTopology(layerSizes, layerTypes);
 
-		FeedForwardNeuralNet ffnn(top);
+		LayeredNeuralNet ffnn(top);
 		ffnn.initializeRandomWeights();
 
 		MatrixType m(n_inputs, 1);

@@ -10,16 +10,16 @@
 #include <memory>
 
 //Change to "LayeredNeuralNet"
-class FeedForwardNeuralNet :
+class LayeredNeuralNet :
 	public NeuralNet
 {
 public:
-	FeedForwardNeuralNet() : m_topology(nullptr) { }
-	FeedForwardNeuralNet(LayeredTopology * topology) : m_topology(nullptr) {
+	LayeredNeuralNet() : m_topology(nullptr) { }
+	LayeredNeuralNet(LayeredTopology * topology) : m_topology(nullptr) {
 		setTopology(topology);
 		constructFromTopology();
 	}
-	virtual ~FeedForwardNeuralNet() {
+	virtual ~LayeredNeuralNet() {
 		if (m_topology)
 			delete m_topology;
 		destroyLayers();
@@ -174,4 +174,4 @@ public: //Print functions
 
 };
 
-typedef FeedForwardNeuralNet FFNN;
+typedef LayeredNeuralNet FFNN;

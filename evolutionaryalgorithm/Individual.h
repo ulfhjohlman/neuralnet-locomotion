@@ -5,15 +5,14 @@
 #include"Genome.h"
 
 
-template<typename Solution>
+template<typename Solution> //Add Genome template later
 class Individual 
 {
 public:
 	Individual() = default;
 	virtual ~Individual() = default;
 
-	virtual Solution * decode() = 0; //ha ha this works, fucking retarded
-	virtual void destroyDecoding() = 0;
+	virtual Solution * decode() = 0; //ha ha this works
 
 	virtual void setFitness(double fitness) { m_fitness = fitness; }
 	virtual double getFitness() const { return m_fitness; }

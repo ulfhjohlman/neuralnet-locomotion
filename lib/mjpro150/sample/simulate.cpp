@@ -1245,7 +1245,7 @@ int main(int argc, const char** argv)
     window2buffer = (double)width1 / (double)width;
 
     // init MuJoCo rendering, get OpenGL info
-    mjv_makeScene(&scn, 1000);
+    mjv_makeScene(&scn, 10000);
     mjv_defaultCamera(&cam);
     mjv_defaultOption(&vopt);
     mjr_defaultContext(&con);

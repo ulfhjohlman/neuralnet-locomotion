@@ -10,3 +10,402 @@ WARNING: Model missing header ID
 Tue Sep 26 19:36:39 2017
 ERROR: mjvScene frustum_near too small in mjr_render
 
+Sun Oct  1 19:38:38 2017
+ERROR: mjvScene frustum_near too small in mjr_render
+
+Sun Oct  1 19:56:16 2017
+ERROR: GLEW initalization error: Missing GL version
+
+Sun Oct  1 19:56:35 2017
+ERROR: GLEW initalization error: Missing GL version
+
+Sun Oct  1 19:56:54 2017
+ERROR: GLEW initalization error: Missing GL version
+
+Sun Oct  1 19:57:47 2017
+ERROR: GLEW initalization error: Missing GL version
+
+Sun Oct  1 19:58:25 2017
+ERROR: GLEW initalization error: Missing GL version
+
+Sun Oct  1 20:21:02 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0000.
+
+Sun Oct  1 20:21:02 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0000.
+
+Sun Oct  1 20:21:02 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0000.
+
+Sun Oct  1 20:21:02 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0000.
+
+Sun Oct  1 20:21:02 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0000.
+
+Sun Oct  1 20:21:02 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0000.
+
+Sun Oct  1 20:21:02 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0000.
+
+Sun Oct  1 20:21:02 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0000.
+
+Sun Oct  1 20:21:02 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0000.
+
+Sun Oct  1 20:21:02 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0000.
+
+Sun Oct  1 20:21:02 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0000.
+
+Sun Oct  1 20:21:02 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0000.
+
+Sun Oct  1 20:21:02 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0000.
+
+Sun Oct  1 20:21:51 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0000.
+
+Sun Oct  1 20:21:51 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0000.
+
+Sun Oct  1 20:21:51 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0000.
+
+Sun Oct  1 20:21:51 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0000.
+
+Sun Oct  1 20:21:51 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0000.
+
+Sun Oct  1 20:21:51 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0000.
+
+Sun Oct  1 20:21:51 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0000.
+
+Sun Oct  1 20:21:52 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0000.
+
+Sun Oct  1 20:21:52 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0000.
+
+Sun Oct  1 20:21:52 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0000.
+
+Sun Oct  1 20:21:52 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0000.
+
+Sun Oct  1 20:21:52 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0000.
+
+Sun Oct  1 20:21:52 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0000.
+
+Sun Oct  1 20:22:06 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0000.
+
+Sun Oct  1 20:22:06 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0000.
+
+Sun Oct  1 20:22:06 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0000.
+
+Sun Oct  1 20:22:06 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0000.
+
+Sun Oct  1 20:22:06 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0000.
+
+Sun Oct  1 20:22:06 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0000.
+
+Sun Oct  1 20:22:06 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0000.
+
+Sun Oct  1 20:22:06 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0000.
+
+Sun Oct  1 20:22:06 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0000.
+
+Sun Oct  1 20:22:06 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0000.
+
+Sun Oct  1 20:22:06 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0000.
+
+Sun Oct  1 20:22:06 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0000.
+
+Sun Oct  1 20:22:06 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0000.
+
+Sun Oct  1 21:00:20 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 13. The simulation is unstable. Time = 2.0120.
+
+Sun Oct  1 21:01:08 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 13. The simulation is unstable. Time = 5.1680.
+
+Sun Oct  1 21:01:32 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 4. The simulation is unstable. Time = 0.0020.
+
+Mon Oct  2 00:02:37 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 16. The simulation is unstable. Time = 0.0320.
+
+Mon Oct  2 00:04:18 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 16. The simulation is unstable. Time = 0.0320.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 01:59:40 2017
+WARNING: Pre-allocated visual geom buffer is full. Increase maxgeom above 1000. Time = 0.0060.
+
+Mon Oct  2 03:00:59 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 0.2300.
+
+Mon Oct  2 03:00:59 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 0.2700.
+
+Mon Oct  2 03:00:59 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 0.2700.
+
+Mon Oct  2 03:00:59 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 0.2700.
+
+Mon Oct  2 03:00:59 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 9. The simulation is unstable. Time = 0.2900.
+
+Mon Oct  2 03:00:59 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 1. The simulation is unstable. Time = 0.2900.
+
+Mon Oct  2 03:00:59 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 4. The simulation is unstable. Time = 0.3000.
+
+Mon Oct  2 03:00:59 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 3. The simulation is unstable. Time = 0.3300.
+
+Mon Oct  2 03:00:59 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 0.3300.
+
+Mon Oct  2 03:00:59 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 0.3300.
+
+Mon Oct  2 03:03:12 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 0.5700.
+
+Mon Oct  2 03:03:20 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 3. The simulation is unstable. Time = 1.8250.
+
+Mon Oct  2 03:03:21 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 1.8650.
+
+Mon Oct  2 03:03:21 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 1.9500.
+
+Mon Oct  2 03:03:22 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 15. The simulation is unstable. Time = 1.9850.
+
+Mon Oct  2 03:03:22 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 2.0600.
+
+Mon Oct  2 03:03:23 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 2.1350.
+
+Mon Oct  2 03:03:26 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 22. The simulation is unstable. Time = 2.5400.
+
+Mon Oct  2 03:03:28 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 10. The simulation is unstable. Time = 2.8350.
+
+Mon Oct  2 03:03:28 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 2.8350.
+
+Mon Oct  2 03:03:29 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 20. The simulation is unstable. Time = 2.9850.
+
+Mon Oct  2 03:03:33 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 1. The simulation is unstable. Time = 3.6050.
+
+Mon Oct  2 03:03:33 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 10. The simulation is unstable. Time = 3.6100.
+

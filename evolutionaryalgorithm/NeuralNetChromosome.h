@@ -1,10 +1,10 @@
 #pragma once
 
 #include "Individual.h"
-#include "FeedForwardNeuralNet.h"
+#include "LayeredNeuralNet.h"
 #include "NeuralNetGenome.h"
 
-class NeuralNetChromosome : public Individual<FeedForwardNeuralNet>
+class NeuralNetChromosome : public Individual<LayeredNeuralNet> //Add genome template
 {
 public:
 	NeuralNetChromosome(int n_inputs, int n_ouputs) : m_controller(nullptr),
@@ -16,8 +16,7 @@ public:
 		destroyNeuralController();
 	}
 
-	virtual FeedForwardNeuralNet * decode() { return m_controller; }
-	virtual void destroyDecoding() { }
+	virtual LayeredNeuralNet * decode() { return m_controller; }
 
 	virtual void save(const char* path) { }
 	virtual void load(const char* path) { }
@@ -27,7 +26,7 @@ protected:
 
 	
 private:
-	FeedForwardNeuralNet * m_controller;
+	LayeredNeuralNet * m_controller;
 	int m_number_of_inputs;
 	int m_number_of_outputs;
 
@@ -37,7 +36,7 @@ private:
 		std::vector<int> layerTypes = { Layer::inputLayer, 1,  1,  1,  1,  1 };
 		LayeredTopology* top = new LayeredTopology(layerSizes, layerTypes);
 
-		m_controller = new FeedForwardNeuralNet(top); //memory is managed by network
+		m_controller = new LayeredNeuralNet(top); //memory is managed by network
 		m_controller->initializeRandomWeights();
 
 		Individual::m_genome = std::shared_ptr<Genome>(new NeuralNetGenome(m_controller));

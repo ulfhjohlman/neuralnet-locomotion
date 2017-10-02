@@ -1,6 +1,6 @@
 #pragma once
 #include "NeuralNet.h"
-#include "FeedForwardNeuralNet.h"
+#include "LayeredNeuralNet.h"
 #include "Genome.h"
 #include "Generator.h"
 
@@ -10,7 +10,7 @@
 class NeuralNetGenome : public Genome
 {
 public:
-	NeuralNetGenome(FeedForwardNeuralNet * net) {
+	NeuralNetGenome(LayeredNeuralNet * net) {
 		checkNN(net);
 
 		LayeredTopology* top = net->getTopology();
@@ -31,7 +31,6 @@ public:
 	virtual void mutate(ScalarType mutation_probability) {
 		checkMutationRate(mutation_probability);
 
-		//Assume low mutation prob for now.
 		Generator generator;
 		for (int i = 1; i < m_weight_size.size(); i++) {
 			const auto L = m_weight_size[i];
@@ -40,7 +39,8 @@ public:
 			//Get the binomially distributed variable ~B(n_trails, p_probability)
 			int number_of_mutations = generator.generate_binomial(L, (double)mutation_probability);
 
-			//generate mutation sites.
+			//Generate mutation sites. Assumed low mutation prob for now.
+			//Problem is worst case scenario when same index is rolled.
 			std::unordered_set<int> indexes(number_of_mutations);
 			while (indexes.size() < number_of_mutations) {
 				int index = generator.generate_uniform_int(0, L - 1);
@@ -48,7 +48,7 @@ public:
 			}
 
 			for (const auto & index : indexes) {
-				dataPointer[index] += generator.generate_uniform<ScalarType>( 0, 0.15 );
+				dataPointer[index] += generator.generate_normal<ScalarType>( 0, 0.15 );
 			}
 		}
 
@@ -62,7 +62,7 @@ protected:
 		}
 #endif // _DEBUG
 	}
-	void checkNN(FeedForwardNeuralNet * net)
+	void checkNN(LayeredNeuralNet * net)
 	{
 #ifdef _NEURALNET_DEBUG
 		if (net == nullptr)
