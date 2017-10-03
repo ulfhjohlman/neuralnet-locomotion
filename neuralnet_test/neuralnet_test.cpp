@@ -108,7 +108,7 @@ std::string relu_ff_test()
 		ffnn.backprop( x );
 		output << "Updating weights\n";
 		double learning_rate = 10e-4;
-		ffnn.updateWeights(learning_rate);
+		ffnn.updateWeightsSGD(learning_rate);
 
 		output << "relu_ff_test() test ended\n";
 		return output.str();
@@ -153,21 +153,15 @@ std::string training_XOR_test()
 	output << "XOR training started\n";
 	try
 	{
-		std::vector<int> layerSizes {2,4,8,1};
+		std::vector<int> layerSizes {2,4,1};
 		int relu = Layer::LayerType::relu;
 		int inputLayer = Layer::LayerType::inputLayer;
 		int noactiv = Layer::noActivation;
 		int softmax = Layer::LayerType::softmax;
 		int sigmoid= Layer::LayerType::sigmoid;
-		std::vector<int> layerTypes {inputLayer, 1, 1, 1};
+		std::vector<int> layerTypes {inputLayer, 1, 1};
 		LayeredTopology* top = new LayeredTopology(layerSizes,layerTypes);
 
-		//new random seed every run
-		std::srand(static_cast<unsigned int>(time(0)));
-		LayeredNeuralNet ffnn(top);
-		ffnn.initializeRandomWeights();
-		MatrixType input_matrix(layerSizes[0], 1);
-		MatrixType error_gradient(layerSizes.back(),1);
 		int sample;
 		float error;
 		double running_error = 1;
@@ -175,12 +169,28 @@ std::string training_XOR_test()
 		double ffnn_out;
 		int selected_out;
 
+		//new random seed every run
+		std::srand(static_cast<unsigned int>(time(0)));
+		LayeredNeuralNet ffnn(top);
+		ffnn.initializeRandomWeights();
+		//ParameterUpdater gupd(learning_rate);
+		//MomentumUpdater gupd(learning_rate,0.9);
+		//AdagradUpdater gupd(learning_rate,1e-6);
+		//RMSPropUpdater gupd(learning_rate,1e-6,0.99);
+		AdamUpdater gupd(learning_rate,1e-8,0.9,0.999);
+
+		ffnn.setParameterUpdater(gupd);
+		MatrixType input_matrix(layerSizes[0], 1);
+		MatrixType error_gradient(layerSizes.back(),1);
+
+
 		// Training Data:
 		double train_data[4][3] {{0,0,0},{0,1,1},{1,0,1},{1,1,0}};
 		std::cout << "Start classification:\n ";
 		xor_classification_error(ffnn,true);
-		double classification_error;
-		for(int i = 0; i < 100000 && running_error>0.1 ; i++)
+		double classification_error = 0.5;
+		int i;
+		for(i = 0; i < 10000 && classification_error>0.01 ; i++)
 		{
 			//forwardpass
 			sample = std::rand() % 4;
@@ -200,11 +210,15 @@ std::string training_XOR_test()
 			error_gradient << 2.0 * (ffnn_out - train_data[sample][2]);
 
 			ffnn.backprop( error_gradient );
-			ffnn.updateWeights(learning_rate);
+			ffnn.updateParameters();
 			classification_error = xor_classification_error(ffnn);
 			//std::cout << "Iteration: " << i << ". Running Error = " << running_error << " Classification Error = " << classification_error << "\n";
+			//ffnn.printLayerWeights();
+			//ffnn.printLayerBias();
+			//ffnn.printLayerWeightGradients();
+			//ffnn.printLayerOutputs();
 		}
-		output << "training_XOR_test() test ended\n";
+		output << "training_XOR_test() test ended after " << i << " iterations\n";
 		std::cout << "End classification:\n ";
 		xor_classification_error(ffnn,true);
 		return output.str();

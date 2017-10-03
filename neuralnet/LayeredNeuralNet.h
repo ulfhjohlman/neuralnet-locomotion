@@ -4,6 +4,7 @@
 #include "LayeredTopology.h"
 #include "Layer.h"
 #include "LayerFactory.h"
+#include "ParameterUpdater.h"
 
 #include <vector>
 #include <stdexcept>
@@ -77,12 +78,30 @@ public:
 			m_layers[i]->backprop( m_layers[i+1]->getInputGradients(), m_layers[i-1]->output());
 		}
 	}
-	virtual void updateWeights(double learning_rate)
+
+	//vanila SGD updates without using a gradient updator object
+	// DEPRICATED; REMOVE LATER
+	virtual void updateWeightsSGD(double learning_rate)
 	{
 		for (auto& layer : m_layers)
 		{
-			layer->updateWeights(learning_rate);
+			layer->updateWeightsSGD(learning_rate);
 		}
+	}
+
+	//links a gradient updater to the network layers' parameters
+	void setParameterUpdater(ParameterUpdater& gupd)
+	{
+		m_parameter_updater = &gupd;
+		for(auto& layer : m_layers)
+		{
+			m_parameter_updater->linkLayerParams(layer);
+		}
+	}
+
+	void updateParameters()
+	{
+		m_parameter_updater->updateParameters();
 	}
 
 	virtual const MatrixType& output() {
@@ -103,6 +122,7 @@ protected: //members
 	std::vector<Layer*> m_layers;//replace with shared_ptr<Layer>
 private:   //members
 	LayeredTopology* m_topology;
+	ParameterUpdater* m_parameter_updater = nullptr;
 
 protected: //Error checking
 	void checkEmptyNetwork() const {

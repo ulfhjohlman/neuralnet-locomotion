@@ -59,7 +59,7 @@ public:
 		//m_outputs_pre_activation.resizeLike(m_outputs);
 
 		m_weights.resize(size, inputSize);
-		m_bias.resize(size);
+		m_bias.resize(size,1);
 
 		m_gradients_weights.resizeLike(m_weights);
 		m_gradients_bias.resizeLike(m_bias);
@@ -75,7 +75,7 @@ public:
 		m_outputs.noalias() = m_weights * x;
 
 		//Add bias to each neuron
-		m_outputs.array().colwise() += m_bias.array();
+		m_outputs.array() += m_bias.array();
 
 		//m_outputs_pre_activation = m_outputs;
 
@@ -91,12 +91,15 @@ public:
 		updateGradients(backpass_gradients, prev_layer_outputs);
 	}
 
-	void updateWeights(double learning_rate)
+	//use vanila SGD to update weights
+	void updateWeightsSGD(double learning_rate)
 	{
 		// updates weights proportionally to their currently stored gradients
 		m_weights -= learning_rate * m_gradients_weights;
 		m_bias -= learning_rate * m_gradients_bias;
 	}
+
+	friend class ParameterUpdater;
 
 	virtual const MatrixType& output() {
 		return m_outputs;
@@ -127,7 +130,7 @@ public:
 	{
 		return m_weights;
 	}
-	const VectorType& getBias()
+	const MatrixType& getBias()
 	{
 		return m_bias;
 	}
@@ -163,10 +166,10 @@ protected: //members
 	MatrixType m_weights;
 
 private: //members
-	VectorType m_bias;
+	MatrixType m_bias;
 	MatrixType m_gradients_weights;
 	MatrixType m_gradients_inputs;
-	VectorType m_gradients_bias;
+	MatrixType m_gradients_bias;
 
 protected: //Error checking
 	inline void checkSize(int size) {
