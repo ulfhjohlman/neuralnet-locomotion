@@ -14,8 +14,8 @@ public:
 	~Mutation() = default;
 
 	void operator>>(Population<T>& population) {
-		for(auto & member : population.members)
-			member->getGenome()->mutate(m_mutation_probability);
+		for(size_t i = 4; i < population.members.size(); i++)
+			population.members[i]->getGenome()->mutate(m_mutation_probability);
 	}
 private:
 	ScalarType m_mutation_probability;

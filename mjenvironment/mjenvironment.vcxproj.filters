@@ -24,5 +24,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="oldMujocoBasic.h" />
+    <ClInclude Include="AgentScheduler.h" />
   </ItemGroup>
 </Project>

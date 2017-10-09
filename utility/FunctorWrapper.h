@@ -14,12 +14,12 @@ public:
 	template<typename F>
 	FunctorWrapper(F&& f) : //wraps the functor to the type family.
 		implementation(new type<F>(std::forward<F>(f))) {
-			std::cout << "TEMPLATE WRAPPER MOVED\n";
+			//std::cout << "TEMPLATE WRAPPER MOVED\n";
 		} //move ownership
 
 	FunctorWrapper(FunctorWrapper&& move_this) : //move "move_this" implementation
 		implementation(std::move(move_this.implementation)) {
-		std::cout << "\nWRAPPER MOVED\n";
+		//std::cout << "\nWRAPPER MOVED\n";
 	}
 
 	FunctorWrapper& operator=(FunctorWrapper&& move_this) { //same as 1 above

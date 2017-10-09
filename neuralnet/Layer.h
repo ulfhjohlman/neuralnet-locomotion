@@ -40,8 +40,8 @@ public:
 
 	virtual void setRandom() {
 		Generator generator; //Thread safe generation
-		generator.fill_vector_uniform<ScalarType>(m_weights.data(), m_weights.size(), -0.7, 0.7);
-		generator.fill_vector_normal<ScalarType>(m_bias.data(), m_bias.size(), 0.0, 0.2);
+		generator.fill_vector_uniform<ScalarType>(m_weights.data(), m_weights.size(), -0.19, 0.19);
+		generator.fill_vector_normal<ScalarType>(m_bias.data(), m_bias.size(), -0.05, 0.05);
 
 		m_outputs.setZero();
 		m_gradients_weights.setZero();
@@ -108,8 +108,11 @@ public:
 		return m_gradients_inputs;
 	}
 
-	virtual ScalarType* data() {
+	virtual ScalarType* weightData() {
 		return m_weights.data();
+	}
+	virtual ScalarType* biasData() {
+		return m_bias.data();
 	}
 
 	virtual void save(const char* toFile) { }

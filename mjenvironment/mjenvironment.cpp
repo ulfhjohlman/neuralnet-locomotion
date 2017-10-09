@@ -1,7 +1,10 @@
 #include "mjEnvironment.h"
 #include "GeneticAlgorithm.h"
 
+const int g_population_size = 128;
+
 mjEnvironment* environment;
+GeneticAlgorithm* ga;
 
 // interaction
 bool b_render = true;
@@ -10,24 +13,63 @@ bool button_middle = false;
 bool button_right = false;
 double lastx = 0;
 double lasty = 0;
-int sign = 1;
 
+GLFWwindow* window = nullptr;
 void keyboard(GLFWwindow* window, int key, int scancode, int act, int mods);
 void mouse_button(GLFWwindow* window, int button, int act, int mods);
 void mouse_move(GLFWwindow* window, double xpos, double ypos);
 void scroll(GLFWwindow* window, double xoffset, double yoffset);
+bool init();
 
 int main() {
+	if (!init())
+		return 1;
+
+	environment  = new mjEnvironment(g_population_size);
+	int nsensors = environment->m_model->nsensordata;
+	int nctrls	 = environment->m_model->nu;
+	ga			 = new GeneticAlgorithm(g_population_size, nsensors, nctrls);
+
+	auto objective = [](mjModel const* m, mjData* d) { return d->site_xpos[2] + d->site_xpos[0] - std::abs(d->site_xpos[1]); };
+	environment->setObjective(objective);
+
+	ga->setEnvironment(environment);
+	
+	while (!glfwWindowShouldClose(window))
+	{
+		ga->run();
+		//render here
+		if (b_render) {
+			// get framebuffer viewport
+			mjrRect viewport = { 0, 0, 0, 0 };
+			glfwGetFramebufferSize(window, &viewport.width, &viewport.height);
+
+			environment->render(viewport);
+
+			// swap OpenGL buffers (blocking call due to v-sync)
+			glfwSwapBuffers(window);
+		}
+
+		// process pending GUI events, call GLFW callbacks
+		glfwPollEvents();
+	}
+
+	return 0;
+}
+
+bool init() {
 	// init GLFW
-	if (!glfwInit())
+	if (!glfwInit()) {
 		mju_error("Could not initialize GLFW");
+		return false;
+	}
 
 	// create window, make OpenGL context current, request v-sync
-	GLFWwindow* window = glfwCreateWindow(1200, 900, "environment", NULL, NULL);
+	window = glfwCreateWindow(1200, 900, "environment", NULL, NULL);
 	if (!window) {
 		glfwTerminate();
 		mju_error("window could not init.");
-		return 1;
+		return false;
 	}
 
 	glfwMakeContextCurrent(window);
@@ -38,32 +80,9 @@ int main() {
 	glfwSetMouseButtonCallback(window, mouse_button);
 	glfwSetScrollCallback(window, scroll);
 
-	environment = new mjEnvironment(100);
-	GeneticAlgorithm ga(100, 52, 21);
-	ga.setEnvironment(environment);
-	ga.run();
-	
-	while (!glfwWindowShouldClose(window))
-	{
-		// get framebuffer viewport
-		mjrRect viewport = { 0, 0, 0, 0 };
-		glfwGetFramebufferSize(window, &viewport.width, &viewport.height);
-
-		//render here
-		if(b_render)
-			environment->render(viewport);
-
-		// swap OpenGL buffers (blocking call due to v-sync)
-		glfwSwapBuffers(window);
-
-		// process pending GUI events, call GLFW callbacks
-		glfwPollEvents();
-	}
-
-
-
-	return 0;
+	return true;
 }
+
 
 // keyboard callback
 void keyboard(GLFWwindow* window, int key, int scancode, int act, int mods)
@@ -74,6 +93,7 @@ void keyboard(GLFWwindow* window, int key, int scancode, int act, int mods)
 	}
 
 	if (act == GLFW_PRESS && key == GLFW_KEY_Q) {
+		//ga->mutate();
 	}
 
 	if (act == GLFW_PRESS && key == GLFW_KEY_U) {

@@ -65,6 +65,7 @@ public:
 		return distribution(*m_engine);
 	}
 
+	//Add template to fix these pesky warnings.
 	void fill_vector_uniform_int(std::vector<int>& v, const int a, const int b) {
 		fill_vector_uniform_int(v.data(), v.size(), a, b);
 	}

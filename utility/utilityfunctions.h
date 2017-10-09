@@ -41,6 +41,50 @@ void parallel_for_each(Iterator first, Iterator last, Function f, size_t block_s
 }
 
 /// <summary>
+/// A parallel for implementation using thread pooling.
+/// <para>Ex:  </para>
+/// <para>auto f = [] (int i) { std::cout << i << std::endl; }; //index arg for function always required  </para>
+/// <para>parallel_for(0, 10, 2, f /*, args... */); //Loop 0 to 9 with partial loop size of size 2.  </para>
+/// </summary>
+template<typename Index, typename Function, typename ...Args>
+void parallel_for(Index first, Index last, Index block_size, Function f, Args && ... args) {
+	const Index length = last - first;
+	if (length < 1)
+		return;
+	
+	static ThreadPool pool;
+	Index number_of_work_items = length / block_size;
+
+	auto partial_for_loop = [&, f, args...](Index first, Index last)
+	{
+		for (Index i = first; i < last; i++)
+			f(i, args...);
+	};
+
+	Index block_start = first;
+	Index block_end = block_start;
+
+	//Add work items (partial for loop) to thread pool
+	for (Index i = 0; i < number_of_work_items; i++)
+	{
+		block_end += block_size;
+		auto loop = std::bind(partial_for_loop, block_start, block_end);
+		pool.addWork(std::move(loop)); //Important to move, otherwise reference bite you in the ass
+		block_start = block_end;
+	}
+
+	//Add last work item if there is one
+	if (block_end != last) {
+		block_end = last;
+		auto loop = std::bind(partial_for_loop, block_start, block_end);
+		pool.addWork(std::move(loop)); //Important to move, otherwise reference bite you in the ass
+	}
+
+	pool.help();
+	while (!pool.isDone()) { }
+}
+
+/// <summary>
 /// <code> 
 ///auto l = [](int a, int b) { std::cout << a + b << std::endl; };
 ///Loop 3, decltype(l), int, int ::unroll(l, 2, 3);

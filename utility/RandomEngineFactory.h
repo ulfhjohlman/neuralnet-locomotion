@@ -11,8 +11,8 @@
 #include <iostream>
 #include <string>
 
-typedef std::ranlux48 RandomEngine;			//slower, 48-bit advancement, good quality, has theory
-//typedef std::ranlux24 RandomEngine;		//slower, 24-bit advancement, good quality, has theory
+//typedef std::ranlux48 RandomEngine;			//slower, 48-bit advancement, good quality, has theory
+typedef std::ranlux24 RandomEngine;		//slower, 24-bit advancement, good quality, has theory
 //typedef std::mt19937_64 RandomEngine;		//slow, big on memory, 64-bit, medium quality
 //typedef std::mt19937 RandomEngine;		//slow, big on memory, 32-bit, medium quality
 //typedef std::minstd_rand RandomEngine;	//fast, but poor quality
@@ -49,7 +49,7 @@ public:
 		std::lock_guard<std::mutex> lk(c_mutex_rf);
 
 		//Take some random sources and feed them to seed_seq
-		unsigned int seed1 = std::chrono::system_clock::now().time_since_epoch().count();
+		unsigned int seed1 = static_cast<unsigned int> (std::chrono::system_clock::now().time_since_epoch().count());
 		unsigned int seed2 = c_device_rf();
 		//Make a ping packet response time, thread wait time, process id
 		std::seed_seq seq = { seed1, seed2 }; // consume entropy

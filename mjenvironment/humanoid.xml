@@ -15,7 +15,7 @@
         <global offwidth="800" offheight="800"/>
     </visual>
 
-    <option timestep='0.002' iterations="50" tolerance="1e-10" solver="Newton" jacobian="dense" cone="elliptic"/>
+    <option integrator="RK4" iterations="50" solver="Newton" timestep="0.003"/>
 
     <size nstack="1000000"/>
 
@@ -32,7 +32,7 @@
 
     <worldbody>
 	
-        <geom name='floor' pos='0 0 0' size='50 50 .125' type='plane' rgba="0.0 0.0 0.0 0.0" condim='3'/>
+        <geom name='floor' pos='0 0 0' size='50 50 .125' type='plane' rgba="0.0 0.0 0.0 0.0" condim='3' friction="1 .1 .1"/>
 
 	<camera name='targeting' pos='1 1 2' mode='targetbodycom' target='torso'/>
 
@@ -113,10 +113,10 @@
         </body>
     </worldbody>
     <sensor>
-    	<touch name="rightfoottouch" site="rightfoot" />
-	<touch name="leftfoottouch" site="leftfoot" />
-	<touch name="righthandtouch" site="righthand" />
-	<touch name="lefthandtouch" site="lefthand" />
+    	<touch name="rightfoottouch" cutoff="1" site="rightfoot" />
+	<touch name="leftfoottouch" cutoff="1" site="leftfoot" />
+	<touch name="righthandtouch" cutoff="1" site="righthand" />
+	<touch name="lefthandtouch" cutoff="1" site="lefthand" />
 
 	<accelerometer name="accHead" site="head" />
 	<gyro name="gyroHead" site="head" />
@@ -166,30 +166,35 @@
         <jointvel name="vleft_elbow"      	joint="left_elbow" />
     </sensor>
 
+    <tendon>
+        <fixed name="left_hipknee">
+            <joint coef="-1" joint="left_hip_y"/>
+            <joint coef="1" joint="left_knee"/>
+        </fixed>
+        <fixed name="right_hipknee">
+            <joint coef="-1" joint="right_hip_y"/>
+            <joint coef="1" joint="right_knee"/>
+        </fixed>
+    </tendon>
+
     <actuator>
-        <motor name='abdomen_y'       gear='200' joint='abdomen_y' />
-        <motor name='abdomen_z'       gear='200' joint='abdomen_z' />
-        <motor name='abdomen_x'       gear='200' joint='abdomen_x' />
-        <motor name='right_hip_x'     gear='200' joint='right_hip_x' />
-        <motor name='right_hip_z'     gear='200' joint='right_hip_z' />
-        <motor name='right_hip_y'     gear='600' joint='right_hip_y' />
-        <motor name='right_knee'      gear='400' joint='right_knee' />
-        <motor name='right_ankle_x'   gear='100' joint='right_ankle_x' />
-        <motor name='right_ankle_y'   gear='100' joint='right_ankle_y' />
-        <motor name='left_hip_x'      gear='200' joint='left_hip_x' />
-        <motor name='left_hip_z'      gear='200' joint='left_hip_z' />
-        <motor name='left_hip_y'      gear='600' joint='left_hip_y' />
-        <motor name='left_knee'       gear='400' joint='left_knee' />
-        <motor name='left_ankle_x'    gear='100' joint='left_ankle_x' />
-        <motor name='left_ankle_y'    gear='100' joint='left_ankle_y' />
-        <motor name='right_shoulder1' gear='100' joint='right_shoulder1' />
-        <motor name='right_shoulder2' gear='100' joint='right_shoulder2' />
-        <motor name='right_elbow'     gear='200' joint='right_elbow' />
-        <motor name='left_shoulder1'  gear='100' joint='left_shoulder1' />
-        <motor name='left_shoulder2'  gear='100' joint='left_shoulder2' />
-        <motor name='left_elbow'      gear='200' joint='left_elbow' />
+        <motor gear="100" joint="abdomen_y" name="abdomen_y"/>
+        <motor gear="100" joint="abdomen_z" name="abdomen_z"/>
+        <motor gear="100" joint="abdomen_x" name="abdomen_x"/>
+        <motor gear="100" joint="right_hip_x" name="right_hip_x"/>
+        <motor gear="100" joint="right_hip_z" name="right_hip_z"/>
+        <motor gear="300" joint="right_hip_y" name="right_hip_y"/>
+        <motor gear="200" joint="right_knee" name="right_knee"/>
+        <motor gear="100" joint="left_hip_x" name="left_hip_x"/>
+        <motor gear="100" joint="left_hip_z" name="left_hip_z"/>
+        <motor gear="300" joint="left_hip_y" name="left_hip_y"/>
+        <motor gear="200" joint="left_knee" name="left_knee"/>
+        <motor gear="25" joint="right_shoulder1" name="right_shoulder1"/>
+        <motor gear="25" joint="right_shoulder2" name="right_shoulder2"/>
+        <motor gear="25" joint="right_elbow" name="right_elbow"/>
+        <motor gear="25" joint="left_shoulder1" name="left_shoulder1"/>
+        <motor gear="25" joint="left_shoulder2" name="left_shoulder2"/>
+        <motor gear="25" joint="left_elbow" name="left_elbow"/>
     </actuator>
-    
-    
 
 </mujoco>

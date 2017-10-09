@@ -99,6 +99,7 @@
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <OpenMPSupport>true</OpenMPSupport>
+      <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -550,6 +551,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AgentScheduler.h" />
     <ClInclude Include="glfwWrapper.h" />
     <ClInclude Include="mjEnvironment.h" />
     <ClInclude Include="mjAgent.h" />

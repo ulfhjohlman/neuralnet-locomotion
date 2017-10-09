@@ -4,36 +4,96 @@
 
 #include "mjAgent.h"
 #include "NeuralNet.h"
+#include "AgentScheduler.h"
+#include "ThreadsafeQueue.h"
+#include "ThreadPoolv2.h"
+
+#include <future>
+#include <mutex>
+
 
 //Just work in progress
 class mjEnvironment
 {
 public:
 	mjEnvironment() = delete;
-	mjEnvironment(int number_of_agents);
+	mjEnvironment(int number_of_agents, int parallel_simulations);
 	~mjEnvironment();
 
-	void evaluateController(NeuralNet* controller) {
+	void setObjective(std::function<double(mjModel const *, mjData*)> objective) {
+		m_objective = objective;
+	}
+
+	void evaluateController(NeuralNet* controller, size_t index) {
+		std::lock_guard<std::mutex> lk(m_mutex);
+
 		if (!controller)
 			throw std::runtime_error("Null controller ptr.");
-		m_agents[it].setController(controller);
-		it++;
-		if (it >= m_agents.size())
-			it = 0;
-	}
-	void render(mjrRect& viewport) {
-		if (m_agents.empty())
-			return;
-		
-#pragma omp parallel for
-			for (int i = 0; i < m_agents.size(); i++)
-				m_agents[i].simulate();
 
-		mjv_updateScene(m_env, m_env_data, &opt, &pert, &cam, mjCAT_ALL, &scn);
-		for (int i = 0; i < m_agents.size(); i++) {
-			mjv_addGeoms(m_model, m_agents[i].getData(), &opt, &pert, mjCAT_ALL, &scn);
+		if (m_agents.empty()) {
+			std::unique_ptr<mjAgent> pAgent = std::make_unique<mjAgent>();
+			pAgent->setup(m_model);
+			m_agents.push_back(std::move(pAgent));
 		}
 
+		auto agent = std::move(m_agents.back());
+		m_agents.pop_back();
+		agent->reset();
+
+		agent->setController(controller);
+		agent->setIdentifier(index);
+		agent->setObjective(m_objective);
+
+		m_schedule.schedule(std::move(agent));
+	}
+
+	void simulate() {
+		size_t agents_to_run = m_schedule.size();
+
+		auto simulation = [this](int i) {
+			auto agent = m_schedule.next();
+			agent->simulate();
+			if (agent->done()) {
+				m_pending_simulation_result.push(agent->getFitness());
+				m_mutex.lock();
+				m_agents.push_back(std::move(agent)); //return agent to pool
+				m_mutex.unlock();
+				m_schedule.fill();
+			}
+			else {
+				m_schedule.returnToSchedule(std::move(agent));
+			}
+		};
+
+		parallel_for(0, (int)agents_to_run, 1, simulation);
+	}
+	bool all_done() {
+		bool all_returned = m_agents.size() == m_number_of_agents;
+		return all_returned;
+		// std::all_of(m_agents.begin(), m_agents.end(), [](std::unique_ptr<mjAgent>& a) { return a->done(); })
+	}
+
+	bool tryGetResult( std::pair<size_t, double>& result ) {
+		bool has_result = m_pending_simulation_result.try_pop(result);
+		return has_result;
+	}
+
+	void render(const mjrRect& viewport) {
+		if (!m_schedule.size())
+			return;
+
+		//Make scene
+		mjv_updateScene(m_env, m_env_data, &opt, &pert, &cam, mjCAT_ALL, &scn);
+
+		//Add running simulations to scene
+		size_t agents_to_render = m_schedule.size();
+		for (int i = 0; i < agents_to_render; i++) {
+			auto agent = m_schedule.next();
+			mjv_addGeoms(m_model, agent->getData(), &opt, &pert, mjCAT_ALL, &scn);
+			m_schedule.returnToSchedule(std::move(agent));
+		}
+		
+		//render
 		mjr_render(viewport, &scn, &con);
 	}
 
@@ -49,9 +109,16 @@ public:
 	mjrContext con;                     // custom GPU context
 	mjvPerturb pert;
 private:
-	int it;
-	std::vector< mjAgent > m_agents;
+	std::vector< std::unique_ptr<mjAgent> > m_agents;
+	AgentScheduler<mjAgent> m_schedule;
+	ThreadsafeQueue<std::pair<size_t, double>> m_pending_simulation_result; //pair < index, fitness >
+	int m_number_of_agents;
 
+	std::mutex m_mutex;
+
+	std::function<double(mjModel const *, mjData*)> m_objective;
+
+private: //methods
 	
 private: //Class members
 	static bool initializeMujoco();
@@ -59,7 +126,10 @@ private: //Class members
 };
 
 
-mjEnvironment::mjEnvironment(int number_of_agents) : it(0)
+mjEnvironment::mjEnvironment(int number_of_agents, int parallel_simulations = 128) :
+	m_objective(nullptr),
+	m_schedule(parallel_simulations),
+	m_number_of_agents(number_of_agents)
 {
 	bool initOk = initializeMujoco();
 	if (!initOk)
@@ -91,10 +161,11 @@ mjEnvironment::mjEnvironment(int number_of_agents) : it(0)
 	std::cout << "done\n";
 
 	m_agents.reserve(number_of_agents);
-	std::cout << "generating " << number_of_agents << " agents... ";
+	//int squareGridSize = static_cast<int>(std::sqrt(number_of_agents)) + 1;
+	std::cout << "Generating " << number_of_agents << " agents... ";
 	for (int i = 0; i < number_of_agents; i++) {
-		mjAgent agent;
-		agent.setup(m_model, i);
+		std::unique_ptr<mjAgent> agent = std::make_unique<mjAgent>();
+		agent->setup(m_model, 0, 1, 1);
 		m_agents.push_back(std::move(agent));
 	}
 	std::cout << " done.\n";
