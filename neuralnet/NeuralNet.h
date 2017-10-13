@@ -1,4 +1,5 @@
 #pragma once
+#include "config.h"
 #ifdef  _DEBUG
 #define _NEURALNET_DEBUG //Use this for error checking in subclasses.
 #endif //  _DEBUG

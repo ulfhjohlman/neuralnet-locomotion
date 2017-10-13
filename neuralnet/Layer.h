@@ -40,8 +40,8 @@ public:
 
 	virtual void setRandom() {
 		Generator generator; //Thread safe generation
-		generator.fill_vector_uniform<ScalarType>(m_weights.data(), m_weights.size(), -0.19, 0.19);
-		generator.fill_vector_normal<ScalarType>(m_bias.data(), m_bias.size(), -0.05, 0.05);
+		generator.fill_vector_normal<ScalarType>(m_weights.data(), m_weights.size(), 0, 1);
+		generator.fill_vector_uniform<ScalarType>(m_bias.data(), m_bias.size(), -0.05, 0.05);
 
 		m_outputs.setZero();
 		m_gradients_weights.setZero();
@@ -49,7 +49,10 @@ public:
 		m_gradients_bias.setZero();
 		//m_outputs_pre_activation.setZero();
 	}
-
+	virtual void setRandomXavier() {
+		setRandom();
+		m_weights.array() *= static_cast<ScalarType>(sqrt( 1.0 / m_weights.rows()));
+	}
 
 	virtual void setLayer(int size, int inputSize) {
 		checkSize(size);

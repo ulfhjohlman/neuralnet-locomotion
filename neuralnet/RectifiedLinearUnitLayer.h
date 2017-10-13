@@ -17,7 +17,7 @@ public:
 		//m_outputs = std::move(m_outputs.array().max(0)); //compiler smart enough?
 	}
 
-	virtual void setRandom()
+	virtual void setRandomXavier()
 	{
 		Layer::setRandom();
 		m_weights.array() *= static_cast<ScalarType>

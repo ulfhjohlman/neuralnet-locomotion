@@ -11,7 +11,7 @@ option(USE_AVX_INSTRUCTIONS  "Compile your program with AVX instructions"  OFF)
 IF(USE_AVX_INSTRUCTIONS)
 	IF(MSVC)
 		add_definitions(/arch:AVX)
-	ELSE()	
+	ELSE()
 		add_definitions (-mavx)
 	ENDIF()
 ENDIF()
@@ -23,7 +23,9 @@ include_directories("${PROJECT_SOURCE_DIR}/lib/Eigen"
  "${PROJECT_SOURCE_DIR}/evolutionaryalgorithm"
  "${PROJECT_SOURCE_DIR}/utility"
  "${PROJECT_SOURCE_DIR}/testframework"
- "${PROJECT_SOURCE_DIR}/lib/tinyxml2")
+ "${PROJECT_SOURCE_DIR}/lib/tinyxml2"
+ "${PROJECT_SOURCE_DIR}/rl"
+ "${PROJECT_SOURCE_DIR}/rl_test")
 
 #add library subdirectories -> executes subs CMakeLists.txt
 add_subdirectory("${PROJECT_SOURCE_DIR}/neuralnet")
@@ -31,13 +33,14 @@ add_subdirectory("${PROJECT_SOURCE_DIR}/evolutionaryalgorithm")
 add_subdirectory("${PROJECT_SOURCE_DIR}/lib/tinyxml2")
 add_subdirectory("${PROJECT_SOURCE_DIR}/utility")
 add_subdirectory("${PROJECT_SOURCE_DIR}/testframework")
+add_subdirectory("${PROJECT_SOURCE_DIR}/rl")
 
 
 #add libraries LIBS macro
-set(LIBS ${LIBS} neuralnet evo_alg tinyxml utility testframework)
+set(LIBS ${LIBS} neuralnet evo_alg tinyxml utility testframework rl)
 
 #Turn on options by invoking $cmake -D<option_name>=ON <src path>
-#aka $cmake -DDEBUG=ON ..
+#aka $cmake -D_DEBUG=ON ..
 option(_DEBUG "Flag for preprocessor to enable DEBUG macros" ON)
 
 #reads config.h.in, outputs config.h
@@ -52,10 +55,10 @@ include_directories("${PROJECT_BINARY_DIR}")
 #add _test directories which build locally
 add_subdirectory("${PROJECT_SOURCE_DIR}/evolutionaryalgorithm_test")
 add_subdirectory("${PROJECT_SOURCE_DIR}/neuralnet_test")
+add_subdirectory("${PROJECT_SOURCE_DIR}/rl_test")
 
 #Make visual studio specific projects
 IF(MSVC)
 	#link_directories("${PROJECT_SOURCE_DIR}/lib/mjpro150/bin")
 	add_subdirectory("${PROJECT_SOURCE_DIR}/mjenvironment")
 ENDIF()
-

@@ -56,6 +56,10 @@ public:
 		for (auto & layer : m_layers)
 			layer->setRandom();
 	}
+	virtual void initializeXavier() {
+		for (auto & layer : m_layers)
+			layer->setRandomXavier();
+	}
 
 	virtual void input(const MatrixType& x) {
 		checkEmptyNetwork();

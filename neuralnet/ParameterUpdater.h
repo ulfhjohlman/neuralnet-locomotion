@@ -15,6 +15,7 @@ public:
         //vanila SGD update
         virtual void updateParameters()
         {
+            checkParamsLinked();
             for(int i=0; i<params.size();i++)
             {
                 params[i]->array() -= m_learning_rate * params_gradients[i]->array();
@@ -36,6 +37,13 @@ public:
 
 
 protected:
+        void checkParamsLinked()
+        {
+            #ifdef _DEBUG
+                if(params.size() == 0 || params_gradients.size() == 0)
+                    {throw std::runtime_error("ParamUpdater not linked to any params when updating :(\n");}
+            #endif
+        }
         std::vector<MatrixType*> params;
         std::vector<MatrixType*> params_gradients;
         ScalarType m_learning_rate;
@@ -49,6 +57,7 @@ public:
 
     virtual void updateParameters()
     {
+        checkParamsLinked();
         for(int i=0; i<params.size();i++)
         {
             m_momentum[i].array() = m_mu*m_momentum[i].array() - m_learning_rate * params_gradients[i]->array();
@@ -80,6 +89,7 @@ public:
     NesterovMomentumUpdater(ScalarType lr, ScalarType mu) : MomentumUpdater(lr,mu) {}
     virtual void updateParameters()
     {
+        checkParamsLinked();
         for(int i=0; i<params.size();i++)
         {
             m_momentum_previous[i] = m_momentum[i];
@@ -110,6 +120,7 @@ public:
 
     virtual void updateParameters()
     {
+        checkParamsLinked();
         for(int i=0; i<params.size();i++)
         {
             m_cache[i].array() += params_gradients[i]->array().square();
@@ -139,6 +150,7 @@ public:
 
     virtual void updateParameters()
     {
+        checkParamsLinked();
         for(int i=0; i<params.size();i++)
         {
             m_cache[i].array() = m_decay_rate*m_cache[i].array() + (1-m_decay_rate)*params_gradients[i]->array().square();
@@ -157,6 +169,7 @@ public:
 
     virtual void updateParameters()
     {
+        checkParamsLinked();
         MatrixType mt,vt;
         for(int i=0; i<params.size();i++)
         {
