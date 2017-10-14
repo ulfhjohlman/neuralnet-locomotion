@@ -56,6 +56,22 @@ public:
 		for (auto & layer : m_layers)
 			layer->setRandom();
 	}
+
+	virtual void cacheLayerParams()
+	{
+		for(int i=0 ; i<m_layers.size() ; i++)
+		{
+			m_layers[i]->cacheParamGradients();
+		}
+	}
+	virtual void popCacheLayerParams()
+	{
+		for(int i=0 ; i<m_layers.size() ; i++)
+		{
+			m_layers[i]->popCacheParamGradients();
+		}
+	}
+
 	virtual void initializeXavier() {
 		for (auto & layer : m_layers)
 			layer->setRandomXavier();

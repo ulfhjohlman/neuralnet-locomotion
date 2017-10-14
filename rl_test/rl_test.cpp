@@ -47,6 +47,20 @@ int ppo_test()
 
     return 0;
 }
+class B{
+public:
+        B(){
+            std::cout << "B constructed\n";
+        }
+        B(B& b)
+        {
+            std::cout << "B copied\n";
+        }
+        B(B&& b)
+        {
+            std::cout << "B moved\n";
+        }
+};
 
 int main()
 {

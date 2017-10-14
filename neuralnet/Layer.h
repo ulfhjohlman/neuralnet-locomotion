@@ -47,6 +47,9 @@ public:
 		m_gradients_weights.setZero();
 		m_gradients_inputs.setZero();
 		m_gradients_bias.setZero();
+
+		m_gradients_weights_cache.setZero();
+		m_gradients_bias_cache.setZero();
 		//m_outputs_pre_activation.setZero();
 	}
 	virtual void setRandomXavier() {
@@ -68,6 +71,8 @@ public:
 		m_gradients_bias.resizeLike(m_bias);
 		m_gradients_inputs.resize(inputSize,1);
 
+		m_gradients_weights_cache.resizeLike(m_weights);
+		m_gradients_bias_cache.resizeLike(m_bias);
 	}
 
 	virtual void input(const MatrixType& x) {
@@ -144,6 +149,17 @@ public:
 	{
 		return m_gradients_weights;
 	}
+
+	virtual void cacheParamGradients()
+	{
+		m_gradients_weights_cache +=m_gradients_weights;
+		m_gradients_bias_cache +=m_gradients_bias;
+	}
+	virtual void popCacheParamGradients()
+	{
+		m_gradients_weights = m_gradients_weights_cache;
+		m_gradients_bias = m_gradients_bias_cache;
+	}
 protected:
 	void updateGradients(const MatrixType& modified_backpass_gradients, const MatrixType& prev_layer_outputs)
 	{
@@ -176,6 +192,8 @@ private: //members
 	MatrixType m_gradients_weights;
 	MatrixType m_gradients_inputs;
 	MatrixType m_gradients_bias;
+	MatrixType m_gradients_weights_cache;
+	MatrixType m_gradients_bias_cache;
 
 protected: //Error checking
 	inline void checkSize(int size) {

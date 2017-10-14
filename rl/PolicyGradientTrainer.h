@@ -6,19 +6,15 @@
 class PolicyGradientTrainer : public Trainer
 {
 public:
-    PolicyGradientTrainer(Environment * new_env, NeuralNet * new_policy_net)
+    PolicyGradientTrainer(Environment * new_env, LayeredNeuralNet * new_policy_net)
             : Trainer(new_env),action_space_dim(env->getActionSpaceDimensions()),
             state_space_dim(env->getStateSpaceDimensions()),
             policy(new_policy_net,state_space_dim,action_space_dim) {
             }
 
-    virtual void train(long max_episodes, long timesteps_per_run, long batch_size)
+    virtual void train(int max_episodes, int timesteps_per_run, int batch_size)
     {
-        rew_list.reserve(batch_size * (timesteps_per_run+1));
-        adv_list.reserve(batch_size * (timesteps_per_run+1));
-        ac_list.reserve(batch_size * (timesteps_per_run+1));
-        ob_list.reserve(batch_size * (timesteps_per_run+1));
-        loss_list.reserve(batch_size * (timesteps_per_run+1));
+        reserveLists(timesteps_per_run);
 
         for(int i=1; i < max_episodes; i++)
         {
@@ -27,10 +23,11 @@ public:
 
             //at end of an episode
             {
-                //calculate advFunc
                 calcAdvFunc();
                 calcLoss();
-                //calculate and cache loss gradients
+                calcGradients();
+                backpropGradients();
+                //cache loss gradients
 
                 //if end of a minibatch
                 if(i % batch_size == 0)
@@ -42,15 +39,33 @@ public:
                 }
                 //reset stuff
                 env->reset();
-                rew_list.clear();
-                adv_list.clear();
-                ac_list.clear();
-                ob_list.clear();
+                clearLists();
             }
 
         }
     }
 protected:
+    void clearLists()
+    {
+        rew_list.clear();
+        adv_list.clear();
+        ac_list.clear();
+        ob_list.clear();
+        loss_list.clear();
+        prob_list.clear();
+        grad_list.clear();
+    }
+
+    void reserveLists(int len)
+    {
+        rew_list.reserve(len);
+        adv_list.reserve(len);
+        ac_list.reserve(len);
+        ob_list.reserve(len);
+        loss_list.reserve(len);
+        prob_list.reserve(len);
+        grad_list.reserve(len);
+    }
     void calcAdvFunc()
     {
         ScalarType decayed_rew = 0;
@@ -61,14 +76,39 @@ protected:
         }
     }
 
+    //Loss with AdvFun estimate = decayed reward.
     void calcLoss()
     {
-        
+        for(int i = 0; i < ac_list.size(); i++)
+        {
+            loss_list[i] = - log(prob_list[i])* adv_list[i];
+        }
     }
 
-    void generateTrajectory(long traj_length)
+    //assuming Gaussian mean outputs form network
+    void calcGradients()
     {
-        for(long i=0; i< traj_length;i++)
+        //TODO:vectorize with eigen instead of std::vectors
+        for(int i = 0 ;i < grad_list.size();i++)
+        {
+            for(int j = 0 ; j < action_space_dim; j++ )
+            {
+                grad_list[i][j] *= adv_list[i];
+            }
+        }
+    }
+
+    void backpropGradients()
+    {
+        for(int i =0; i<grad_list.size();i++)
+        {
+            policy.backprop(grad_list[i]); //TODO:TO EIGENMATRIX
+        }
+    }
+
+    void generateTrajectory(int traj_length)
+    {
+        for(int i=0; i< traj_length;i++)
         {
 
             ob = env->getState();
@@ -95,6 +135,7 @@ protected:
             ac_list.push_back(ac);
             env->step(ac);
 
+            grad_list.push_back(policy.getLocalErrorGradient()); // modified later by advFunc
 
         }
     }
@@ -109,6 +150,8 @@ protected:
     std::vector<ScalarType> adv_list;
     std::vector<ScalarType> rew_list;
     std::vector<ScalarType> loss_list;
+    std::vector<ScalarType> prob_list;
     std::vector<std::vector<ScalarType>> ob_list;
     std::vector<std::vector<ScalarType>> ac_list;
+    std::vector<std::vector<ScalarType>> grad_list;
 };
