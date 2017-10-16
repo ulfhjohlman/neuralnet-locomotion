@@ -26,11 +26,10 @@ public:
             total_prob = 1;
             for(int i=0;i<mu.size();i++)
             {
-                //with sigma = 1 for all variables; (for now)
-                x = generator.generate_normal<ScalarType>(mu[i],1);
+                x = generator.generate_normal<ScalarType>(mu[i],sigma);
                 sample.push_back(x);
                 //store probability of the sample in 'prob'
-                total_prob *= norm_pdf(x,mu[i],1);
+                total_prob *= norm_pdf(x,mu[i],sigma);
             }
             calcLocalErrorGradient();
             return sample;
@@ -77,7 +76,7 @@ private:
             localErrorGradient.clear();
             for(int i =0;i<mu.size();i++)
             {
-                localErrorGradient.push_back(mu[i] - sample[i]); //assuming sigma=1
+                localErrorGradient.push_back(mu[i] - sample[i]/(sigma*sigma));
             }
         }
 
@@ -91,6 +90,8 @@ private:
         std::vector<ScalarType> localErrorGradient;
         double total_prob;
         std::vector<ScalarType> mu;
+		ScalarType sigma = 0.1;
+
         MatrixType in_matrix;
         const MatrixType * out_matrix_ptr = nullptr;
         int in_size;
