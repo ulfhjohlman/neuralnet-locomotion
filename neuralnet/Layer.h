@@ -159,6 +159,8 @@ public:
 	{
 		m_gradients_weights = m_gradients_weights_cache;
 		m_gradients_bias = m_gradients_bias_cache;
+		m_gradients_weights_cache.setZero();
+		m_gradients_bias_cache.setZero();
 	}
 protected:
 	void updateGradients(const MatrixType& modified_backpass_gradients, const MatrixType& prev_layer_outputs)
@@ -169,8 +171,10 @@ protected:
 		checkMatchingSize(m_gradients_bias, modified_backpass_gradients);
 
 		// alternativly transpose weight matrix: (A*B)^T = A^T*B^T
-		m_gradients_inputs.noalias() = (modified_backpass_gradients.transpose() * m_weights).transpose();
-		m_gradients_weights.noalias() = modified_backpass_gradients * prev_layer_outputs.transpose();
+		//m_gradients_inputs.noalias() = (modified_backpass_gradients.transpose() * m_weights).transpose();
+		m_gradients_inputs = (modified_backpass_gradients.transpose().eval() * m_weights).transpose().eval();
+		//m_gradients_weights.noalias() = modified_backpass_gradients * prev_layer_outputs.transpose();
+		m_gradients_weights = modified_backpass_gradients * prev_layer_outputs.transpose().eval();
 		m_gradients_bias = modified_backpass_gradients;
 	}
 	void printOperations(const MatrixType& x)

@@ -15,8 +15,8 @@ public:
     virtual void train(int max_episodes, int timesteps_per_run, int batch_size)
     {
         reserveLists(timesteps_per_run);
-
-        for(int i=1; i < max_episodes; i++)
+        ScalarType mean_loss;
+        for(int i=1; i <= max_episodes; i++)
         {
             //generate a trajectory (an episode)
             generateTrajectory(timesteps_per_run);
@@ -24,9 +24,10 @@ public:
             //at end of an episode
             {
                 calcAdvFunc();
-                calcLoss();
+                mean_loss = calcLoss();
                 calcGradients();
-                backpropGradients();
+
+                backpropGradients(); //ASSUMING INPUTS OF RESPECTIVE FORWARD PASS :'(
                 //cache loss gradients
 
                 //if end of a minibatch
@@ -37,6 +38,8 @@ public:
                     //log progress
 
                 }
+                //printf("Episode: %d. \tMean loss: %f\n", i,mean_loss);
+
                 //reset stuff
                 env->reset();
                 clearLists();
@@ -76,13 +79,18 @@ protected:
         }
     }
 
-    //Loss with AdvFun estimate = decayed reward.
-    void calcLoss()
+    // Loss with AdvFun estimate = decayed reward.
+    // Returns mean loss over the episode
+    ScalarType calcLoss()
     {
+        ScalarType meanLoss = 0;
         for(int i = 0; i < ac_list.size(); i++)
         {
             loss_list[i] = - log(prob_list[i])* adv_list[i];
+            meanLoss+=loss_list[i];
         }
+        meanLoss /= ac_list.size();
+        return meanLoss;
     }
 
     //assuming Gaussian mean outputs form network
@@ -100,9 +108,17 @@ protected:
 
     void backpropGradients()
     {
+        MatrixType x;
+        MatrixType ob_input;
         for(int i =0; i<grad_list.size();i++)
         {
-            policy.backprop(grad_list[i]); //TODO:TO EIGENMATRIX
+            //FORWARD PASS OBSERVATION i AGAIN BEFORE EACH BACKPROP GRAD
+            Eigen::Map<MatrixType> ob_input(ob_list[i].data(),state_space_dim,1);
+            policy.input(ob_input);
+
+            Eigen::Map<MatrixType> x(grad_list[i].data(),action_space_dim,1);
+            policy.backprop(x);
+            policy.cacheLayerParams();
         }
     }
 

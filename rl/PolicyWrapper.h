@@ -5,6 +5,7 @@
 #include "Generator.h"
 #include <math.h>
 
+// Wrapps a neuralnet into the context of a reinforcement learning policy function
 class PolicyWrapper
 {
 public:
@@ -32,6 +33,11 @@ public:
             }
             calcLocalErrorGradient();
             return sample;
+        }
+
+        virtual void input(const MatrixType& x)
+        {
+            nn->input(x);
         }
 
         //returns the cumulative probability of the sample

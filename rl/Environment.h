@@ -37,7 +37,7 @@ public:
         return std::vector<ScalarType>{x,y};
     };
 
-    virtual void reset(){ x=0; y=0;}
+    virtual void reset(){ x=1; y=1;}
     virtual int getActionSpaceDimensions(){return 2;}
     virtual int getStateSpaceDimensions(){return 2;}
 

@@ -42,8 +42,12 @@ int ppo_test()
 
     //set up training algorithm
     PPOTrainer trainer(&env,&policy,&valueFunc);
-    trainer.train(120,20,3);
+    trainer.train(120,10,3);
 
+    //if(topPolicy)
+    //    delete(topPolicy);
+    //if(topValueFunc)
+    //    delete(topValueFunc);
 
     return 0;
 }
