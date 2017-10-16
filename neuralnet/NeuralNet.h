@@ -7,9 +7,9 @@
 #include "Dataset.h"
 #include "NeuralNetException.h"
 #include "../lib/Eigen/Dense"
-typedef Eigen::MatrixXf MatrixType;
-typedef Eigen::VectorXf VectorType;
-typedef float			ScalarType;
+typedef Eigen::MatrixXd MatrixType;
+typedef Eigen::VectorXd VectorType;
+typedef double			ScalarType;
 
 class NeuralInput;
 class NeuralOutput;

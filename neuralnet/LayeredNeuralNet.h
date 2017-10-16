@@ -59,14 +59,16 @@ public:
 
 	virtual void cacheLayerParams()
 	{
-		for(int i=0 ; i<m_layers.size() ; i++)
+		//skips inputlayer
+		for(int i=1 ; i<m_layers.size() ; i++)
 		{
 			m_layers[i]->cacheParamGradients();
 		}
 	}
 	virtual void popCacheLayerParams()
 	{
-		for(int i=0 ; i<m_layers.size() ; i++)
+		//skips inputlayer
+		for(int i=1 ; i<m_layers.size() ; i++)
 		{
 			m_layers[i]->popCacheParamGradients();
 		}

@@ -14,8 +14,10 @@ public:
 
     virtual void train(int max_episodes, int timesteps_per_run, int batch_size)
     {
-        reserveLists(timesteps_per_run);
-        ScalarType mean_loss;
+        resizeLists(timesteps_per_run);
+        double mean_loss;
+		double mean_loss_batch = 0;
+		double mean_return_batch = 0;
         for(int i=1; i <= max_episodes; i++)
         {
             //generate a trajectory (an episode)
@@ -25,24 +27,31 @@ public:
             {
                 calcAdvFunc();
                 mean_loss = calcLoss();
+				mean_loss_batch += mean_loss;
+				mean_return_batch += episode_return;
+				//printf("Episode: %d. \tMean loss: %lf\n", i, mean_loss);
                 calcGradients();
 
-                backpropGradients(); //ASSUMING INPUTS OF RESPECTIVE FORWARD PASS :'(
+                backpropGradients();
                 //cache loss gradients
 
                 //if end of a minibatch
-                if(i % batch_size == 0)
+                if(i % batch_size == 0 && i>0)
                 {
-                    //pop cache
-                    //backprop loss
+					mean_loss_batch = mean_loss_batch/ static_cast<double>(batch_size);
+					policy.popCacheLayerParams();
+					policy.updateParams();
                     //log progress
+					printf(" ---- Batch Update %d ---- \tmean return: %lf \tmean loss over batch: %lf \n", i / batch_size, mean_return_batch, mean_loss_batch);
+					mean_loss_batch = 0;
+					mean_return_batch = 0;
 
                 }
-                //printf("Episode: %d. \tMean loss: %f\n", i,mean_loss);
+
 
                 //reset stuff
                 env->reset();
-                clearLists();
+                //clearLists();
             }
 
         }
@@ -59,15 +68,15 @@ protected:
         grad_list.clear();
     }
 
-    void reserveLists(int len)
+    void resizeLists(int len)
     {
-        rew_list.reserve(len);
-        adv_list.reserve(len);
-        ac_list.reserve(len);
-        ob_list.reserve(len);
-        loss_list.reserve(len);
-        prob_list.reserve(len);
-        grad_list.reserve(len);
+        rew_list.resize(len);
+        adv_list.resize(len);
+        ac_list.resize(len);
+        ob_list.resize(len);
+        loss_list.resize(len);
+        prob_list.resize(len);
+        grad_list.resize(len);
     }
     void calcAdvFunc()
     {
@@ -112,7 +121,7 @@ protected:
         MatrixType ob_input;
         for(int i =0; i<grad_list.size();i++)
         {
-            //FORWARD PASS OBSERVATION i AGAIN BEFORE EACH BACKPROP GRAD
+            //FORWARD PASS OBSERVATION i AGAIN BEFORE BACKPROPING ERROR GRADIENT i
             Eigen::Map<MatrixType> ob_input(ob_list[i].data(),state_space_dim,1);
             policy.input(ob_input);
 
@@ -126,32 +135,34 @@ protected:
     {
         for(int i=0; i< traj_length;i++)
         {
-
+			episode_return = 0;
             ob = env->getState();
 
             #ifdef _DEBUG
                 if(ob.size() != state_space_dim){
                     char* str = new char[100];
-                    sprintf(str,"Observation (%ld)!= state space size %d\n",ob.size(),state_space_dim);
+                    sprintf(str,"Observation (%zd)!= state space size %d\n",ob.size(),state_space_dim);
                     throw std::runtime_error(str);
                 }
             #endif
 
-            ob_list.push_back(ob);
-            rew_list.push_back(env->getReward());
+            ob_list[i] = ob;
+            rew_list[i] = env->getReward();
+			episode_return += rew_list[i];
             ac = policy.samplePolicy(ob);
 
             #ifdef _DEBUG
                 if(ac.size() != action_space_dim){
                     char* str = new char[100];
-                    sprintf(str,"Sampled policy ()%ld)!= action space size %d\n",ac.size(),action_space_dim);
+                    sprintf(str,"Sampled policy ()%zd)!= action space size %d\n",ac.size(),action_space_dim);
                     throw std::runtime_error(str);
                 }
             #endif
-            ac_list.push_back(ac);
+            ac_list[i] = ac;
+			prob_list[i] = policy.getCumulativeProb();
             env->step(ac);
 
-            grad_list.push_back(policy.getLocalErrorGradient()); // modified later by advFunc
+            grad_list[i] = policy.getLocalErrorGradient(); // modified later by advFunc
 
         }
     }
@@ -170,4 +181,5 @@ protected:
     std::vector<std::vector<ScalarType>> ob_list;
     std::vector<std::vector<ScalarType>> ac_list;
     std::vector<std::vector<ScalarType>> grad_list;
+	double episode_return;
 };

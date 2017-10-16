@@ -3,6 +3,7 @@
 #include "LayeredNeuralNet.h"
 #include "stdlib.h"
 #include "Generator.h"
+#define _USE_MATH_DEFINES //for M_PI
 #include <math.h>
 
 // Wrapps a neuralnet into the context of a reinforcement learning policy function
@@ -10,7 +11,7 @@ class PolicyWrapper
 {
 public:
         PolicyWrapper(LayeredNeuralNet * new_nn, int new_in_size, int new_out_size): nn(new_nn), in_size(new_in_size) {
-            sample.reserve(out_size);
+            sample.reserve(new_out_size);
         }
 
         //returns a single action_space output from the policy given an observation
@@ -61,10 +62,14 @@ public:
             nn->cacheLayerParams();
         }
 
-        void popCacheLayerParams()
-        {
-            nn->popCacheLayerParams();
-        }
+		void popCacheLayerParams()
+		{
+			nn->popCacheLayerParams();
+		}
+		void updateParams()
+		{
+			nn->updateParameters();
+		}
 
 private:
         void calcLocalErrorGradient()
