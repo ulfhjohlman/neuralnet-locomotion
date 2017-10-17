@@ -26,11 +26,10 @@ public:
             total_prob = 1;
             for(int i=0;i<mu.size();i++)
             {
-                //with sigma = 1 for all variables; (for now)
-                x = generator.generate_normal<ScalarType>(mu[i],1);
+                x = generator.generate_normal<ScalarType>(mu[i],m_sigma*m_sigma);
                 sample.push_back(x);
                 //store probability of the sample in 'prob'
-                total_prob *= norm_pdf(x,mu[i],1);
+                total_prob *= norm_pdf(x,mu[i],m_sigma);
             }
             calcLocalErrorGradient();
             return sample;
@@ -77,7 +76,7 @@ private:
             localErrorGradient.clear();
             for(int i =0;i<mu.size();i++)
             {
-                localErrorGradient.push_back(mu[i] - sample[i]); //assuming sigma=1
+                localErrorGradient.push_back((mu[i] - sample[i])/(m_sigma*m_sigma));
             }
         }
 
@@ -96,4 +95,5 @@ private:
         int in_size;
         int out_size;
         Generator generator; //Thread safe generation
+        double m_sigma = 1;
 };

@@ -137,7 +137,10 @@ protected:
         {
 			episode_return = 0;
             ob = env->getState();
-
+            if(print_ob)
+            {
+                print_state(ob);
+            }
             #ifdef _DEBUG
                 if(ob.size() != state_space_dim){
                     char* str = new char[100];
@@ -167,7 +170,18 @@ protected:
         }
     }
 
+    void print_state(std::vector<ScalarType> obs)
+    {
+        std::cout << "State: \t(";
+        for(auto& ob: obs)
+        {
+            std::cout << ob << " ";
+        }
+        std::cout << ")\n";
+    }
 
+
+    bool print_ob = false;
     ScalarType rew_decay_rate = 0.99;
     int state_space_dim;
     int action_space_dim;

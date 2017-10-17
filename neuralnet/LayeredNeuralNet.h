@@ -30,7 +30,7 @@ public:
 		checkTopology(topology);
 		//new topology ok.
 		//delete old if there is one.
-		if (m_topology) delete m_topology;
+		if (m_topology) { delete m_topology; std::cout << "WARNING: Replaced an old topology in LayeredNN\n"; }
 		m_topology = topology;
 	}
 

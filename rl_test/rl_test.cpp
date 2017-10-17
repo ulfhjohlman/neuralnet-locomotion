@@ -18,7 +18,7 @@ int ppo_test()
 
     //constructing networks
     std::vector<int> layerSizesPolicy {state_space_dim,4,4,action_space_dim};
-    //std::vector<int> layerSizesValueFunc {state_space_dim,4,4,1};
+    std::vector<int> layerSizesValueFunc {state_space_dim,4,4,1};
     int relu = Layer::LayerType::relu;
     int inputLayer = Layer::LayerType::inputLayer;
     int noactiv = Layer::noActivation;
@@ -26,9 +26,9 @@ int ppo_test()
     int sigmoid = Layer::LayerType::sigmoid;
     int tanh = Layer::LayerType::tanh;
     std::vector<int> layerTypesPolicy {inputLayer, tanh,tanh,noactiv};
-    //std::vector<int> layerTypesValueFunc {inputLayer, tanh,tanh,noactiv};
+    std::vector<int> layerTypesValueFunc {inputLayer, tanh,tanh,noactiv};
     LayeredTopology* topPolicy = new LayeredTopology(layerSizesPolicy,layerTypesPolicy);
-    //LayeredTopology* topValueFunc = new LayeredTopology(layerSizesValueFunc,layerTypesValueFunc);
+    LayeredTopology* topValueFunc = new LayeredTopology(layerSizesValueFunc,layerTypesValueFunc);
     LayeredNeuralNet policy(topPolicy);
     //LayeredNeuralNet valueFunc(topValueFunc);
     policy.initializeXavier();
@@ -42,6 +42,7 @@ int ppo_test()
 
     //set up training algorithm
     PolicyGradientTrainer trainer(&env,&policy);
+    //PPOTrainer trainer(&env,&policy,&valueFunc);
     trainer.train(1e5,16,16);
 
     //if(topPolicy)
@@ -52,20 +53,6 @@ int ppo_test()
 	system("pause");
     return 0;
 }
-class B{
-public:
-        B(){
-            std::cout << "B constructed\n";
-        }
-        B(B& b)
-        {
-            std::cout << "B copied\n";
-        }
-        B(B&& b)
-        {
-            std::cout << "B moved\n";
-        }
-};
 
 int main()
 {

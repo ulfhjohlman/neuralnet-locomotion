@@ -25,7 +25,8 @@ include_directories("${PROJECT_SOURCE_DIR}/lib/Eigen"
  "${PROJECT_SOURCE_DIR}/testframework"
  "${PROJECT_SOURCE_DIR}/lib/tinyxml2"
  "${PROJECT_SOURCE_DIR}/rl"
- "${PROJECT_SOURCE_DIR}/rl_test")
+ "${PROJECT_SOURCE_DIR}/rl_test"
+ "${PROJECT_SOURCE_DIR}")
 
 #add library subdirectories -> executes subs CMakeLists.txt
 add_subdirectory("${PROJECT_SOURCE_DIR}/neuralnet")
