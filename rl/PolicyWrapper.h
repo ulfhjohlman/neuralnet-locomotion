@@ -31,7 +31,7 @@ public:
                 //store probability of the sample in 'prob'
                 total_prob *= norm_pdf(x,mu[i],m_sigma);
             }
-            calcLocalErrorGradient();
+            calcLocalObjectiveGradient();
             return sample;
         }
 
@@ -46,9 +46,9 @@ public:
             return total_prob;
         }
 
-        const std::vector<ScalarType>& getLocalErrorGradient()
+        const std::vector<ScalarType>& getlocalObjectiveGradient()
         {
-            return localErrorGradient;
+            return localObjectiveGradient;
         }
 
         void backprop(MatrixType err_gradients)
@@ -71,12 +71,12 @@ public:
 		}
 
 private:
-        void calcLocalErrorGradient()
+        void calcLocalObjectiveGradient()
         {
-            localErrorGradient.clear();
+            localObjectiveGradient.clear();
             for(int i =0;i<mu.size();i++)
             {
-                localErrorGradient.push_back((mu[i] - sample[i])/(m_sigma*m_sigma));
+                localObjectiveGradient.push_back((mu[i] - sample[i])/(m_sigma*m_sigma));
             }
         }
 
@@ -87,7 +87,7 @@ private:
 
         LayeredNeuralNet * nn;
         std::vector<ScalarType> sample;
-        std::vector<ScalarType> localErrorGradient;
+        std::vector<ScalarType> localObjectiveGradient;
         double total_prob;
         std::vector<ScalarType> mu;
         MatrixType in_matrix;

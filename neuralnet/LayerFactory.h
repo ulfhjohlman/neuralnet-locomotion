@@ -14,7 +14,6 @@ class LayerFactory
 public:
 	static Layer* constructLayer(int layerSize, int numberOfInputs, int layerType) {
 		Layer* layer = nullptr;
-
 		checkLayerArgs(layerSize, numberOfInputs, layerType);
 		switch (layerType)
 		{

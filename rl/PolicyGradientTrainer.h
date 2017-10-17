@@ -40,7 +40,7 @@ public:
                 {
 					mean_loss_batch = mean_loss_batch/ static_cast<double>(batch_size);
 					policy.popCacheLayerParams();
-					policy.updateParams();
+				    policy.updateParams();
                     //log progress
 					printf(" ---- Batch Update %d ---- \tmean return: %lf \tmean loss over batch: %lf \n", i / batch_size, mean_return_batch, mean_loss_batch);
 					mean_loss_batch = 0;
@@ -137,7 +137,7 @@ protected:
         {
 			episode_return = 0;
             ob = env->getState();
-            if(print_ob)
+            if( i == (traj_length-1) && print_ob_final )
             {
                 print_state(ob);
             }
@@ -165,7 +165,7 @@ protected:
 			prob_list[i] = policy.getCumulativeProb();
             env->step(ac);
 
-            grad_list[i] = policy.getLocalErrorGradient(); // modified later by advFunc
+            grad_list[i] = policy.getlocalObjectiveGradient(); // modified later by advFunc
 
         }
     }
@@ -181,7 +181,7 @@ protected:
     }
 
 
-    bool print_ob = false;
+    bool print_ob_final = false;
     ScalarType rew_decay_rate = 0.99;
     int state_space_dim;
     int action_space_dim;
