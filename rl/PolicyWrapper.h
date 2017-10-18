@@ -95,5 +95,5 @@ private:
         int in_size;
         int out_size;
         Generator generator; //Thread safe generation
-        double m_sigma = 1;
+        double m_sigma = 0.01;
 };

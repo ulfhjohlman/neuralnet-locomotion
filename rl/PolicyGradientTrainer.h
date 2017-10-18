@@ -12,16 +12,16 @@ public:
             policy(new_policy_net,state_space_dim,action_space_dim) {
             }
 
-    virtual void train(int max_episodes, int timesteps_per_run, int batch_size)
+    virtual void train(int max_episodes, int timesteps_per_episode, int batch_size)
     {
-        resizeLists(timesteps_per_run);
+        resizeLists(timesteps_per_episode);
         double mean_loss;
 		double mean_loss_batch = 0;
 		double mean_return_batch = 0;
         for(int i=1; i <= max_episodes; i++)
         {
             //generate a trajectory (an episode)
-            generateTrajectory(timesteps_per_run);
+            generateTrajectory(timesteps_per_episode);
 
             //at end of an episode
             {
@@ -57,7 +57,7 @@ public:
         }
     }
 protected:
-    void clearLists()
+    virtual void clearLists()
     {
         rew_list.clear();
         adv_list.clear();
@@ -68,7 +68,7 @@ protected:
         grad_list.clear();
     }
 
-    void resizeLists(int len)
+    virtual void resizeLists(int len)
     {
         rew_list.resize(len);
         adv_list.resize(len);
@@ -78,7 +78,7 @@ protected:
         prob_list.resize(len);
         grad_list.resize(len);
     }
-    void calcAdvFunc()
+    virtual void calcAdvFunc()
     {
         ScalarType decayed_rew = 0;
         for(int i = ac_list.size()-1; i >= 0; i--)
@@ -86,11 +86,12 @@ protected:
             decayed_rew = rew_list[i] + decayed_rew * rew_decay_rate;
             adv_list[i] = decayed_rew;
         }
+        standardizeVector(adv_list);
     }
 
     // Loss with AdvFun estimate = decayed reward.
     // Returns mean loss over the episode
-    ScalarType calcLoss()
+    virtual ScalarType calcLoss()
     {
         ScalarType meanLoss = 0;
         for(int i = 0; i < ac_list.size(); i++)
@@ -103,19 +104,19 @@ protected:
     }
 
     //assuming Gaussian mean outputs form network
-    void calcGradients()
+    virtual void calcGradients()
     {
         //TODO:vectorize with eigen instead of std::vectors
         for(int i = 0 ;i < grad_list.size();i++)
         {
             for(int j = 0 ; j < action_space_dim; j++ )
             {
-                grad_list[i][j] *= adv_list[i];
+                grad_list[i][j] *= -adv_list[i];
             }
         }
     }
 
-    void backpropGradients()
+    virtual void backpropGradients()
     {
         MatrixType x;
         MatrixType ob_input;
@@ -124,14 +125,13 @@ protected:
             //FORWARD PASS OBSERVATION i AGAIN BEFORE BACKPROPING ERROR GRADIENT i
             Eigen::Map<MatrixType> ob_input(ob_list[i].data(),state_space_dim,1);
             policy.input(ob_input);
-
             Eigen::Map<MatrixType> x(grad_list[i].data(),action_space_dim,1);
             policy.backprop(x);
             policy.cacheLayerParams();
         }
     }
 
-    void generateTrajectory(int traj_length)
+    virtual void generateTrajectory(int traj_length)
     {
         for(int i=0; i< traj_length;i++)
         {
@@ -170,7 +170,7 @@ protected:
         }
     }
 
-    void print_state(std::vector<ScalarType> obs)
+    void print_state(const std::vector<ScalarType>& obs)
     {
         std::cout << "State: \t(";
         for(auto& ob: obs)
@@ -180,8 +180,29 @@ protected:
         std::cout << ")\n";
     }
 
+    void standardizeVector(std::vector<ScalarType>& list)
+    {
+        double mean=0;
+        double var=0;
+        for(int i =0;i < list.size();i++)
+        {
+            mean += list[i];
+        }
+        mean /= list.size();
+        for(int i =0;i < list.size();i++)
+        {
+            var += (list[i]-mean)*(list[i]-mean);
+        }
+        var /= list.size();
+        double std = sqrt(var);
+        for(int i =0;i < list.size();i++)
+        {
+            list[i] = (list[i]-mean)/ std;
+        }
+    }
 
-    bool print_ob_final = false;
+
+    bool print_ob_final = true;
     ScalarType rew_decay_rate = 0.99;
     int state_space_dim;
     int action_space_dim;

@@ -140,7 +140,10 @@ public:
 	virtual Layer* getLayer(int i) const {
 		return m_layers[i];
 	}
-
+	bool hasParameterUpdater()
+	{
+		return m_parameter_updater != nullptr;
+	}
 	virtual void save(const char* toFile) { }
 	virtual void load(const char* fromFile) { }
 protected: //members

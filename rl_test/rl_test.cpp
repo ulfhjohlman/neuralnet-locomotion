@@ -28,8 +28,11 @@ int ppo_test()
     const int tanh = Layer::LayerType::tanh;
     std::vector<int> layerTypesPolicy {inputLayer, tanh,tanh,noactiv};
     std::vector<int> layerTypesValueFunc {inputLayer, tanh,tanh,noactiv};
+
+    //networks gain ownership/claening responsibilities for these topologies
     LayeredTopology* topPolicy = new LayeredTopology(layerSizesPolicy,layerTypesPolicy);
     LayeredTopology* topValueFunc = new LayeredTopology(layerSizesValueFunc,layerTypesValueFunc);
+
     LayeredNeuralNet policy(topPolicy);
     LayeredNeuralNet valueFunc(topValueFunc);
 
@@ -37,19 +40,19 @@ int ppo_test()
     valueFunc.initializeXavier();
 
     //ParameterUpdater
-    AdamUpdater policyUpdater(1e-4);
+    AdamUpdater policyUpdater(1e-3);
     // ParameterUpdater policyUpdater(1e-5);
     // RMSPropUpdater policyUpdater(1e-5,1e-8,0.99);
     AdamUpdater valueFuncUpdater(1e-4,1e-8,0.9,0.999);
     policy.setParameterUpdater(policyUpdater);
-    //valueFunc.setParameterUpdater(valueFuncUpdater);
+    valueFunc.setParameterUpdater(valueFuncUpdater);
 
     //set up training algorithm
-    PolicyGradientTrainer trainer(&env,&policy);
-    //PPOTrainer trainer(&env,&policy,&valueFunc);
-    trainer.train(1e5,64,8);
+    // PolicyGradientTrainer trainer(&env,&policy);
+    PPOTrainer trainer(&env,&policy,&valueFunc);
+    trainer.train(12,8,4);
 
-	system("pause");
+
     return 0;
 }
 
@@ -69,5 +72,6 @@ int main()
         std::cout << "ERROR: \n" << e.what();
     }
     std::cout << " ============== rl_test ended ============== \n";
+    system("pause");
     return 0;
 }
