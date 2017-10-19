@@ -111,7 +111,7 @@ protected:
         {
             for(int j = 0 ; j < action_space_dim; j++ )
             {
-                grad_list[i][j] *= -adv_list[i];
+                grad_list[i][j] *= adv_list[i];
             }
         }
     }
@@ -150,8 +150,6 @@ protected:
             #endif
 
             ob_list[i] = ob;
-            rew_list[i] = env->getReward();
-			episode_return += rew_list[i];
             ac = policy.samplePolicy(ob);
 
             #ifdef _DEBUG
@@ -164,6 +162,9 @@ protected:
             ac_list[i] = ac;
 			prob_list[i] = policy.getCumulativeProb();
             env->step(ac);
+
+            rew_list[i] = env->getReward();
+            episode_return += rew_list[i];
 
             grad_list[i] = policy.getlocalObjectiveGradient(); // modified later by advFunc
 
