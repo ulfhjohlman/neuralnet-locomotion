@@ -42,7 +42,7 @@ int ppo_test()
     //ParameterUpdater
     AdamUpdater policyUpdater(1e-3);
     // ParameterUpdater policyUpdater(1e-5);
-    // RMSPropUpdater policyUpdater(1e-5,1e-8,0.99);
+    // RMSPropUpdater policyUpdater(1e-3,1e-8,0.99);
     AdamUpdater valueFuncUpdater(1e-4,1e-8,0.9,0.999);
     policy.setParameterUpdater(policyUpdater);
     valueFunc.setParameterUpdater(valueFuncUpdater);
@@ -50,7 +50,7 @@ int ppo_test()
     //set up training algorithm
     // PolicyGradientTrainer trainer(&env,&policy);
     PPOTrainer trainer(&env,&policy,&valueFunc);
-    trainer.train(12,8,4);
+    trainer.train(30000,16,16);
 
 
     return 0;

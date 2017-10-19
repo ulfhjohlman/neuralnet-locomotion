@@ -162,7 +162,6 @@ protected: //Error checking
 	{
 		for (size_t i = 0; i < m_layers.size(); i++)
 			if (m_layers[i]) {
-				std::cout << "WARNING: Destroying a layer in LayeredNN\n";
 				delete m_layers[i];
 			}
 		m_layers.clear();

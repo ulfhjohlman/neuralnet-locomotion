@@ -76,7 +76,7 @@ private:
             localObjectiveGradient.clear();
             for(int i =0;i<mu.size();i++)
             {
-                localObjectiveGradient.push_back((mu[i] - sample[i])/(m_sigma*m_sigma));
+                localObjectiveGradient.push_back((sample[i]-mu[i])/(m_sigma*m_sigma));
             }
         }
 
@@ -95,5 +95,5 @@ private:
         int in_size;
         int out_size;
         Generator generator; //Thread safe generation
-        double m_sigma = 0.01;
+        double m_sigma = 1;
 };

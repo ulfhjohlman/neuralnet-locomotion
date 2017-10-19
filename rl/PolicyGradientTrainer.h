@@ -26,10 +26,11 @@ public:
             //at end of an episode
             {
                 calcAdvFunc();
-                mean_loss = calcLoss();
-				mean_loss_batch += mean_loss;
+				mean_loss = calcLoss();
+                mean_loss_batch += mean_loss;
 				mean_return_batch += episode_return;
 				//printf("Episode: %d. \tMean loss: %lf\n", i, mean_loss);
+
                 calcGradients();
 
                 backpropGradients();
@@ -43,7 +44,9 @@ public:
 					policy.popCacheLayerParams();
 				    policy.updateParams();
                     //log progress
-					printf(" ---- Batch Update %d ---- \tmean return: %lf \tmean loss over batch: %lf \n", i / batch_size, mean_return_batch, mean_loss_batch);
+					if((i/batch_size) % 10 == 0){
+                        printf(" ---- Batch Update %d ---- \tmean return: %lf \tmean loss over batch: %lf \n", i / batch_size, mean_return_batch, mean_loss_batch);
+                    }
 					mean_loss_batch = 0;
 					mean_return_batch = 0;
 
@@ -112,7 +115,7 @@ protected:
         {
             for(int j = 0 ; j < action_space_dim; j++ )
             {
-                grad_list[i][j] *= adv_list[i];
+                grad_list[i][j] *= -adv_list[i]; //minus for ObjFunc -> LossFunc
             }
         }
     }
@@ -207,7 +210,7 @@ protected:
     }
 
 
-    bool print_ob_final = true;
+    bool print_ob_final = false;
     ScalarType rew_decay_rate = 0.99;
     int state_space_dim;
     int action_space_dim;

@@ -27,11 +27,14 @@ public:
     virtual void step(const std::vector<ScalarType>& actions)
     {
         checkActionDimensions(actions);
-        x += actions[0];
-        y += actions[1];
+        dx= actions[0];
+        x+=dx;
+        dy= actions[1];
+        y+=dy;
     };
     virtual ScalarType getReward(){
-        return -(sqrt(pow(x-10,2) + pow(y+10,2)));
+        return -(sqrt(pow(x-10,2)+pow(y+10,2)));
+        // return x > 0 ? 1 : -1;
     };
     virtual const std::vector<ScalarType> getState(){
         return std::vector<ScalarType>{x,y};
@@ -51,5 +54,7 @@ public:
     }
 private:
     ScalarType x=1;
+    ScalarType dx=0;
     ScalarType y=1;
+    ScalarType dy=0;
 };
