@@ -196,6 +196,9 @@ protected:
             var += (list[i]-mean)*(list[i]-mean);
         }
         var /= list.size();
+        if(var ==0){
+            throw std::runtime_error("Cannot standardizeVector because var == 0.\n");
+        }
         double std = sqrt(var);
         for(int i =0;i < list.size();i++)
         {
