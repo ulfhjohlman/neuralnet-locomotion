@@ -38,6 +38,7 @@ public:
                 //if end of a minibatch
                 if(i % batch_size == 0 && i>0)
                 {
+                    mean_return_batch/=batch_size;
 					mean_loss_batch = mean_loss_batch/ static_cast<double>(batch_size);
 					policy.popCacheLayerParams();
 				    policy.updateParams();
@@ -133,9 +134,9 @@ protected:
 
     virtual void generateTrajectory(int traj_length)
     {
+        episode_return = 0;
         for(int i=0; i< traj_length;i++)
         {
-			episode_return = 0;
             ob = env->getState();
             if( i == (traj_length-1) && print_ob_final )
             {
