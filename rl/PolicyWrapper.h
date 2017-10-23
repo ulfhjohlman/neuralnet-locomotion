@@ -10,7 +10,7 @@
 class PolicyWrapper
 {
 public:
-        PolicyWrapper(LayeredNeuralNet * new_nn, int new_in_size, int new_out_size): nn(new_nn), in_size(new_in_size) {
+        PolicyWrapper(LayeredNeuralNet * new_nn, int new_in_size, int new_out_size): m_nn(new_nn), in_size(new_in_size) {
             sample.reserve(new_out_size);
         }
 
@@ -18,8 +18,8 @@ public:
         const std::vector<ScalarType>& samplePolicy(std::vector<ScalarType> obs)
         {
             Eigen::Map<MatrixType> in_matrix(obs.data(),in_size,1);
-            nn->input(in_matrix);
-            out_matrix_ptr = &nn->output();
+            m_nn->input(in_matrix);
+            out_matrix_ptr = &m_nn->output();
             mu = std::vector<ScalarType>(out_matrix_ptr->data(), out_matrix_ptr->data() + out_matrix_ptr->size());
             sample.clear();
             ScalarType x;
@@ -37,7 +37,7 @@ public:
 
         virtual void input(const MatrixType& x)
         {
-            nn->input(x);
+            m_nn->input(x);
         }
 
         //returns the cumulative probability of the sample
@@ -53,21 +53,21 @@ public:
 
         void backprop(MatrixType err_gradients)
         {
-            nn->backprop(err_gradients);
+            m_nn->backprop(err_gradients);
         }
 
         void cacheLayerParams()
         {
-            nn->cacheLayerParams();
+            m_nn->cacheLayerParams();
         }
 
 		void popCacheLayerParams()
 		{
-			nn->popCacheLayerParams();
+			m_nn->popCacheLayerParams();
 		}
 		void updateParams()
 		{
-			nn->updateParameters();
+			m_nn->updateParameters();
 		}
 
 private:
@@ -85,7 +85,7 @@ private:
             return 1.0/(sigma*sqrt(2*M_PI)) * exp(-(x-mu)*(x-mu)/(2.0*sigma*sigma));
         }
 
-        LayeredNeuralNet * nn;
+        LayeredNeuralNet * m_nn;
         std::vector<ScalarType> sample;
         std::vector<ScalarType> localObjectiveGradient;
         double total_prob;

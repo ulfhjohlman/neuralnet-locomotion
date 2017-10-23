@@ -17,6 +17,20 @@ public:
 		return m_x;
 	}
 
+	virtual void cachePushBackOutputs()
+	{
+		m_outputs_cache.push_back(m_x);
+	}
+
+	virtual void clearOutputsCache()
+	{
+		m_outputs_cache.clear();
+	}
+
+	virtual void uncacheIndexedOutput(int i)
+	{
+		m_x = m_outputs_cache[i];
+	}
 private:
 	MatrixType m_x;
 };

@@ -82,12 +82,13 @@ protected:
         prob_list.resize(len);
         grad_list.resize(len);
     }
+private:
     virtual void calcAdvFunc()
     {
         ScalarType decayed_rew = 0;
         for(int i = ac_list.size()-1; i >= 0; i--)
         {
-            decayed_rew = rew_list[i] + decayed_rew * rew_decay_rate;
+            decayed_rew = rew_list[i] + decayed_rew * m_gamma;
             adv_list[i] = decayed_rew;
         }
         standardizeVector(adv_list);
@@ -119,7 +120,7 @@ protected:
             }
         }
     }
-
+protected:
     virtual void backpropGradients()
     {
         MatrixType x;
@@ -135,7 +136,31 @@ protected:
         }
     }
 
-    virtual void generateTrajectory(int traj_length)
+    void standardizeVector(std::vector<ScalarType>& list)
+    {
+        double mean=0;
+        double var=0;
+        for(int i =0;i < list.size();i++)
+        {
+            mean += list[i];
+        }
+        mean /= list.size();
+        for(int i =0;i < list.size();i++)
+        {
+            var += (list[i]-mean)*(list[i]-mean);
+        }
+        var /= list.size();
+        if(var ==0){
+            throw std::runtime_error("Cannot standardizeVector because var == 0.\n");
+        }
+        double std = sqrt(var);
+        for(int i =0;i < list.size();i++)
+        {
+            list[i] = (list[i]-mean)/ std;
+        }
+    }
+
+    virtual void generateTrajectory(int traj_length,bool cache_outputs)
     {
         episode_return = 0;
         for(int i=0; i< traj_length;i++)
@@ -165,6 +190,10 @@ protected:
             #endif
             ac_list[i] = ac;
 			prob_list[i] = policy.getCumulativeProb();
+            if(cache_outputs)
+            {
+                policy.cacheLayerOutputs();
+            }
             env->step(ac);
 
             rew_list[i] = env->getReward();
@@ -185,33 +214,10 @@ protected:
         std::cout << ")\n";
     }
 
-    void standardizeVector(std::vector<ScalarType>& list)
-    {
-        double mean=0;
-        double var=0;
-        for(int i =0;i < list.size();i++)
-        {
-            mean += list[i];
-        }
-        mean /= list.size();
-        for(int i =0;i < list.size();i++)
-        {
-            var += (list[i]-mean)*(list[i]-mean);
-        }
-        var /= list.size();
-        if(var ==0){
-            throw std::runtime_error("Cannot standardizeVector because var == 0.\n");
-        }
-        double std = sqrt(var);
-        for(int i =0;i < list.size();i++)
-        {
-            list[i] = (list[i]-mean)/ std;
-        }
-    }
 
 
     bool print_ob_final = false;
-    ScalarType rew_decay_rate = 0.99;
+    ScalarType m_gamma = 0.99;
     int state_space_dim;
     int action_space_dim;
     PolicyWrapper policy;

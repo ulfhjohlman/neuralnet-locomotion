@@ -1,6 +1,7 @@
 #pragma once
 #include "PolicyGradientTrainer.h"
 #include "ValueFuncWrapper.h"
+#include <math.h>
 
 class PPOTrainer : public PolicyGradientTrainer
 {
@@ -12,9 +13,57 @@ public:
     {
         m_lambda = new_lambda;
     }
-    void set_GAE_gamma(double new_gamma)
+
+    virtual void train(int max_episodes, int timesteps_per_episode, int batch_size)
     {
-        m_gamma = new_gamma;
+        resizeLists(timesteps_per_episode);
+        double mean_loss;
+		double mean_loss_batch = 0;
+		double mean_return_batch = 0;
+        for(int i=1; i <= max_episodes; i++)
+        {
+            //generate a trajectory (an episode)
+            generateTrajectory(timesteps_per_episode,true);
+
+            //at end of an episode
+            {
+                makeValuePredictions();
+                GAE();
+				// mean_loss = calcLoss();
+                // mean_loss_batch += mean_loss;
+				mean_return_batch += episode_return;
+				// printf("Episode: %d. \tMean loss: %lf\n", i, mean_loss);
+
+                calcGradients();
+
+                backpropGradients();
+                //cache loss gradients
+
+                //if end of a minibatch
+                if(i % batch_size == 0 && i>0)
+                {
+                    mean_return_batch/=batch_size;
+					mean_loss_batch = mean_loss_batch/ static_cast<double>(batch_size);
+					policy.popCacheLayerParams();
+				    policy.updateParams();
+                    valueFunc.popCacheLayerParams();
+                    valueFunc.updateParams();
+                    //log progress
+					if((i/batch_size) % 10 == 0){
+                        printf(" ---- Batch Update %d ---- \tmean return: %lf \tmean loss over batch: %lf \n", i / batch_size, mean_return_batch, mean_loss_batch);
+                    }
+					mean_loss_batch = 0;
+					mean_return_batch = 0;
+
+                }
+
+
+                //reset stuff
+                env->reset();
+                //clearLists();
+            }
+
+        }
     }
 
 protected:
@@ -22,14 +71,16 @@ protected:
     {
         PolicyGradientTrainer::resizeLists(len);
         valuePred_list.resize(len);
+        valueTarg_list.resize(len);
     }
     virtual void clearLists()
     {
         PolicyGradientTrainer::clearLists();
         valuePred_list.clear();
+        valueTarg_list.clear();
     }
 
-    //produces the value prediction lists using the valueFunction netowk
+    //produces the value prediction lists using the valueFunction network
     void makeValuePredictions()
     {
         for(int i = 0 ; i<ob_list.size() ; i++)
@@ -50,10 +101,53 @@ protected:
             delta = rew_list[i] + m_gamma * valuePred_list[i+1] - valuePred_list[i];
             adv_list[i] = delta + m_lambda*m_gamma*adv_list[i+1];
         }
+        for(int i=0;i<adv_list.size();i++)
+        {
+            valueTarg_list[i] = valuePred_list[i] + adv_list[i]; //TD_lambda residual error
+            // could instead use TD(1):
+            // valueTarg_list[i] = sum[from i to end] of rew_list;
+        }
+    }
+
+    virtual void calcGradients()
+    {
+        throw std::runtime_error("NOT IMPLEMENTED\n");
+    }
+
+    virtual void backpropGradients()
+    {
+        throw std::runtime_error("NOT IMPLEMENTED\n");
+    }
+
+
+    ScalarType lClippObjFunc(ScalarType pi_old, ScalarType pi_new, ScalarType adv)
+    {
+        ScalarType ratio = pi_new/pi_old;
+        return fmin( ratio * adv, clipRelativeOne(ratio, eps) * adv);
+        //can try std::min in <alorithms> but it should be slower
+    }
+
+    //clips r to be within [1-eps,1+eps]
+    ScalarType clipRelativeOne(ScalarType r, ScalarType eps)
+    {
+        return clip(r,1.0-eps,1.0+eps);
+    }
+
+    //clips x if outside interval
+    ScalarType clip(ScalarType x, ScalarType lower_bound, ScalarType upper_bound)
+    {
+        if(x > upper_bound){
+            return upper_bound;
+        }
+        if(x < lower_bound){
+            return lower_bound;
+        }
+        return x;
     }
 
     ValueFuncWrapper valueFunc;
     std::vector<ScalarType> valuePred_list;
-    double m_lambda;
-    double m_gamma;
+    std::vector<ScalarType> valueTarg_list;
+    double m_lambda = 0.95;
+    double eps = 0.2;
 };

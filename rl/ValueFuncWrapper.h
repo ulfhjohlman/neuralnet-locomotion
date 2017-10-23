@@ -27,6 +27,24 @@ public:
         return m_nn->output();
     }
 
+    void backprop(const MatrixType& error_grad)
+    {
+        m_nn->backprop(error_grad);
+    }
+    void cacheLayerParams()
+    {
+        m_nn->cacheLayerParams();
+    }
+
+    void popCacheLayerParams()
+    {
+        m_nn->popCacheLayerParams();
+    }
+    void updateParams()
+    {
+        m_nn->updateParameters();
+    }
+
 private:
     LayeredNeuralNet * m_nn;
     int state_space_dim;

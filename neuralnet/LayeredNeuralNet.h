@@ -76,6 +76,48 @@ public:
 			m_layers[i]->popCacheParamGradients();
 		}
 	}
+	virtual void reserveLayerOutputCache(int res)
+	{
+		try{
+			for(int i = 0; i<m_layers.size(); i++) //including input_layer
+			{
+				m_layers[i]->reserveOutputCache(res);
+				// This can endup being ALOT of space in PPO, but due to Matrixes
+				// being dynamic size they arent truly allocated untill actual copy
+			}
+		}
+		catch(std::bad_alloc e)
+		{
+			std::cout << "Allocation of a layers m_outputs_cache failed!\n";
+			std::cout << e.what();
+			std::cout << "Aborting program\n";
+			exit(1);
+		}
+	}
+
+	void cachePushBackOutputs()
+	{
+		for(int i = 0; i <m_layers.size() ;i++)
+		{
+			m_layers[i]->cachePushBackOutputs();
+		}
+	}
+
+	void clearOutputsCache()
+	{
+		for(int i = 0; i <m_layers.size() ;i++)
+		{
+			m_layers[i]->clearOutputsCache();
+		}
+	}
+
+	void uncacheIndexedOutput(int j)
+	{
+		for(int i = 0; i <m_layers.size() ;i++)
+		{
+			m_layers[i]->uncacheIndexedOutput(j);
+		}
+	}
 
 	virtual void initializeXavier() {
 		for (auto & layer : m_layers)
