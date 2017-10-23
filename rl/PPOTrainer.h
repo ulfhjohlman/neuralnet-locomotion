@@ -6,62 +6,69 @@
 class PPOTrainer : public PolicyGradientTrainer
 {
 public:
-    PPOTrainer(Environment * new_env, LayeredNeuralNet * new_policy, LayeredNeuralNet * new_valueFunc)
-            : PolicyGradientTrainer(new_env, new_policy), valueFunc(new_valueFunc,state_space_dim)  {}
+    PPOTrainer(Environment * new_env, LayeredNeuralNet * new_policy, LayeredNeuralNet * new_oldPolicy, LayeredNeuralNet * new_valueFunc)
+            : PolicyGradientTrainer(new_env, new_policy), oldPolicy(new_oldPolicy,state_space_dim,action_space_dim), valueFunc(new_valueFunc,state_space_dim)  {}
 
     void set_GAE_lambda(double new_lambda)
     {
         m_lambda = new_lambda;
     }
 
-    virtual void train(int max_episodes, int timesteps_per_episode, int batch_size)
+    void trainPPO(int max_iterations, int batch_size , int timesteps_per_episode, int mini_batch_size,int num_epochs)
     {
-        resizeLists(timesteps_per_episode);
-        double mean_loss;
-		double mean_loss_batch = 0;
-		double mean_return_batch = 0;
-        for(int i=1; i <= max_episodes; i++)
+        m_timesteps_per_episode = timesteps_per_episode;
+        for(int iteration = 0; iteration < max_iterations; iteration++)
         {
-            //generate a trajectory (an episode)
-            generateTrajectory(timesteps_per_episode,true);
-
-            //at end of an episode
+            double mean_return_batch = 0;
+            updateOldPolicy();
+            reserveBatchLists(batch_size);
+            for(int traj=0; traj < batch_size ; traj++)
             {
+                //generate a trajectory (an episode)
+                resizeLists(timesteps_per_episode); //redo each loop as the lists are std::moved at storeDataBatch()
+                generateTrajectory(timesteps_per_episode);
                 makeValuePredictions();
                 GAE();
-				// mean_loss = calcLoss();
-                // mean_loss_batch += mean_loss;
-				mean_return_batch += episode_return;
-				// printf("Episode: %d. \tMean loss: %lf\n", i, mean_loss);
+                standardizeVector(adv_list);
 
-                calcGradients();
+                mean_return_batch += episode_return;
 
-                backpropGradients();
-                //cache loss gradients
-
-                //if end of a minibatch
-                if(i % batch_size == 0 && i>0)
-                {
-                    mean_return_batch/=batch_size;
-					mean_loss_batch = mean_loss_batch/ static_cast<double>(batch_size);
-					policy.popCacheLayerParams();
-				    policy.updateParams();
-                    valueFunc.popCacheLayerParams();
-                    valueFunc.updateParams();
-                    //log progress
-					if((i/batch_size) % 10 == 0){
-                        printf(" ---- Batch Update %d ---- \tmean return: %lf \tmean loss over batch: %lf \n", i / batch_size, mean_return_batch, mean_loss_batch);
-                    }
-					mean_loss_batch = 0;
-					mean_return_batch = 0;
-
-                }
-
+                // add data to batch lists
+                storeBatchData();
 
                 //reset stuff
                 env->reset();
-                //clearLists();
             }
+            mean_return_batch/=batch_size;
+            std::cout << "Batch of " << batch_size <<
+                " trajectories generated. Mean return over batch: " << mean_return_batch << "\n";
+            std::cout << "Optimizing over trajectories\n";
+            for(int epoch=0; epoch < num_epochs; epoch++)
+            {
+                for(int traj=0; traj < batch_size ; traj++)
+                {
+                    //cache loss gradients
+                    calcAndBackpropGradients(traj);
+
+
+                    //if end of a minibatch
+                    if((traj+1) % mini_batch_size == 0)
+                    {
+					    policy.popCacheLayerParams();
+				        policy.updateParams();
+                        valueFunc.popCacheLayerParams();
+                        valueFunc.updateParams();
+                        //log progress
+                        printf(" ---- Mini Batch Update %d ---- \n", traj+1 / mini_batch_size);
+
+
+                    }
+                }
+
+
+            }
+            //clearLists();
+            //clearBatchLists();
 
         }
     }
@@ -78,6 +85,17 @@ protected:
         PolicyGradientTrainer::clearLists();
         valuePred_list.clear();
         valueTarg_list.clear();
+    }
+
+    void reserveBatchLists(int size)
+    {
+        batch_adv_list.reserve(size);
+        batch_ac_list.reserve(size);
+        batch_ob_list.reserve(size);
+        batch_prob_list.reserve(size);
+        batch_mu_list.reserve(size);
+        batch_vpred_list.reserve(size);
+        batch_vtarg_list.reserve(size);
     }
 
     //produces the value prediction lists using the valueFunction network
@@ -108,29 +126,67 @@ protected:
             // valueTarg_list[i] = sum[from i to end] of rew_list;
         }
     }
+    // Calculate the loss gradients over the entire trajectory i
+    virtual void calcAndBackpropGradients(int i)
+    {
+        for(int j=0; j < m_timesteps_per_episode; j++)
+        {
+            double r = calcPolicyRatio(i,j);
+            if((r * batch_adv_list[i][j]) > (batch_adv_list[i][j]*clipRelativeOne(r, eps)) && ((r > 1+eps) || (r<1-eps)))
+            {
+                // then derivative = 0
+                continue;
+            }
+            else //backprop grads
+            {
+                Eigen::Map<MatrixType> actionMatrix(batch_ac_list[i][j].data(),action_space_dim,1);
+                Eigen::Map<MatrixType> muMatrix(batch_mu_list[i][j].data(),action_space_dim,1);
+                // NEGATION because obejctive func = - loss func
+                policy.backprop(- batch_adv_list[i][j] * r * ( actionMatrix.array() - muMatrix.array() )/policy.getSigma());
+                policy.cacheLayerParams();
 
-    virtual void calcGradients()
+                Eigen::Matrix<ScalarType,1,1> vFuncGrad;
+                vFuncGrad(0,0) = 2* (batch_vpred_list[i][j] - batch_vtarg_list[i][j]);
+                valueFunc.backprop( vFuncGrad );
+                valueFunc.cacheLayerParams();
+            }
+        }
+    }
+
+    //ratio pi(a|s)/pi_old(a|s) for batched timestep i
+    double calcPolicyRatio(int i, int j)
+    {
+        double new_policy_prob = policy.probAcGivenState(batch_ac_list[i][j], batch_ob_list[i][j]);
+        double old_policy_prob = batch_prob_list[i][j];
+        return new_policy_prob / old_policy_prob;
+    }
+
+    virtual void updateOldPolicy()
     {
         throw std::runtime_error("NOT IMPLEMENTED\n");
     }
 
-    virtual void backpropGradients()
+    void storeBatchData()
     {
-        throw std::runtime_error("NOT IMPLEMENTED\n");
+        batch_adv_list.push_back(std::move(adv_list));
+        batch_ac_list.push_back(std::move(ac_list));
+        batch_ob_list.push_back(std::move(ob_list));
+        batch_prob_list.push_back(std::move(prob_list));
+        batch_mu_list.push_back(std::move(mu_list));
+        batch_vpred_list.push_back(std::move(valuePred_list));
+        batch_vtarg_list.push_back(std::move(valueTarg_list));
     }
 
-
-    ScalarType lClippObjFunc(ScalarType pi_old, ScalarType pi_new, ScalarType adv)
+    ScalarType lClippObjFunc(ScalarType ratio, ScalarType adv)
     {
-        ScalarType ratio = pi_new/pi_old;
         return fmin( ratio * adv, clipRelativeOne(ratio, eps) * adv);
         //can try std::min in <alorithms> but it should be slower
     }
 
     //clips r to be within [1-eps,1+eps]
-    ScalarType clipRelativeOne(ScalarType r, ScalarType eps)
+    ScalarType clipRelativeOne(ScalarType r, ScalarType epsilon)
     {
-        return clip(r,1.0-eps,1.0+eps);
+        return clip(r,1.0-epsilon,1.0+epsilon);
     }
 
     //clips x if outside interval
@@ -146,8 +202,21 @@ protected:
     }
 
     ValueFuncWrapper valueFunc;
+    PolicyWrapper oldPolicy;
     std::vector<ScalarType> valuePred_list;
     std::vector<ScalarType> valueTarg_list;
+
+    int m_timesteps_per_episode=0;
     double m_lambda = 0.95;
     double eps = 0.2;
+
+    // lists of data over the full batch
+    std::vector<std::vector<ScalarType>>                batch_adv_list;
+    std::vector<std::vector<std::vector<ScalarType>>>   batch_ac_list;
+    std::vector<std::vector<std::vector<ScalarType>>>   batch_ob_list;
+    std::vector<std::vector<double>>                    batch_prob_list;
+    std::vector<std::vector<std::vector<ScalarType>>>   batch_mu_list;
+    std::vector<std::vector<ScalarType>>                batch_vpred_list;
+    std::vector<std::vector<ScalarType>>                batch_vtarg_list;
+
 };

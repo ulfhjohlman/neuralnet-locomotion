@@ -12,7 +12,7 @@ public:
             policy(new_policy_net,state_space_dim,action_space_dim) {
             }
 
-    virtual void train(int max_episodes, int timesteps_per_episode, int batch_size)
+    void trainPG(int max_episodes, int timesteps_per_episode, int batch_size)
     {
         resizeLists(timesteps_per_episode);
         double mean_loss;
@@ -70,6 +70,7 @@ protected:
         loss_list.clear();
         prob_list.clear();
         grad_list.clear();
+        mu_list.clear();
     }
 
     virtual void resizeLists(int len)
@@ -81,6 +82,7 @@ protected:
         loss_list.resize(len);
         prob_list.resize(len);
         grad_list.resize(len);
+        mu_list.resize(len);
     }
 private:
     virtual void calcAdvFunc()
@@ -160,7 +162,7 @@ protected:
         }
     }
 
-    virtual void generateTrajectory(int traj_length,bool cache_outputs)
+    virtual void generateTrajectory(int traj_length)
     {
         episode_return = 0;
         for(int i=0; i< traj_length;i++)
@@ -190,10 +192,8 @@ protected:
             #endif
             ac_list[i] = ac;
 			prob_list[i] = policy.getCumulativeProb();
-            if(cache_outputs)
-            {
-                policy.cacheLayerOutputs();
-            }
+            mu_list[i] = policy.getMu();
+
             env->step(ac);
 
             rew_list[i] = env->getReward();
@@ -226,7 +226,8 @@ protected:
     std::vector<ScalarType> adv_list;
     std::vector<ScalarType> rew_list;
     std::vector<ScalarType> loss_list;
-    std::vector<ScalarType> prob_list;
+    std::vector<double> prob_list;
+    std::vector<std::vector<ScalarType>> mu_list;
     std::vector<std::vector<ScalarType>> ob_list;
     std::vector<std::vector<ScalarType>> ac_list;
     std::vector<std::vector<ScalarType>> grad_list;

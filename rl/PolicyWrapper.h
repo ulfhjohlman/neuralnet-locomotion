@@ -15,12 +15,9 @@ public:
         }
 
         //returns a single action_space output from the policy given an observation
-        const std::vector<ScalarType>& samplePolicy(std::vector<ScalarType> obs)
+        const std::vector<ScalarType>& samplePolicy(std::vector<ScalarType>& obs)
         {
-            Eigen::Map<MatrixType> in_matrix(obs.data(),in_size,1);
-            m_nn->input(in_matrix);
-            out_matrix_ptr = &m_nn->output();
-            mu = std::vector<ScalarType>(out_matrix_ptr->data(), out_matrix_ptr->data() + out_matrix_ptr->size());
+            forwardpassObs(obs);
             sample.clear();
             ScalarType x;
             total_prob = 1;
@@ -34,18 +31,37 @@ public:
             calcLocalObjectiveGradient();
             return sample;
         }
+        void forwardpassObs(std::vector<ScalarType>& obs)
+        {
+            Eigen::Map<MatrixType> in_matrix(obs.data(),in_size,1);
+            m_nn->input(in_matrix);
+            out_matrix_ptr = &m_nn->output();
+            mu = std::vector<ScalarType>(out_matrix_ptr->data(), out_matrix_ptr->data() + out_matrix_ptr->size());
+        }
 
         virtual void input(const MatrixType& x)
         {
             m_nn->input(x);
         }
-
+        double probAcGivenState(std::vector<ScalarType> action , std::vector<ScalarType> obs)
+        {
+            forwardpassObs(obs);
+            double prob = 1;
+            for(int i=0;i<mu.size();i++)
+            {
+                prob *= norm_pdf(action[i],mu[i],m_sigma);
+            }
+            return prob;
+        }
         //returns the cumulative probability of the sample
         const double getCumulativeProb()
         {
             return total_prob;
         }
-
+        const std::vector<ScalarType>& getMu()
+        {
+            return mu;
+        }
         const std::vector<ScalarType>& getlocalObjectiveGradient()
         {
             return localObjectiveGradient;
@@ -70,6 +86,10 @@ public:
 			m_nn->updateParameters();
 		}
 
+        double getSigma()
+        {
+            return m_sigma;
+        }
 private:
         void calcLocalObjectiveGradient()
         {

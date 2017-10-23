@@ -19,6 +19,7 @@ int ppo_test()
 
     //constructing networks
     std::vector<int> layerSizesPolicy {state_space_dim,4,4,action_space_dim};
+    std::vector<int> layerSizesOldPolicy {state_space_dim,4,4,action_space_dim};
     std::vector<int> layerSizesValueFunc {state_space_dim,4,4,1};
     const int relu = Layer::LayerType::relu;
     const int inputLayer = Layer::LayerType::inputLayer;
@@ -27,30 +28,38 @@ int ppo_test()
     const int sigmoid = Layer::LayerType::sigmoid;
     const int tanh = Layer::LayerType::tanh;
     std::vector<int> layerTypesPolicy {inputLayer, tanh,tanh,noactiv};
+    std::vector<int> layerTypesOldPolicy {inputLayer, tanh,tanh,noactiv};
     std::vector<int> layerTypesValueFunc {inputLayer, tanh,tanh,noactiv};
 
     //networks gain ownership/claening responsibilities for these topologies
     LayeredTopology* topPolicy = new LayeredTopology(layerSizesPolicy,layerTypesPolicy);
+    LayeredTopology* topOldPolicy = new LayeredTopology(layerSizesOldPolicy,layerTypesOldPolicy);
     LayeredTopology* topValueFunc = new LayeredTopology(layerSizesValueFunc,layerTypesValueFunc);
 
     LayeredNeuralNet policy(topPolicy);
+    LayeredNeuralNet oldPolicy(topOldPolicy);
     LayeredNeuralNet valueFunc(topValueFunc);
 
     policy.initializeXavier();
+    oldPolicy.initializeXavier();
     valueFunc.initializeXavier();
 
     //ParameterUpdater
     AdamUpdater policyUpdater(1e-3);
+    AdamUpdater oldPolicyUpdater(1e-3);
     // ParameterUpdater policyUpdater(1e-5);
     // RMSPropUpdater policyUpdater(1e-3,1e-8,0.99);
     AdamUpdater valueFuncUpdater(1e-4,1e-8,0.9,0.999);
+
     policy.setParameterUpdater(policyUpdater);
+    oldPolicy.setParameterUpdater(oldPolicyUpdater);
     valueFunc.setParameterUpdater(valueFuncUpdater);
 
     //set up training algorithm
     // PolicyGradientTrainer trainer(&env,&policy);
-    PPOTrainer trainer(&env,&policy,&valueFunc);
-    trainer.train(30000,16,16);
+    PPOTrainer trainer(&env,&policy,&oldPolicy,&valueFunc);
+    //arguments: iterations,  batchsize, timesteps_episode, minibatch_size, epochs
+    trainer.trainPPO(1000,16,64,4,5);
 
 
     return 0;
