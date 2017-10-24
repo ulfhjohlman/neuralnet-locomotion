@@ -64,6 +64,45 @@ int ppo_test()
 
     return 0;
 }
+int pg_test()
+{
+    std::cout << "Starting pg_test\n";
+
+    //initalize environment
+    MathPuzzleEnv env;
+    int action_space_dim = env.getActionSpaceDimensions();
+    int state_space_dim = env.getStateSpaceDimensions();
+
+    //constructing networks
+    std::vector<int> layerSizesPolicy {state_space_dim,4,4,action_space_dim};
+    const int relu = Layer::LayerType::relu;
+    const int inputLayer = Layer::LayerType::inputLayer;
+    const int noactiv = Layer::noActivation;
+    const int softmax = Layer::LayerType::softmax;
+    const int sigmoid = Layer::LayerType::sigmoid;
+    const int tanh = Layer::LayerType::tanh;
+    std::vector<int> layerTypesPolicy {inputLayer, tanh,tanh,noactiv};
+
+    //networks gain ownership/claening responsibilities for these topologies
+    LayeredTopology* topPolicy = new LayeredTopology(layerSizesPolicy,layerTypesPolicy);
+
+    LayeredNeuralNet policy(topPolicy);
+
+    policy.initializeXavier();
+
+    //ParameterUpdater
+    AdamUpdater policyUpdater(1e-3);
+
+    policy.setParameterUpdater(policyUpdater);
+
+    //set up training algorithm
+    PolicyGradientTrainer trainer(&env,&policy);
+    //arguments: max_episodes, timesteps_per_episode, batch_size
+    trainer.trainPG(1024,16,4);
+
+
+    return 0;
+}
 
 int main()
 {
@@ -74,7 +113,8 @@ int main()
 			std::cout << "_DEBUG FLAG OFF\n";
     #endif
     try{
-        ppo_test();
+        // ppo_test();
+        pg_test();
     }
     catch(const std::runtime_error& e)
     {

@@ -123,6 +123,12 @@ public:
 		return m_bias.data();
 	}
 
+	virtual void copyParamsFrom(const Layer& otherlayer)
+	{
+		m_weights = otherlayer.m_weights;
+		m_bias = otherlayer.m_bias;
+	}
+
 	virtual void save(const char* toFile) { }
 	virtual void load(const char* fromFile) { }
 
@@ -209,10 +215,11 @@ protected: //members
 	MatrixType m_outputs;
 	//MatrixType m_outputs_pre_activation;
 	MatrixType m_weights;
-	std::vector<MatrixType> m_outputs_cache;
-	
-private: //members
 	MatrixType m_bias;
+	std::vector<MatrixType> m_outputs_cache;
+
+private: //members
+
 	MatrixType m_gradients_weights;
 	MatrixType m_gradients_inputs;
 	MatrixType m_gradients_bias;

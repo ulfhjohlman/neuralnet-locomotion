@@ -44,6 +44,7 @@ public:
                 " trajectories generated. Mean return over batch: " << mean_return_batch << "\n";
             std::cout << "Optimizing over trajectories\n";
             for(int epoch=0; epoch < num_epochs; epoch++)
+            std::cout << "Epoch: " << epoch << "\n";
             {
                 for(int traj=0; traj < batch_size ; traj++)
                 {
@@ -59,7 +60,7 @@ public:
                         valueFunc.popCacheLayerParams();
                         valueFunc.updateParams();
                         //log progress
-                        printf(" ---- Mini Batch Update %d ---- \n", traj+1 / mini_batch_size);
+                        printf(" ---- Mini Batch Update %d ---- \n", (traj+1) / mini_batch_size);
 
 
                     }
@@ -163,7 +164,7 @@ protected:
 
     virtual void updateOldPolicy()
     {
-        throw std::runtime_error("NOT IMPLEMENTED\n");
+        oldPolicy.copyParams(policy);
     }
 
     void storeBatchData()

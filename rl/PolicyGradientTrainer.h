@@ -18,7 +18,7 @@ public:
         double mean_loss;
 		double mean_loss_batch = 0;
 		double mean_return_batch = 0;
-        for(int i=1; i <= max_episodes; i++)
+        for(int i=0; i < max_episodes; i++)
         {
             //generate a trajectory (an episode)
             generateTrajectory(timesteps_per_episode);
@@ -37,7 +37,7 @@ public:
                 //cache loss gradients
 
                 //if end of a minibatch
-                if(i % batch_size == 0 && i>0)
+                if((i+1) % batch_size == 0)
                 {
                     mean_return_batch/=batch_size;
 					mean_loss_batch = mean_loss_batch/ static_cast<double>(batch_size);
@@ -45,8 +45,10 @@ public:
 				    policy.updateParams();
                     //log progress
 					if((i/batch_size) % 10 == 0){
-                        printf(" ---- Batch Update %d ---- \tmean return: %lf \tmean loss over batch: %lf \n", i / batch_size, mean_return_batch, mean_loss_batch);
+                        printf(" ---- Batch Update %d ---- \tmean return: %lf \n", i / batch_size, mean_return_batch);
                     }
+                    std::cout << "Loss pre optimization:\t" << preloss << " Post:\t" << postloss << "\n";
+
 					mean_loss_batch = 0;
 					mean_return_batch = 0;
 
@@ -103,6 +105,7 @@ private:
         ScalarType meanLoss = 0;
         for(int i = 0; i < ac_list.size(); i++)
         {
+            
             loss_list[i] = - log(prob_list[i])* adv_list[i];
             meanLoss+=loss_list[i];
         }

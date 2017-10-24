@@ -5,7 +5,7 @@
 #include "Layer.h"
 #include "LayerFactory.h"
 #include "ParameterUpdater.h"
-
+#include "config.h"
 #include <vector>
 #include <stdexcept>
 #include <memory>
@@ -186,6 +186,23 @@ public:
 	{
 		return m_parameter_updater != nullptr;
 	}
+
+	//copies weights and biases from another neuralnet into this one
+	virtual void copyParams(const LayeredNeuralNet& otherNet)
+	{
+		#ifdef _DEBUG
+			if(!m_topology->equals(*otherNet.getTopology()))
+			{
+				throw std::invalid_argument("Cannot copy parameters between NNs of different topologies!\n");
+			}
+		#endif
+		//skip inputlayer
+		for(int i=1 ; i<m_layers.size();i++)
+		{
+			m_layers[i]->copyParamsFrom(*otherNet.m_layers[i]);
+		}
+	}
+
 	virtual void save(const char* toFile) { }
 	virtual void load(const char* fromFile) { }
 protected: //members

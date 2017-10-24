@@ -90,6 +90,12 @@ public:
         {
             return m_sigma;
         }
+        void copyParams(const PolicyWrapper& otherPW)
+        {
+            m_nn->copyParams(*otherPW.m_nn);
+        }
+
+
 private:
         void calcLocalObjectiveGradient()
         {
@@ -105,7 +111,7 @@ private:
             return 1.0/(sigma*sqrt(2*M_PI)) * exp(-(x-mu)*(x-mu)/(2.0*sigma*sigma));
         }
 
-        LayeredNeuralNet * m_nn;
+
         std::vector<ScalarType> sample;
         std::vector<ScalarType> localObjectiveGradient;
         double total_prob;
@@ -116,4 +122,6 @@ private:
         int out_size;
         Generator generator; //Thread safe generation
         double m_sigma = 1;
+    protected:
+        LayeredNeuralNet * m_nn;
 };
