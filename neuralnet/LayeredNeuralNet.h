@@ -15,8 +15,8 @@ class LayeredNeuralNet :
 	public NeuralNet
 {
 public:
-	LayeredNeuralNet() : m_topology(nullptr) { }
-	LayeredNeuralNet(LayeredTopology * topology) : m_topology(nullptr) {
+	LayeredNeuralNet(){ }
+	LayeredNeuralNet(LayeredTopology * topology){
 		setTopology(topology);
 		constructFromTopology();
 	}
@@ -30,7 +30,10 @@ public:
 		checkTopology(topology);
 		//new topology ok.
 		//delete old if there is one.
-		if (m_topology) delete m_topology;
+		if (m_topology) {
+			delete m_topology;
+			std::cout << "WARNING: Replaced an old topology in LayeredNN\n";
+		}
 		m_topology = topology;
 	}
 
@@ -115,9 +118,9 @@ public:
 	void setParameterUpdater(ParameterUpdater& gupd)
 	{
 		m_parameter_updater = &gupd;
-		for(auto& layer : m_layers)
+		for(int i=1;i< m_layers.size();i++) //skip input layer
 		{
-			m_parameter_updater->linkLayerParams(layer);
+			m_parameter_updater->linkLayerParams(m_layers[i]);
 		}
 	}
 
@@ -143,7 +146,7 @@ public:
 protected: //members
 	std::vector<Layer*> m_layers;//replace with shared_ptr<Layer>
 private:   //members
-	LayeredTopology* m_topology;
+	LayeredTopology* m_topology = nullptr;
 	ParameterUpdater* m_parameter_updater = nullptr;
 
 protected: //Error checking
@@ -156,7 +159,7 @@ protected: //Error checking
 	{
 		for (size_t i = 0; i < m_layers.size(); i++)
 			if (m_layers[i]) {
-				//std::cout << "deleted:" << m_layers[i] << std::endl;
+				std::cout << "WARNING: Destroying a layer in LayeredNN\n";
 				delete m_layers[i];
 			}
 		m_layers.clear();
