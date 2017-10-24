@@ -47,7 +47,7 @@ public:
 					if((i/batch_size) % 10 == 0){
                         printf(" ---- Batch Update %d ---- \tmean return: %lf \n", i / batch_size, mean_return_batch);
                     }
-                    std::cout << "Loss pre optimization:\t" << preloss << " Post:\t" << postloss << "\n";
+                    //std::cout << "Loss pre optimization:\t" << preloss << " Post:\t" << postloss << "\n";
 
 					mean_loss_batch = 0;
 					mean_return_batch = 0;
@@ -100,13 +100,13 @@ private:
 
     // Loss with AdvFun estimate = decayed reward.
     // Returns mean loss over the episode
-    virtual ScalarType calcLoss()
+    virtual double calcLoss()
     {
         ScalarType meanLoss = 0;
         for(int i = 0; i < ac_list.size(); i++)
         {
-            
             loss_list[i] = - log(prob_list[i])* adv_list[i];
+            // loss_list[i] = - log(prob_list[i])* adv_list[i];
             meanLoss+=loss_list[i];
         }
         meanLoss /= ac_list.size();

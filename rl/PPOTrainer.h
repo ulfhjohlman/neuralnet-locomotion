@@ -20,6 +20,7 @@ public:
         for(int iteration = 0; iteration < max_iterations; iteration++)
         {
             double mean_return_batch = 0;
+            double valuefunc_mean_batch = 0;
             updateOldPolicy();
             reserveBatchLists(batch_size);
             for(int traj=0; traj < batch_size ; traj++)
@@ -32,6 +33,7 @@ public:
                 standardizeVector(adv_list);
 
                 mean_return_batch += episode_return;
+                valuefunc_mean_batch += valueFuncMean();
 
                 // add data to batch lists
                 storeBatchData();
@@ -42,6 +44,7 @@ public:
             mean_return_batch/=batch_size;
             std::cout << "Batch of " << batch_size <<
                 " trajectories generated. Mean return over batch: " << mean_return_batch << "\n";
+            std::cout << "ValueNet estimate:\t" << valuefunc_mean_batch << "\n";
             std::cout << "Optimizing over trajectories\n";
             for(int epoch=0; epoch < num_epochs; epoch++)
             std::cout << "Epoch: " << epoch << "\n";
@@ -80,12 +83,14 @@ protected:
         PolicyGradientTrainer::resizeLists(len);
         valuePred_list.resize(len);
         valueTarg_list.resize(len);
+        valueFuncLoss_list.resize(len);
     }
     virtual void clearLists()
     {
         PolicyGradientTrainer::clearLists();
         valuePred_list.clear();
         valueTarg_list.clear();
+        valueFuncLoss_list.clear();
     }
 
     void reserveBatchLists(int size)
@@ -108,7 +113,42 @@ protected:
             valuePred_list[i] = valueFunc.predict(ob_matrix)(0,0);
         }
     }
+    double valueFuncMean()
+    {
+        double x;
+        for (int i = 0; i<m_timesteps_per_episode; i++)
+        {
+            x+= valuePred_list[i];
+        }
+        return x;
+    }
 
+    //calc loss for trajectory i. returns mean loss
+    double calcLoss(int i)
+    {
+        ScalarType meanLoss = 0;
+        double ratio;
+        for(int j = 0; j < m_timesteps_per_episode; j++)
+        {
+            ratio = calcPolicyRatio(i,j);
+            loss_list[j] = - lClippObjFunc(ratio, batch_adv_list[i][j]);
+            meanLoss+=loss_list[j];
+        }
+        meanLoss /= m_timesteps_per_episode;
+        return meanLoss;
+    }
+
+    double calcValueFuncLoss(int i)
+    {
+        ScalarType meanLoss = 0;
+        for(int j = 0; j < m_timesteps_per_episode; j++)
+        {
+            valueFuncLoss_list[j] = (valuePred_list[j] - valueTarg_list[j]) * (valuePred_list[j] - valueTarg_list[j]);
+            meanLoss+=loss_list[j];
+        }
+        meanLoss /= m_timesteps_per_episode;
+        return meanLoss;
+    }
     //produce generalized advantage estimates using value network and state list
     void GAE(){
         makeValuePredictions();
@@ -154,7 +194,7 @@ protected:
         }
     }
 
-    //ratio pi(a|s)/pi_old(a|s) for batched timestep i
+    //ratio pi(a|s)/pi_old(a|s) for batched trajectory i timestep j
     double calcPolicyRatio(int i, int j)
     {
         double new_policy_prob = policy.probAcGivenState(batch_ac_list[i][j], batch_ob_list[i][j]);
@@ -206,6 +246,7 @@ protected:
     PolicyWrapper oldPolicy;
     std::vector<ScalarType> valuePred_list;
     std::vector<ScalarType> valueTarg_list;
+    std::vector<ScalarType> valueFuncLoss_list;
 
     int m_timesteps_per_episode=0;
     double m_lambda = 0.95;
@@ -219,5 +260,7 @@ protected:
     std::vector<std::vector<std::vector<ScalarType>>>   batch_mu_list;
     std::vector<std::vector<ScalarType>>                batch_vpred_list;
     std::vector<std::vector<ScalarType>>                batch_vtarg_list;
+
+
 
 };

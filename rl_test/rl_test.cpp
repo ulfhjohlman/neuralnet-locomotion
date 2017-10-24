@@ -98,7 +98,7 @@ int pg_test()
     //set up training algorithm
     PolicyGradientTrainer trainer(&env,&policy);
     //arguments: max_episodes, timesteps_per_episode, batch_size
-    trainer.trainPG(1024,16,4);
+    trainer.trainPG(50024,16,4);
 
 
     return 0;
@@ -113,8 +113,8 @@ int main()
 			std::cout << "_DEBUG FLAG OFF\n";
     #endif
     try{
-        // ppo_test();
-        pg_test();
+        ppo_test();
+        // pg_test();
     }
     catch(const std::runtime_error& e)
     {

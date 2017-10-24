@@ -13,6 +13,13 @@ public:
         PolicyWrapper(LayeredNeuralNet * new_nn, int new_in_size, int new_out_size): m_nn(new_nn), in_size(new_in_size) {
             sample.reserve(new_out_size);
         }
+        ~PolicyWrapper()
+        {
+            if(m_nn)
+            {
+                delete m_nn;
+            }
+        }
 
         //returns a single action_space output from the policy given an observation
         const std::vector<ScalarType>& samplePolicy(std::vector<ScalarType>& obs)
