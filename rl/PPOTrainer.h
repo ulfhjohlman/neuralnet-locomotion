@@ -53,6 +53,10 @@ public:
                 {
                     //cache loss gradients
                     calcAndBackpropGradients(traj);
+                    // double meanLoss = calcLoss(traj);
+
+                    double meanVFLoss = calcValueFuncLoss();
+                    double meanVFpre = valueFuncMean();
 
 
                     //if end of a minibatch
@@ -67,6 +71,13 @@ public:
 
 
                     }
+                    // double meanLosspost = calcLoss(traj);
+                    makeValuePredictions();
+                    double meanVFLosspost = calcValueFuncLoss();
+                    double meanVFpost = valueFuncMean();
+                    // std::cout << "PreLoss: \t" << meanLoss << "Post loss: \t" << meanLosspost << "\n";
+                    std::cout << "PrevfLoss: \t" << meanVFLoss << "PostVF loss: \t" << meanVFLosspost << "\n";
+                    std::cout << "PrevfMean: \t" << meanVFpre << "PostVF mean: \t" << meanVFpost << "\n";
                 }
 
 
@@ -138,20 +149,23 @@ protected:
         return meanLoss;
     }
 
-    double calcValueFuncLoss(int i)
+    double calcValueFuncLoss()
     {
         ScalarType meanLoss = 0;
         for(int j = 0; j < m_timesteps_per_episode; j++)
         {
-            valueFuncLoss_list[j] = (valuePred_list[j] - valueTarg_list[j]) * (valuePred_list[j] - valueTarg_list[j]);
-            meanLoss+=loss_list[j];
+            // batch_valueFuncLoss_list[j] = (batch_valuePred_list[i][j] - batch_valueTarg_list[i][j]) *
+                // (batch_valuePred_list[i][j] - batch_valueTarg_list[i][j]);
+            valueFuncLoss_list[j] = (valuePred_list[j] - valueTarg_list[j]) *
+                                    (valuePred_list[j] - valueTarg_list[j]);
+            meanLoss+=valueFuncLoss_list[j];
         }
         meanLoss /= m_timesteps_per_episode;
         return meanLoss;
     }
     //produce generalized advantage estimates using value network and state list
     void GAE(){
-        makeValuePredictions();
+        // makeValuePredictions();
         double delta = rew_list.back() - valuePred_list.back();
         adv_list.back() = delta;
 
@@ -211,11 +225,14 @@ protected:
     {
         batch_adv_list.push_back(std::move(adv_list));
         batch_ac_list.push_back(std::move(ac_list));
-        batch_ob_list.push_back(std::move(ob_list));
+        // batch_ob_list.push_back(std::move(ob_list));
+        batch_ob_list.push_back(ob_list);
         batch_prob_list.push_back(std::move(prob_list));
         batch_mu_list.push_back(std::move(mu_list));
-        batch_vpred_list.push_back(std::move(valuePred_list));
-        batch_vtarg_list.push_back(std::move(valueTarg_list));
+        // batch_vpred_list.push_back(std::move(valuePred_list));
+        // batch_vtarg_list.push_back(std::move(valueTarg_list));
+        batch_vpred_list.push_back(valuePred_list);
+        batch_vtarg_list.push_back(valueTarg_list);
     }
 
     ScalarType lClippObjFunc(ScalarType ratio, ScalarType adv)
