@@ -34,7 +34,7 @@ public:
     };
     virtual ScalarType getReward(){
         return -(sqrt(pow(x-10,2)+pow(y+10,2)));
-        // return x > 0 ? 1 : -1;
+        // return x > 1 ? 1 : -1;
     };
     virtual const std::vector<ScalarType> getState(){
         return std::vector<ScalarType>{x,y};

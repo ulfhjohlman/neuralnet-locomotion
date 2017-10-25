@@ -18,9 +18,9 @@ int ppo_test()
     int state_space_dim = env.getStateSpaceDimensions();
 
     //constructing networks
-    std::vector<int> layerSizesPolicy {state_space_dim,4,4,action_space_dim};
-    std::vector<int> layerSizesOldPolicy {state_space_dim,4,4,action_space_dim};
-    std::vector<int> layerSizesValueFunc {state_space_dim,4,4,1};
+    std::vector<int> layerSizesPolicy {state_space_dim,16,16,action_space_dim};
+    std::vector<int> layerSizesOldPolicy {state_space_dim,16,16,action_space_dim};
+    std::vector<int> layerSizesValueFunc {state_space_dim,16,16,1};
     const int relu = Layer::LayerType::relu;
     const int inputLayer = Layer::LayerType::inputLayer;
     const int noactiv = Layer::noActivation;
@@ -59,7 +59,7 @@ int ppo_test()
     // PolicyGradientTrainer trainer(&env,&policy);
     PPOTrainer trainer(&env,&policy,&oldPolicy,&valueFunc);
     //arguments: iterations,  batchsize, timesteps_episode, minibatch_size, epochs
-    trainer.trainPPO(1000,1,64,1,1);
+    trainer.trainPPO(1000,1,128,1,1);
 
 
     return 0;

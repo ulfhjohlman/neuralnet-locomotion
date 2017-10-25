@@ -20,13 +20,7 @@ public:
             throw std::invalid_argument("Value Network initialized without a ParameterUpdater\n");
         }
     }
-    ~ValueFuncWrapper()
-    {
-        if(m_nn)
-        {
-            delete m_nn;
-        }
-    }
+   
     const MatrixType& predict(const MatrixType ob)
     {
         m_nn->input(ob);

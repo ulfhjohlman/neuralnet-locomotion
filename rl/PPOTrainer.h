@@ -73,17 +73,18 @@ public:
                     }
                     // double meanLosspost = calcLoss(traj);
                     makeValuePredictions();
-                    double meanVFLosspost = calcValueFuncLoss();
+                    double meanVFLosspost = calcValueFuncLoss2();
                     double meanVFpost = valueFuncMean();
                     // std::cout << "PreLoss: \t" << meanLoss << "Post loss: \t" << meanLosspost << "\n";
                     std::cout << "PrevfLoss: \t" << meanVFLoss << "PostVF loss: \t" << meanVFLosspost << "\n";
                     std::cout << "PrevfMean: \t" << meanVFpre << "PostVF mean: \t" << meanVFpost << "\n";
+
                 }
 
 
             }
             //clearLists();
-            //clearBatchLists();
+            clearBatchLists();
 
         }
     }
@@ -94,16 +95,29 @@ protected:
         PolicyGradientTrainer::resizeLists(len);
         valuePred_list.resize(len);
         valueTarg_list.resize(len);
-        valueFuncLoss_list.resize(len);
+		valueFuncLoss_list.resize(len);
+		valueFuncLoss_list2.resize(len);
+		valueTargTD1.resize(len);
     }
     virtual void clearLists()
     {
         PolicyGradientTrainer::clearLists();
         valuePred_list.clear();
         valueTarg_list.clear();
-        valueFuncLoss_list.clear();
+		valueFuncLoss_list.clear();
+		valueFuncLoss_list2.clear();
+		valueTargTD1.clear();
     }
-
+	void clearBatchLists()
+	{
+		batch_adv_list.clear();
+		batch_ac_list.clear();
+		batch_ob_list.clear();
+		batch_prob_list.clear();
+		batch_mu_list.clear();
+		batch_vpred_list.clear();
+		batch_vtarg_list.clear();
+	}
     void reserveBatchLists(int size)
     {
         batch_adv_list.reserve(size);
@@ -126,7 +140,7 @@ protected:
     }
     double valueFuncMean()
     {
-        double x;
+        double x=0;
         for (int i = 0; i<m_timesteps_per_episode; i++)
         {
             x+= valuePred_list[i];
@@ -149,23 +163,38 @@ protected:
         return meanLoss;
     }
 
-    double calcValueFuncLoss()
-    {
-        ScalarType meanLoss = 0;
-        for(int j = 0; j < m_timesteps_per_episode; j++)
-        {
-            // batch_valueFuncLoss_list[j] = (batch_valuePred_list[i][j] - batch_valueTarg_list[i][j]) *
-                // (batch_valuePred_list[i][j] - batch_valueTarg_list[i][j]);
-            valueFuncLoss_list[j] = (valuePred_list[j] - valueTarg_list[j]) *
-                                    (valuePred_list[j] - valueTarg_list[j]);
-            meanLoss+=valueFuncLoss_list[j];
-        }
-        meanLoss /= m_timesteps_per_episode;
-        return meanLoss;
-    }
+	double calcValueFuncLoss()
+	{
+		ScalarType meanLoss = 0;
+		for (int j = 0; j < m_timesteps_per_episode; j++)
+		{
+			// batch_valueFuncLoss_list[j] = (batch_valuePred_list[i][j] - batch_valueTarg_list[i][j]) *
+			// (batch_valuePred_list[i][j] - batch_valueTarg_list[i][j]);
+			valueFuncLoss_list[j] = (valuePred_list[j] - valueTarg_list[j]) *
+				(valuePred_list[j] - valueTarg_list[j]);
+			meanLoss += valueFuncLoss_list[j];
+		}
+		meanLoss /= m_timesteps_per_episode;
+		return meanLoss;
+	}
+	double calcValueFuncLoss2()
+	{
+		ScalarType meanLoss = 0;
+		for (int j = 0; j < m_timesteps_per_episode; j++)
+		{
+			// batch_valueFuncLoss_list[j] = (batch_valuePred_list[i][j] - batch_valueTarg_list[i][j]) *
+			// (batch_valuePred_list[i][j] - batch_valueTarg_list[i][j]);
+			valueFuncLoss_list2[j] = (valuePred_list[j] - valueTarg_list[j]) *
+				(valuePred_list[j] - valueTarg_list[j]);
+			meanLoss += valueFuncLoss_list2[j];
+		}
+		meanLoss /= m_timesteps_per_episode;
+		return meanLoss;
+	}
+
     //produce generalized advantage estimates using value network and state list
     void GAE(){
-        // makeValuePredictions();
+        // dont forget to first makeValuePredictions();
         double delta = rew_list.back() - valuePred_list.back();
         adv_list.back() = delta;
 
@@ -177,9 +206,15 @@ protected:
         for(int i=0;i<adv_list.size();i++)
         {
             valueTarg_list[i] = valuePred_list[i] + adv_list[i]; //TD_lambda residual error
-            // could instead use TD(1):
-            // valueTarg_list[i] = sum[from i to end] of rew_list;
+            
         }
+		// could instead use TD(1):
+		// valueTarg_list[i] = sum[from i to end] of rew_list;
+		valueTargTD1[adv_list.size() - 1] = rew_list[adv_list.size()-1];
+		for (int i = adv_list.size() - 2; i >= 0; i--)
+		{
+			valueTargTD1[i] = rew_list[i] + m_gamma*valueTargTD1[i + 1];
+		}
     }
     // Calculate the loss gradients over the entire trajectory i
     virtual void calcAndBackpropGradients(int i)
@@ -194,6 +229,8 @@ protected:
             }
             else //backprop grads
             {
+				//reforward pass for correct "input gradients"
+				policy.forwardpassObs(batch_ob_list[i][j]);
                 Eigen::Map<MatrixType> actionMatrix(batch_ac_list[i][j].data(),action_space_dim,1);
                 Eigen::Map<MatrixType> muMatrix(batch_mu_list[i][j].data(),action_space_dim,1);
                 // NEGATION because obejctive func = - loss func
@@ -202,8 +239,12 @@ protected:
 
                 Eigen::Matrix<ScalarType,1,1> vFuncGrad;
                 vFuncGrad(0,0) = 2* (batch_vpred_list[i][j] - batch_vtarg_list[i][j]);
-                valueFunc.backprop( vFuncGrad );
+				//reforward pass for correct "input gradients"
+				Eigen::Map<MatrixType> ob_matrix(batch_ob_list[i][j].data(), state_space_dim, 1);
+				valueFunc.predict(ob_matrix);
+				valueFunc.backprop( vFuncGrad );
                 valueFunc.cacheLayerParams();
+				std::cout << "Vpred: " << batch_vpred_list[i][j] << "\tVtarg: " << batch_vtarg_list[i][j] << "\tReal: " << valueTargTD1[j] << "\tOb:  " << batch_ob_list[i][j][0] << "," << batch_ob_list[i][j][1] << "\n";
             }
         }
     }
@@ -263,7 +304,9 @@ protected:
     PolicyWrapper oldPolicy;
     std::vector<ScalarType> valuePred_list;
     std::vector<ScalarType> valueTarg_list;
-    std::vector<ScalarType> valueFuncLoss_list;
+	std::vector<ScalarType> valueFuncLoss_list;
+	std::vector<ScalarType> valueFuncLoss_list2;
+	std::vector<ScalarType> valueTargTD1;
 
     int m_timesteps_per_episode=0;
     double m_lambda = 0.95;
