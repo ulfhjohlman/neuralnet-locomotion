@@ -19,6 +19,7 @@ public:
         m_timesteps_per_episode = timesteps_per_episode;
         for(int iteration = 0; iteration < max_iterations; iteration++)
         {
+			std::cout << "---- Iteration: " << iteration << " ----\n";
             double mean_return_batch = 0;
             double valuefunc_mean_batch = 0;
             updateOldPolicy();
@@ -47,8 +48,8 @@ public:
             std::cout << "ValueNet estimate:\t" << valuefunc_mean_batch << "\n";
             std::cout << "Optimizing over trajectories\n";
             for(int epoch=0; epoch < num_epochs; epoch++)
-            std::cout << "Epoch: " << epoch << "\n";
             {
+				std::cout << "Epoch: " << epoch << "\n";
                 for(int traj=0; traj < batch_size ; traj++)
                 {
                     //cache loss gradients
@@ -234,7 +235,7 @@ protected:
                 Eigen::Map<MatrixType> actionMatrix(batch_ac_list[i][j].data(),action_space_dim,1);
                 Eigen::Map<MatrixType> muMatrix(batch_mu_list[i][j].data(),action_space_dim,1);
                 // NEGATION because obejctive func = - loss func
-                policy.backprop(- batch_adv_list[i][j] * r * ( actionMatrix.array() - muMatrix.array() )/policy.getSigma());
+                policy.backprop(- batch_adv_list[i][j] * r * ( actionMatrix.array() - muMatrix.array() )/(policy.getSigma()*policy.getSigma()));
                 policy.cacheLayerParams();
 
                 Eigen::Matrix<ScalarType,1,1> vFuncGrad;

@@ -59,7 +59,7 @@ int ppo_test()
     // PolicyGradientTrainer trainer(&env,&policy);
     PPOTrainer trainer(&env,&policy,&oldPolicy,&valueFunc);
     //arguments: iterations,  batchsize, timesteps_episode, minibatch_size, epochs
-    trainer.trainPPO(1000,1,128,1,1);
+    trainer.trainPPO(1000,16,128,4,10);
 
 
     return 0;
