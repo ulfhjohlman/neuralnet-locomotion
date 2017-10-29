@@ -17,11 +17,20 @@ class RL_MJ_Environment(): Environment {
 
     virtual void step(const std::vector<ScalarType>& actions)
     {
+        #ifdef _DEBUG
+            if(actions.size() != nctrls)
+            {
+                throw std::runtime_error("Controler actions.size() != nctrls\n");
+            }
+        #endif
         double simstep = 0.003;
 
         // agent.simulate(1);
         mj_step1(m_model, m_data);
-        agentControll();
+        for (int i = 0; i < m_model->nu; i++)
+        {
+            m_data->ctrl[i] = actions[i];
+        }
         mj_step2(m_model, m_data);
 
         m_time_simulated += simstep*steps;
