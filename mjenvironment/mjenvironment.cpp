@@ -44,6 +44,8 @@ int main() {
 			mjrRect viewport = { 0, 0, 0, 0 };
 			glfwGetFramebufferSize(window, &viewport.width, &viewport.height);
 
+			
+
 			environment->render(viewport);
 
 			// swap OpenGL buffers (blocking call due to v-sync)

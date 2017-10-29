@@ -53,7 +53,7 @@ public:
             std::cout << "Optimizing over trajectories\n";
             for(int epoch=0; epoch < num_epochs; epoch++)
             {
-				std::cout << "Epoch: " << epoch << "\n";
+				///std::cout << "Epoch: " << epoch << "\n";
                 for(int traj=0; traj < batch_size ; traj++)
                 {
                     //cache loss gradients
@@ -72,7 +72,7 @@ public:
                         valueFunc.popCacheLayerParams();
                         valueFunc.updateParams();
                         //log progress
-                        printf(" ---- Mini Batch Update %d ---- \n", (traj+1) / mini_batch_size);
+                        //printf(" ---- Mini Batch Update %d ---- \n", (traj+1) / mini_batch_size);
 
 
                     }
@@ -81,8 +81,8 @@ public:
                     double meanVFLosspost = calcValueFuncLoss2();
                     double meanVFpost = valueFuncMean();
                     // std::cout << "PreLoss: \t" << meanLoss << "Post loss: \t" << meanLosspost << "\n";
-                    std::cout << "PrevfLoss: \t" << meanVFLoss << "PostVF loss: \t" << meanVFLosspost << "\n";
-                    std::cout << "PrevfMean: \t" << meanVFpre << "PostVF mean: \t" << meanVFpost << "\n";
+                    //std::cout << "PrevfLoss: \t" << meanVFLoss << "PostVF loss: \t" << meanVFLosspost << "\n";
+                    //std::cout << "PrevfMean: \t" << meanVFpre << "PostVF mean: \t" << meanVFpost << "\n";
 
                 }
 
@@ -249,7 +249,7 @@ protected:
 				valueFunc.predict(ob_matrix);
 				valueFunc.backprop( vFuncGrad );
                 valueFunc.cacheLayerParams();
-				std::cout << "Vpred: " << batch_vpred_list[i][j] << "\tVtarg: " << batch_vtarg_list[i][j] << "\tReal: " << valueTargTD1[j] << "\tOb:  " << batch_ob_list[i][j][0] << "," << batch_ob_list[i][j][1] << "\n";
+				//std::cout << "Vpred: " << batch_vpred_list[i][j] << "\tVtarg: " << batch_vtarg_list[i][j] << "\tReal: " << valueTargTD1[j] << "\tOb:  " << batch_ob_list[i][j][0] << "," << batch_ob_list[i][j][1] << "\n";
             }
         }
     }

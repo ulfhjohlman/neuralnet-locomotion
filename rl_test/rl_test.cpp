@@ -105,11 +105,9 @@ int ppo_mj_test()
 	
 
 	//ParameterUpdater
-	AdamUpdater policyUpdater(1e-3);
-	AdamUpdater oldPolicyUpdater(1e-3);
-	// ParameterUpdater policyUpdater(1e-5);
-	// RMSPropUpdater policyUpdater(1e-3,1e-8,0.99);
-	AdamUpdater valueFuncUpdater(1e-3);
+	AdamUpdater policyUpdater(1e-4);
+	AdamUpdater oldPolicyUpdater(1e-4);
+	AdamUpdater valueFuncUpdater(1e-4);
 
 	policy.setParameterUpdater(policyUpdater);
 	oldPolicy.setParameterUpdater(oldPolicyUpdater);
@@ -120,7 +118,7 @@ int ppo_mj_test()
 	PPOTrainer trainer(&env, &policy, &oldPolicy, &valueFunc);
 	//arguments: iterations,  batchsize, timesteps_episode, minibatch_size, epochs
 	trainer.set_sigma(0.1);
-	trainer.trainPPO(1000, 16, 128, 4, 10);
+	trainer.trainPPO(5000, 16, 1024, 4, 10);
 
 
 

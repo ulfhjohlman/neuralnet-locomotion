@@ -6,19 +6,50 @@
 #include "config.h"
 
 
+bool b_render = true;
+
+void keyboard(GLFWwindow* window, int key, int scancode, int act, int mods)
+{
+	// backspace: reset simulation
+	if (act == GLFW_PRESS && key == GLFW_KEY_BACKSPACE)
+	{
+	}
+
+	if (act == GLFW_PRESS && key == GLFW_KEY_Q) {
+		//ga->mutate();
+	}
+
+	if (act == GLFW_PRESS && key == GLFW_KEY_U) {
+	}
+
+	if (act == GLFW_PRESS && key == GLFW_KEY_R)
+	{
+		b_render = !b_render;
+	}
+
+}
+
+
+
 class RL_MJ_Environment: public Environment {
 	public:
         RL_MJ_Environment(){
-			environment = new mjEnvironment(1,1);
+
 			if (!init()){
                 throw std::runtime_error("Unable to init() RL_MJ_environemnt!\n");
             }
+			environment = new mjEnvironment(1,1);
             nsensors = environment->m_model->nsensordata;
         	nctrls	 = environment->m_model->nu;
 			model = environment->loadMujocoModel("humanoid.xml");
-        	agent.setup(model);
-
+			agent.setup(model);
+			data = agent.getData();
             state.resize(nsensors);
+			mj_forward(model, data);
+
+			glfwSetKeyCallback(window, keyboard);
+
+			mjv_moveCamera(model, mjMOUSE_ZOOM, -1, -1, &environment->scn, &environment->cam);
 	}
 
 
@@ -41,6 +72,9 @@ class RL_MJ_Environment: public Environment {
         mj_step2(model, data);
 
         m_time_simulated += simstep;
+
+		
+
 		if(!glfwWindowShouldClose(window))
 		{
 			//render here
@@ -49,7 +83,9 @@ class RL_MJ_Environment: public Environment {
 				mjrRect viewport = { 0, 0, 0, 0 };
 				glfwGetFramebufferSize(window, &viewport.width, &viewport.height);
 
-				environment->render(viewport);
+
+			
+				environment->render(viewport, model, data);
 
 				// swap OpenGL buffers (blocking call due to v-sync)
 				glfwSwapBuffers(window);
@@ -98,7 +134,6 @@ private:
 
     int nsensors;
     int nctrls;
-    bool b_render = true;
     bool button_left = false;
     bool button_middle = false;
     bool button_right = false;
