@@ -8,10 +8,12 @@ class Environment
 public:
     virtual void step(const std::vector<ScalarType>& actions) = 0;
     virtual ScalarType getReward() = 0;
-    virtual const std::vector<ScalarType> getState() = 0;
+    virtual const std::vector<ScalarType>& getState() = 0;
     virtual void reset() = 0;
     virtual int getActionSpaceDimensions() = 0;
     virtual int getStateSpaceDimensions() = 0;
+
+    std::vector<ScalarType> state;
 };
 
 /*
@@ -23,7 +25,10 @@ reward: r = - (||x-10|| + ||y + 10||)
 class MathPuzzleEnv : public Environment
 {
 public:
-    MathPuzzleEnv() = default;
+    MathPuzzleEnv(){
+        state.resize(2);
+    }
+    
     virtual void step(const std::vector<ScalarType>& actions)
     {
         checkActionDimensions(actions);
@@ -36,8 +41,10 @@ public:
         return -(sqrt(pow(x-10,2)+pow(y+10,2)));
         // return x > 1 ? 1 : -1;
     };
-    virtual const std::vector<ScalarType> getState(){
-        return std::vector<ScalarType>{x,y};
+    virtual const std::vector<ScalarType>& getState(){
+        state[0] = x;
+        state[1] = y;
+        return state;
     };
 
     virtual void reset(){ x=1; y=1;}
