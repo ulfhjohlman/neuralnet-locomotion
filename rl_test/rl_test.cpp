@@ -8,6 +8,7 @@
 #include "LayeredNeuralNet.h"
 #include "CascadeNeuralNet.h"
 #include "ParameterUpdater.h"
+#include "RL_MJ_Environment.h"
 int ppo_test()
 {
     std::cout << "Starting ppo_test\n";
@@ -64,6 +65,67 @@ int ppo_test()
 
     return 0;
 }
+int ppo_mj_test()
+{
+	std::cout << "Starting ppo_mj_test\n";
+
+	//initalize environment
+	RL_MJ_Environment env;
+	int action_space_dim = env.getActionSpaceDimensions();
+	int state_space_dim = env.getStateSpaceDimensions();
+
+	//constructing networks
+	std::vector<int> layerSizesPolicy{ state_space_dim,32,32,action_space_dim };
+	std::vector<int> layerSizesOldPolicy{ state_space_dim,32,32,action_space_dim };
+	std::vector<int> layerSizesValueFunc{ state_space_dim,32,32,1 };
+	const int relu = Layer::LayerType::relu;
+	const int inputLayer = Layer::LayerType::inputLayer;
+	const int noactiv = Layer::noActivation;
+	const int softmax = Layer::LayerType::softmax;
+	const int sigmoid = Layer::LayerType::sigmoid;
+	const int tanh = Layer::LayerType::tanh;
+	std::vector<int> layerTypesPolicy{ inputLayer, tanh,tanh,tanh };
+	std::vector<int> layerTypesOldPolicy{ inputLayer, tanh,tanh,tanh};
+	std::vector<int> layerTypesValueFunc{ inputLayer, tanh,tanh,noactiv };
+
+
+	//networks gain ownership/claening responsibilities for these topologies
+	LayeredTopology* topPolicy = new LayeredTopology(layerSizesPolicy, layerTypesPolicy);
+	LayeredTopology* topOldPolicy = new LayeredTopology(layerSizesOldPolicy, layerTypesOldPolicy);
+	LayeredTopology* topValueFunc = new LayeredTopology(layerSizesValueFunc, layerTypesValueFunc);
+
+	LayeredNeuralNet policy(topPolicy);
+	LayeredNeuralNet oldPolicy(topOldPolicy);
+	LayeredNeuralNet valueFunc(topValueFunc);
+
+	policy.initializeXavier();
+	oldPolicy.initializeXavier();
+	valueFunc.initializeXavier();
+
+	
+
+	//ParameterUpdater
+	AdamUpdater policyUpdater(1e-3);
+	AdamUpdater oldPolicyUpdater(1e-3);
+	// ParameterUpdater policyUpdater(1e-5);
+	// RMSPropUpdater policyUpdater(1e-3,1e-8,0.99);
+	AdamUpdater valueFuncUpdater(1e-3);
+
+	policy.setParameterUpdater(policyUpdater);
+	oldPolicy.setParameterUpdater(oldPolicyUpdater);
+	valueFunc.setParameterUpdater(valueFuncUpdater);
+
+	//set up training algorithm
+	// PolicyGradientTrainer trainer(&env,&policy);
+	PPOTrainer trainer(&env, &policy, &oldPolicy, &valueFunc);
+	//arguments: iterations,  batchsize, timesteps_episode, minibatch_size, epochs
+	trainer.set_sigma(0.1);
+	trainer.trainPPO(1000, 16, 128, 4, 10);
+
+
+
+	return 0;
+}
 int pg_test()
 {
     std::cout << "Starting pg_test\n";
@@ -113,7 +175,7 @@ int main()
 			std::cout << "_DEBUG FLAG OFF\n";
     #endif
     try{
-        ppo_test();
+        ppo_mj_test();
         // pg_test();
     }
     catch(const std::runtime_error& e)

@@ -13,6 +13,10 @@ public:
     {
         m_lambda = new_lambda;
     }
+	void set_sigma(double new_sigma)
+	{
+		policy.setSigma(new_sigma);
+	}
 
     void trainPPO(int max_iterations, int batch_size , int timesteps_per_episode, int mini_batch_size,int num_epochs)
     {

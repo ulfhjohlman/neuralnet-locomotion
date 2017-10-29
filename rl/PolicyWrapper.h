@@ -91,6 +91,13 @@ public:
         {
             return m_sigma;
         }
+		void setSigma(double new_sigma)
+		{
+			if(!(new_sigma > 0)) {
+				throw std::invalid_argument("Sigma in gausian distribution must be positive!\n");
+			}
+			m_sigma = new_sigma;
+		}
         void copyParams(const PolicyWrapper& otherPW)
         {
             m_nn->copyParams(*otherPW.m_nn);
