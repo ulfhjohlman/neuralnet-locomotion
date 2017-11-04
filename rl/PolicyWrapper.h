@@ -30,7 +30,7 @@ public:
                 //store probability of the sample in 'prob'
                 total_prob *= norm_pdf(x,mu[i],m_sigma);
             }
-            calcLocalObjectiveGradient();
+            calcLocalMuObjectiveGradient();
             return sample;
         }
         void forwardpassObs(std::vector<ScalarType>& obs)
@@ -64,7 +64,7 @@ public:
         {
             return mu;
         }
-        const std::vector<ScalarType>& getlocalObjectiveGradient()
+        const std::vector<ScalarType>& getlocalMuObjectiveGradient()
         {
             return localObjectiveGradient;
         }
@@ -106,7 +106,7 @@ public:
 
 
 private:
-        void calcLocalObjectiveGradient()
+        void calcLocalMuObjectiveGradient()
         {
             localObjectiveGradient.clear();
             for(int i =0;i<mu.size();i++)
@@ -120,7 +120,7 @@ private:
             return 1.0/(sigma*sqrt(2*M_PI)) * exp(-(x-mu)*(x-mu)/(2.0*sigma*sigma));
         }
 
-
+protected:
         std::vector<ScalarType> sample;
         std::vector<ScalarType> localObjectiveGradient;
         double total_prob;
@@ -131,6 +131,6 @@ private:
         int out_size;
         Generator generator; //Thread safe generation
         double m_sigma = 1;
-    protected:
+
         LayeredNeuralNet * m_nn;
 };

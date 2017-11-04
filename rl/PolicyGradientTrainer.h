@@ -207,7 +207,7 @@ protected:
             rew_list[i] = env->getReward();
             episode_return += rew_list[i];
 
-            grad_list[i] = policy.getlocalObjectiveGradient(); // modified later by advFunc
+            grad_list[i] = policy.getlocalMuObjectiveGradient(); // modified later by advFunc
 
 			if (env->earlyAbort())
 			{
