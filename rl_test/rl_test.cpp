@@ -19,8 +19,8 @@ int ppo_test()
     int state_space_dim = env.getStateSpaceDimensions();
 
     //constructing networks
-    std::vector<int> layerSizesPolicy {state_space_dim,16,16,action_space_dim};
-    std::vector<int> layerSizesOldPolicy {state_space_dim,16,16,action_space_dim};
+    std::vector<int> layerSizesPolicy {state_space_dim,16,16,2*action_space_dim};
+    std::vector<int> layerSizesOldPolicy {state_space_dim,16,16,2*action_space_dim};
     std::vector<int> layerSizesValueFunc {state_space_dim,16,16,1};
     const int relu = Layer::LayerType::relu;
     const int inputLayer = Layer::LayerType::inputLayer;
@@ -61,7 +61,7 @@ int ppo_test()
     // PolicyGradientTrainer trainer(&env,&policy);
     PPOTrainer trainer(&env,&policy,&oldPolicy,&valueFunc);
     //arguments: iterations,  batchsize, timesteps_episode, minibatch_size, epochs
-	trainer.set_sigma(0.0001);
+
     trainer.trainPPO(10000,4,100,2,2);
 
 
@@ -72,14 +72,14 @@ int ppo_mj_test()
 	std::cout << "Starting ppo_mj_test\n";
 
 	//initalize environment
-	InvDoublePendEnv env;
-	//HopperEnv env;
+	//InvDoublePendEnv env;
+	HopperEnv env;
 	int action_space_dim = env.getActionSpaceDimensions();
 	int state_space_dim = env.getStateSpaceDimensions();
 
 	//constructing networks
-	std::vector<int> layerSizesPolicy{ state_space_dim,64,64,action_space_dim };
-	std::vector<int> layerSizesOldPolicy{ state_space_dim,64,64,action_space_dim };
+	std::vector<int> layerSizesPolicy{ state_space_dim,64,64,2*action_space_dim };
+	std::vector<int> layerSizesOldPolicy{ state_space_dim,64,64,2*action_space_dim };
 	std::vector<int> layerSizesValueFunc{ state_space_dim,32,32,1 };
 	const int relu = Layer::LayerType::relu;
 	const int inputLayer = Layer::LayerType::inputLayer;
@@ -121,7 +121,7 @@ int ppo_mj_test()
 	PPOTrainer trainer(&env, &policy, &oldPolicy, &valueFunc);
 	//arguments: iterations,  batchsize, timesteps_episode, minibatch_size, epochs
 	int frameskip = 3;
-	trainer.set_sigma(0.2);
+
 	env.set_frameskip(frameskip);
 	trainer.trainPPO(1e7 , 64, 4096/frameskip, 16, 4);
 
@@ -139,7 +139,7 @@ int pg_test()
     int state_space_dim = env.getStateSpaceDimensions();
 
     //constructing networks
-    std::vector<int> layerSizesPolicy {state_space_dim,4,4,action_space_dim};
+    std::vector<int> layerSizesPolicy {state_space_dim,4,4,2*action_space_dim};
     const int relu = Layer::LayerType::relu;
     const int inputLayer = Layer::LayerType::inputLayer;
     const int noactiv = Layer::noActivation;
@@ -178,7 +178,7 @@ int pg_mj_test()
 	int state_space_dim = env.getStateSpaceDimensions();
 
 	//constructing networks
-	std::vector<int> layerSizesPolicy{ state_space_dim,8,8,action_space_dim };
+	std::vector<int> layerSizesPolicy{ state_space_dim,8,8,2*action_space_dim };
 	const int relu = Layer::LayerType::relu;
 	const int inputLayer = Layer::LayerType::inputLayer;
 	const int noactiv = Layer::noActivation;
@@ -202,7 +202,7 @@ int pg_mj_test()
 	//set up training algorithm
 	PolicyGradientTrainer trainer(&env, &policy);
 	//arguments: max_episodes, timesteps_per_episode, batch_size
-	trainer.set_sigma(0.5);
+
 	int frameskip = 20;
 	env.set_frameskip(frameskip);
 	trainer.trainPG(1e6, 2048/frameskip, 5);

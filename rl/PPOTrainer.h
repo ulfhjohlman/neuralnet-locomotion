@@ -99,6 +99,7 @@ protected:
 		batch_ob_list.clear();
 		batch_prob_list.clear();
 		batch_mu_list.clear();
+		batch_sigma_list.clear();
 		batch_vpred_list.clear();
 		batch_vtarg_list.clear();
 		batch_valueTargTD1.clear();
@@ -110,7 +111,8 @@ protected:
         batch_ac_list.reserve(size);
         batch_ob_list.reserve(size);
         batch_prob_list.reserve(size);
-        batch_mu_list.reserve(size);
+		batch_mu_list.reserve(size);
+		batch_sigma_list.reserve(size);
         batch_vpred_list.reserve(size);
         batch_vtarg_list.reserve(size);
 		batch_valueTargTD1.reserve(size);
@@ -215,12 +217,19 @@ protected:
 				//reforward pass for correct "input gradients"
 				policy.forwardpassObs(batch_ob_list[i][j]);
                 Eigen::Map<MatrixType> actionMatrix(batch_ac_list[i][j].data(),action_space_dim,1);
-                Eigen::Map<MatrixType> muMatrix(batch_mu_list[i][j].data(),action_space_dim,1);
-                // NEGATION because obejctive func = - loss func
-                policy.backprop(- batch_adv_list[i][j] * r * ( actionMatrix.array() - muMatrix.array() )/(policy.getSigma()*policy.getSigma()));
-                policy.cacheLayerParams();
+				Eigen::Map<MatrixType> muMatrix(batch_mu_list[i][j].data(), action_space_dim, 1);
+				Eigen::Map<MatrixType> sigmaMatrix(batch_sigma_list[i][j].data(), action_space_dim, 1);
 
-				//std::cout << "Vpred: " << batch_vpred_list[i][j] << "\tVtarg: " << batch_vtarg_list[i][j] << "\tReal: " << batch_valueTargTD1[i][j] << "\tOb:  " << batch_ob_list[i][j][0] << "," << batch_ob_list[i][j][1] << "\n";
+
+                // NEGATION because obejctive func = - loss func
+				MatrixType mu_error_gradients = -batch_adv_list[i][j] * r * (actionMatrix.array() - muMatrix.array()) / (sigmaMatrix.array().square());
+				MatrixType sigma_error_gradients = -batch_adv_list[i][j] * r * (actionMatrix.array() - muMatrix.array()) / (sigmaMatrix.array().square());
+
+				MatrixType x(action_space_dim*2, 1);
+					x << mu_error_gradients,
+						sigma_error_gradients;
+                policy.backprop(x);
+                policy.cacheLayerParams();
             }
         }
     }
@@ -244,7 +253,8 @@ protected:
         batch_ac_list.push_back(std::move(ac_list));
         batch_ob_list.push_back(std::move(ob_list));
         batch_prob_list.push_back(std::move(prob_list));
-        batch_mu_list.push_back(std::move(mu_list));
+		batch_mu_list.push_back(std::move(mu_list));
+		batch_sigma_list.push_back(std::move(sigma_list));
         batch_vpred_list.push_back(std::move(valuePred_list));
         batch_vtarg_list.push_back(std::move(valueTarg_list));
 		batch_valueTargTD1.push_back(std::move(valueTargTD1));
@@ -290,7 +300,8 @@ protected:
     std::vector<std::vector<std::vector<ScalarType>>>   batch_ac_list;
     std::vector<std::vector<std::vector<ScalarType>>>   batch_ob_list;
     std::vector<std::vector<double>>                    batch_prob_list;
-    std::vector<std::vector<std::vector<ScalarType>>>   batch_mu_list;
+	std::vector<std::vector<std::vector<ScalarType>>>   batch_mu_list;
+	std::vector<std::vector<std::vector<ScalarType>>>   batch_sigma_list;
     std::vector<std::vector<ScalarType>>                batch_vpred_list;
     std::vector<std::vector<ScalarType>>                batch_vtarg_list;
 	std::vector<std::vector<ScalarType>>				batch_valueTargTD1;

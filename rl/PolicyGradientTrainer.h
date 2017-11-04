@@ -64,10 +64,7 @@ public:
 
         }
     }
-	void set_sigma(double new_sigma)
-	{
-		policy.setSigma(new_sigma);
-	}
+
 protected:
     virtual void clearLists()
     {
@@ -77,8 +74,10 @@ protected:
         ob_list.clear();
         loss_list.clear();
         prob_list.clear();
-        grad_list.clear();
+		mu_grad_list.clear();
+		sigma_grad_list.clear();
         mu_list.clear();
+		sigma_list.clear();
     }
 
     virtual void resizeLists(int len)
@@ -89,8 +88,10 @@ protected:
         ob_list.resize(len);
         loss_list.resize(len);
         prob_list.resize(len);
-        grad_list.resize(len);
-        mu_list.resize(len);
+		mu_grad_list.resize(len);
+		sigma_grad_list.resize(len);
+		mu_list.resize(len);
+		sigma_list.resize(len);
     }
 
 private:
@@ -127,7 +128,8 @@ private:
         {
             for(int j = 0 ; j < action_space_dim; j++ )
             {
-                grad_list[i][j] *= -adv_list[i]; //minus for ObjFunc -> LossFunc
+				mu_grad_list[i][j] *= -adv_list[i]; //minus for ObjFunc -> LossFunc
+				sigma_grad_list[i][j] *= -adv_list[i]; //TODO: speed up through eigen vectorisation instead of std::vectors
             }
         }
     }
@@ -141,7 +143,13 @@ protected:
             //FORWARD PASS OBSERVATION i AGAIN BEFORE BACKPROPING ERROR GRADIENT i
             Eigen::Map<MatrixType> ob_input(ob_list[i].data(),state_space_dim,1);
             policy.input(ob_input);
-            Eigen::Map<MatrixType> x(grad_list[i].data(),action_space_dim,1);
+
+			//stack the error gradients and backprop them
+			std::vector<ScalarType> tmp; 
+			tmp.resize(action_space_dim * 2);
+			tmp.insert(tmp.end(), mu_grad_list[i].begin(), mu_grad_list[i].end());//unnecessary coppying being performed :/ EIGENIZE later
+			tmp.insert(tmp.end(), sigma_grad_list[i].begin(), sigma_grad_list[i].end());//unnecessary coppying being performed :/ EIGENIZE later
+            Eigen::Map<MatrixType> x(tmp.data(),action_space_dim*2,1);
             policy.backprop(x);
             policy.cacheLayerParams();
         }
@@ -201,13 +209,14 @@ protected:
             ac_list[i] = ac;
 			prob_list[i] = policy.getCumulativeProb();
             mu_list[i] = policy.getMu();
-
+			sigma_list[i] = policy.getSigma();
             env->step(ac);
 
             rew_list[i] = env->getReward();
             episode_return += rew_list[i];
 
-            grad_list[i] = policy.getlocalMuObjectiveGradient(); // modified later by advFunc
+			mu_grad_list[i] = policy.getlocalMuObjectiveGradient(); // modified later by advFunc
+			sigma_grad_list[i] = policy.getlocalMuObjectiveGradient(); // modified later by advFunc
 
 			if (env->earlyAbort())
 			{
@@ -241,9 +250,11 @@ protected:
     std::vector<ScalarType> rew_list;
     std::vector<ScalarType> loss_list;
     std::vector<double> prob_list;
-    std::vector<std::vector<ScalarType>> mu_list;
+	std::vector<std::vector<ScalarType>> mu_list;
+	std::vector<std::vector<ScalarType>> sigma_list;
     std::vector<std::vector<ScalarType>> ob_list;
     std::vector<std::vector<ScalarType>> ac_list;
-    std::vector<std::vector<ScalarType>> grad_list;
+	std::vector<std::vector<ScalarType>> mu_grad_list;
+	std::vector<std::vector<ScalarType>> sigma_grad_list;
 	double episode_return;
 };

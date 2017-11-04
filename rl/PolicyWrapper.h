@@ -6,13 +6,35 @@
 #define _USE_MATH_DEFINES //for M_PI
 #include <math.h>
 
-// Wrapps a neuralnet into the context of a reinforcement learning policy function. 
-// The NN outputs mu to parametrize a gaussian distribution with a given sigma
+/*** 
+ Wrapps a neuralnet into the context of a reinforcement learning policy function. 
+ The NN outputs mu and sigma to parametrize a gaussian distribution
+ For n output distributions 2*n parameters are needed. The network outputs are ordered as : [mu_1 mu_2 mu_3 sigma_1 sigma_2 sigma_3]
+ The final layer type of a PolicyWrapper net should be without activation function. It handles these on a per parameter basis by itself (te.x. sigmoid for std)
+ ***/
+
 class PolicyWrapper
 {
 public:
         PolicyWrapper(LayeredNeuralNet * new_nn, int new_in_size, int new_out_size): m_nn(new_nn), in_size(new_in_size) {
             sample.reserve(new_out_size);
+			localSigmaObjectiveGradient.reserve(new_out_size);
+			localMuObjectiveGradient.reserve(new_out_size);
+			sigma.reserve(new_out_size);
+			mu.reserve(new_out_size);
+#ifdef _DEBUG
+			int lastLayerIndex = new_nn->getTopology()->getNumberOfLayers() - 1;
+			if (new_nn->getTopology()->getLayerSize(lastLayerIndex) != 2*new_out_size)
+			{
+				throw std::invalid_argument("Policy Network needs 2*action_dim outputs!  ( ==2*out_size)\n");
+			}
+			if(new_nn->getTopology()->getLayerType(lastLayerIndex) != Layer::noActivation)
+			{
+				throw std::invalid_argument("Policy Network needs no activation functions on final layer. It handles them itself!\n");
+				TODO: THIS SLDLDFLF
+			}
+#endif
+			// the out_size is the dimensionality of the samples produced
         }
         
 
@@ -25,13 +47,13 @@ public:
             total_prob = 1;
             for(int i=0;i<mu.size();i++)
             {
-                x = generator.generate_normal<ScalarType>(mu[i],sigma);
+                x = generator.generate_normal<ScalarType>(mu[i],sigma[i]);
                 sample.push_back(x);
                 //store probability of the sample in 'prob'
-                total_prob *= norm_pdf(x,mu[i],sigma);
+                total_prob *= norm_pdf(x,mu[i],sigma[i]);
 
             }
-            calcLocalMuObjectiveGradient();
+            calcLocalObjectiveGradients();
             return sample;
         }
         void forwardpassObs(std::vector<ScalarType>& obs)
@@ -39,7 +61,8 @@ public:
             Eigen::Map<MatrixType> in_matrix(obs.data(),in_size,1);
             m_nn->input(in_matrix);
             out_matrix_ptr = &m_nn->output();
-            mu = std::vector<ScalarType>(out_matrix_ptr->data(), out_matrix_ptr->data() + out_matrix_ptr->size());
+			mu = std::vector<ScalarType>(out_matrix_ptr->data(), out_matrix_ptr->data() + out_matrix_ptr->size()/2);
+			sigma = std::vector<ScalarType>(out_matrix_ptr->data() + out_matrix_ptr->size()/2 + 1, out_matrix_ptr->data() + out_matrix_ptr->size());
         }
 
         virtual void input(const MatrixType& x)
@@ -52,7 +75,7 @@ public:
             double prob = 1;
             for(int i=0;i<mu.size();i++)
             {
-                prob *= norm_pdf(action[i],mu[i],m_sigma);
+                prob *= norm_pdf(action[i],mu[i],sigma[i]);
             }
             return prob;
         }
@@ -61,14 +84,22 @@ public:
         {
             return total_prob;
         }
-        const std::vector<ScalarType>& getMu()
-        {
-            return mu;
-        }
-        const std::vector<ScalarType>& getlocalMuObjectiveGradient()
-        {
-            return localObjectiveGradient;
-        }
+		const std::vector<ScalarType>& getMu()
+		{
+			return mu;
+		}
+		const std::vector<ScalarType>& getSigma()
+		{
+			return sigma;
+		}
+		const std::vector<ScalarType>& getlocalMuObjectiveGradient()
+		{
+			return localMuObjectiveGradient;
+		}
+		const std::vector<ScalarType>& getlocalSigmaObjectiveGradient()
+		{
+			return localSigmaObjectiveGradient;
+		}
 
         void backprop(MatrixType err_gradients)
         {
@@ -89,17 +120,6 @@ public:
 			m_nn->updateParameters();
 		}
 
-        double getSigma()
-        {
-            return m_sigma;
-        }
-		void setSigma(double new_sigma)
-		{
-			if(!(new_sigma > 0)) {
-				throw std::invalid_argument("Sigma in gausian distribution must be positive!\n");
-			}
-			m_sigma = new_sigma;
-		}
         void copyParams(const PolicyWrapper& otherPW)
         {
             m_nn->copyParams(*otherPW.m_nn);
@@ -107,12 +127,14 @@ public:
 
 
 private:
-        void calcLocalMuObjectiveGradient()
+        void calcLocalObjectiveGradients()
         {
-            localObjectiveGradient.clear();
+			localMuObjectiveGradient.clear();
+			localSigmaObjectiveGradient.clear();
             for(int i =0;i<mu.size();i++)
             {
-                localObjectiveGradient.push_back((sample[i]-mu[i])/(m_sigma*m_sigma));
+				localMuObjectiveGradient.push_back((sample[i] - mu[i]) / (sigma[i]*sigma[i]));
+				localSigmaObjectiveGradient.push_back((sample[i] - mu[i])*(sample[i] - mu[i]) / (sigma[i]* sigma[i]* sigma[i]) - 1/(sigma[i]* sigma[i]));
             }
         }
 
@@ -123,17 +145,18 @@ private:
 
 protected:
         std::vector<ScalarType> sample;
-        std::vector<ScalarType> localObjectiveGradient;
+		std::vector<ScalarType> localMuObjectiveGradient;
+		std::vector<ScalarType> localSigmaObjectiveGradient;
         double total_prob;
-        std::vector<ScalarType> mu;
-		ScalarType sigma = 0.1;
+		std::vector<ScalarType> mu;
+		std::vector<ScalarType> sigma;
 
         MatrixType in_matrix;
         const MatrixType * out_matrix_ptr = nullptr;
         int in_size;
         int out_size;
         Generator generator; //Thread safe generation
-        double m_sigma = 1;
+       
 
         LayeredNeuralNet * m_nn;
 };
