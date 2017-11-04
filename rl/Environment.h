@@ -8,10 +8,13 @@ class Environment
 public:
     virtual void step(const std::vector<ScalarType>& actions) = 0;
     virtual ScalarType getReward() = 0;
-    virtual const std::vector<ScalarType> getState() = 0;
+    virtual const std::vector<ScalarType>& getState() = 0;
     virtual void reset() = 0;
     virtual int getActionSpaceDimensions() = 0;
     virtual int getStateSpaceDimensions() = 0;
+	virtual bool earlyAbort() = 0; //if the trajectory should be stopped early
+
+    std::vector<ScalarType> state;
 };
 
 /*
@@ -23,21 +26,29 @@ reward: r = - (||x-10|| + ||y + 10||)
 class MathPuzzleEnv : public Environment
 {
 public:
-    MathPuzzleEnv() = default;
+    MathPuzzleEnv(){
+        state.resize(2);
+    }
+    
     virtual void step(const std::vector<ScalarType>& actions)
     {
         checkActionDimensions(actions);
-        x += 0.1* actions[0];
-        y += 0.1* actions[1];
+
+        dx= actions[0];
+        x+=dx;
+        dy= actions[1];
+        y+=dy;
     };
     virtual ScalarType getReward(){
-
-        return -sqrt(pow(x-10,2) + pow(y+10,2));
-
+        return -(sqrt(pow(x-10,2)+pow(y+10,2)));
+        // return x > 1 ? 1 : -1;
     };
-    virtual const std::vector<ScalarType> getState(){
-        return std::vector<ScalarType>{x,y};
+    virtual const std::vector<ScalarType>& getState(){
+        state[0] = x;
+        state[1] = y;
+        return state;
     };
+	virtual bool earlyAbort() { return false; }//never early abort in this env 
 
     virtual void reset(){ x=1; y=1;}
     virtual int getActionSpaceDimensions(){return 2;}
@@ -53,5 +64,7 @@ public:
     }
 private:
     ScalarType x=1;
+    ScalarType dx=0;
     ScalarType y=1;
+    ScalarType dy=0;
 };

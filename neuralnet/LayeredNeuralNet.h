@@ -5,7 +5,7 @@
 #include "Layer.h"
 #include "LayerFactory.h"
 #include "ParameterUpdater.h"
-
+#include "config.h"
 #include <vector>
 #include <stdexcept>
 #include <memory>
@@ -76,6 +76,48 @@ public:
 			m_layers[i]->popCacheParamGradients();
 		}
 	}
+	virtual void reserveLayerOutputCache(int res)
+	{
+		try{
+			for(int i = 0; i<m_layers.size(); i++) //including input_layer
+			{
+				m_layers[i]->reserveOutputCache(res);
+				// This can endup being ALOT of space in PPO, but due to Matrixes
+				// being dynamic size they arent truly allocated untill actual copy
+			}
+		}
+		catch(std::bad_alloc e)
+		{
+			std::cout << "Allocation of a layers m_outputs_cache failed!\n";
+			std::cout << e.what();
+			std::cout << "Aborting program\n";
+			exit(1);
+		}
+	}
+
+	void cachePushBackOutputs()
+	{
+		for(int i = 0; i <m_layers.size() ;i++)
+		{
+			m_layers[i]->cachePushBackOutputs();
+		}
+	}
+
+	void clearOutputsCache()
+	{
+		for(int i = 0; i <m_layers.size() ;i++)
+		{
+			m_layers[i]->clearOutputsCache();
+		}
+	}
+
+	void uncacheIndexedOutput(int j)
+	{
+		for(int i = 0; i <m_layers.size() ;i++)
+		{
+			m_layers[i]->uncacheIndexedOutput(j);
+		}
+	}
 
 	virtual void initializeXavier() {
 		for (auto & layer : m_layers)
@@ -140,6 +182,26 @@ public:
 	virtual Layer* getLayer(int i) const {
 		return m_layers[i];
 	}
+	bool hasParameterUpdater()
+	{
+		return m_parameter_updater != nullptr;
+	}
+
+	//copies weights and biases from another neuralnet into this one
+	virtual void copyParams(const LayeredNeuralNet& otherNet)
+	{
+		#ifdef _DEBUG
+			if(!m_topology->equals(*otherNet.getTopology()))
+			{
+				throw std::invalid_argument("Cannot copy parameters between NNs of different topologies!\n");
+			}
+		#endif
+		//skip inputlayer
+		for(int i=1 ; i<m_layers.size();i++)
+		{
+			m_layers[i]->copyParamsFrom(*otherNet.m_layers[i]);
+		}
+	}
 
 	virtual void save(const char* toFile) { }
 	virtual void load(const char* fromFile) { }
@@ -159,7 +221,6 @@ protected: //Error checking
 	{
 		for (size_t i = 0; i < m_layers.size(); i++)
 			if (m_layers[i]) {
-				std::cout << "WARNING: Destroying a layer in LayeredNN\n";
 				delete m_layers[i];
 			}
 		m_layers.clear();

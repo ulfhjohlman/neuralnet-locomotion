@@ -10,18 +10,18 @@ class LayeredTopology : private Topology
 {
 public:
 	LayeredTopology() = default;
-	LayeredTopology(const std::vector<int>& layerSize, 
+	LayeredTopology(const std::vector<int>& layerSize,
 					const std::vector<int>& layerType )
-					: m_layerSizes(layerSize), m_layerTypes(layerType) { 
+					: m_layerSizes(layerSize), m_layerTypes(layerType) {
 		checkMatchingLayerSize(m_layerSizes, m_layerTypes);
 	}
 
 	LayeredTopology(std::initializer_list<int> layerSize,
-					std::initializer_list<int> layerType ) 
+					std::initializer_list<int> layerType )
 					: LayeredTopology(std::vector<int>(layerSize),
 									  std::vector<int>(layerType)) { }
 	virtual ~LayeredTopology() = default;
-	
+
 	virtual void reserveLayers(int numberOfLayers) {
 		m_layerSizes.reserve(numberOfLayers);
 		m_layerTypes.reserve(numberOfLayers);
@@ -68,7 +68,21 @@ public:
 	virtual size_t getNumberOfLayers() {
 		return m_layerSizes.size();
 	}
-
+	virtual bool equals(const LayeredTopology& othertop)
+	{
+		for(int i =0;i<m_layerSizes.size();i++)
+		{
+			if(m_layerSizes[i] != othertop.m_layerSizes[i])
+			{
+				return false;
+			}
+			if(m_layerTypes[i] != othertop.m_layerTypes[i])
+			{
+				return false;
+			}
+		}
+		return true;
+	}
 protected:
 	void checkSize(int size) {
 #ifdef _NEURALNET_DEBUG

@@ -26,7 +26,8 @@ include_directories("${PROJECT_SOURCE_DIR}/lib/Eigen"
  "${PROJECT_SOURCE_DIR}/lib/tinyxml2"
  "${PROJECT_SOURCE_DIR}/rl"
  "${PROJECT_SOURCE_DIR}/rl_test"
- "${PROJECT_SOURCE_DIR}")
+ "${PROJECT_SOURCE_DIR}"
+ "${PROJECT_SOURCE_DIR}/mjenvironment")
 
 #add library subdirectories -> executes subs CMakeLists.txt
 add_subdirectory("${PROJECT_SOURCE_DIR}/neuralnet")
@@ -61,5 +62,6 @@ add_subdirectory("${PROJECT_SOURCE_DIR}/rl_test")
 #Make visual studio specific projects
 IF(MSVC)
 	#link_directories("${PROJECT_SOURCE_DIR}/lib/mjpro150/bin")
+
 	add_subdirectory("${PROJECT_SOURCE_DIR}/mjenvironment")
 ENDIF()

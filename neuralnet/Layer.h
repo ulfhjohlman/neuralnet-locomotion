@@ -123,6 +123,12 @@ public:
 		return m_bias.data();
 	}
 
+	virtual void copyParamsFrom(const Layer& otherlayer)
+	{
+		m_weights = otherlayer.m_weights;
+		m_bias = otherlayer.m_bias;
+	}
+
 	virtual void save(const char* toFile) { }
 	virtual void load(const char* fromFile) { }
 
@@ -162,6 +168,27 @@ public:
 		m_gradients_weights_cache.setZero();
 		m_gradients_bias_cache.setZero();
 	}
+
+	virtual void reserveOutputCache(int i)
+	{
+		m_outputs_cache.reserve(i);
+	}
+
+	virtual void cachePushBackOutputs()
+	{
+		m_outputs_cache.push_back(m_outputs); //stores a copy of m_outputs
+	}
+
+	virtual void clearOutputsCache()
+	{
+		m_outputs_cache.clear();
+	}
+
+	virtual void uncacheIndexedOutput(int i)
+	{
+		m_outputs = m_outputs_cache[i];
+	}
+
 protected:
 	void updateGradients(const MatrixType& modified_backpass_gradients, const MatrixType& prev_layer_outputs)
 	{
@@ -188,14 +215,17 @@ protected: //members
 	MatrixType m_outputs;
 	//MatrixType m_outputs_pre_activation;
 	MatrixType m_weights;
+	MatrixType m_bias;
+	std::vector<MatrixType> m_outputs_cache;
 
 private: //members
-	MatrixType m_bias;
+
 	MatrixType m_gradients_weights;
 	MatrixType m_gradients_inputs;
 	MatrixType m_gradients_bias;
 	MatrixType m_gradients_weights_cache;
 	MatrixType m_gradients_bias_cache;
+
 
 protected: //Error checking
 	inline void checkSize(int size) {

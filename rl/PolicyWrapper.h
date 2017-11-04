@@ -6,21 +6,20 @@
 #define _USE_MATH_DEFINES //for M_PI
 #include <math.h>
 
-// Wrapps a neuralnet into the context of a reinforcement learning policy function
+// Wrapps a neuralnet into the context of a reinforcement learning policy function. 
+// The NN outputs mu to parametrize a gaussian distribution with a given sigma
 class PolicyWrapper
 {
 public:
-        PolicyWrapper(LayeredNeuralNet * new_nn, int new_in_size, int new_out_size): nn(new_nn), in_size(new_in_size) {
+        PolicyWrapper(LayeredNeuralNet * new_nn, int new_in_size, int new_out_size): m_nn(new_nn), in_size(new_in_size) {
             sample.reserve(new_out_size);
         }
+        
 
         //returns a single action_space output from the policy given an observation
-        const std::vector<ScalarType>& samplePolicy(std::vector<ScalarType> obs)
+        const std::vector<ScalarType>& samplePolicy(std::vector<ScalarType>& obs)
         {
-            Eigen::Map<MatrixType> in_matrix(obs.data(),in_size,1);
-            nn->input(in_matrix);
-            out_matrix_ptr = &nn->output();
-            mu = std::vector<ScalarType>(out_matrix_ptr->data(), out_matrix_ptr->data() + out_matrix_ptr->size());
+            forwardpassObs(obs);
             sample.clear();
             ScalarType x;
             total_prob = 1;
@@ -32,53 +31,88 @@ public:
                 total_prob *= norm_pdf(x,mu[i],sigma);
 
             }
-            calcLocalObjectiveGradient();
+            calcLocalMuObjectiveGradient();
             return sample;
+        }
+        void forwardpassObs(std::vector<ScalarType>& obs)
+        {
+            Eigen::Map<MatrixType> in_matrix(obs.data(),in_size,1);
+            m_nn->input(in_matrix);
+            out_matrix_ptr = &m_nn->output();
+            mu = std::vector<ScalarType>(out_matrix_ptr->data(), out_matrix_ptr->data() + out_matrix_ptr->size());
         }
 
         virtual void input(const MatrixType& x)
         {
-            nn->input(x);
+            m_nn->input(x);
         }
-
+        double probAcGivenState(std::vector<ScalarType> action , std::vector<ScalarType> obs)
+        {
+            forwardpassObs(obs);
+            double prob = 1;
+            for(int i=0;i<mu.size();i++)
+            {
+                prob *= norm_pdf(action[i],mu[i],m_sigma);
+            }
+            return prob;
+        }
         //returns the cumulative probability of the sample
         const double getCumulativeProb()
         {
             return total_prob;
         }
-
-        const std::vector<ScalarType>& getlocalObjectiveGradient()
+        const std::vector<ScalarType>& getMu()
+        {
+            return mu;
+        }
+        const std::vector<ScalarType>& getlocalMuObjectiveGradient()
         {
             return localObjectiveGradient;
         }
 
         void backprop(MatrixType err_gradients)
         {
-            nn->backprop(err_gradients);
+            m_nn->backprop(err_gradients);
         }
 
         void cacheLayerParams()
         {
-            nn->cacheLayerParams();
+            m_nn->cacheLayerParams();
         }
 
 		void popCacheLayerParams()
 		{
-			nn->popCacheLayerParams();
+			m_nn->popCacheLayerParams();
 		}
 		void updateParams()
 		{
-			nn->updateParameters();
+			m_nn->updateParameters();
 		}
 
+        double getSigma()
+        {
+            return m_sigma;
+        }
+		void setSigma(double new_sigma)
+		{
+			if(!(new_sigma > 0)) {
+				throw std::invalid_argument("Sigma in gausian distribution must be positive!\n");
+			}
+			m_sigma = new_sigma;
+		}
+        void copyParams(const PolicyWrapper& otherPW)
+        {
+            m_nn->copyParams(*otherPW.m_nn);
+        }
+
+
 private:
-        void calcLocalObjectiveGradient()
+        void calcLocalMuObjectiveGradient()
         {
             localObjectiveGradient.clear();
             for(int i =0;i<mu.size();i++)
             {
-
-                localObjectiveGradient.push_back((mu[i] - sample[i])/(m_sigma*m_sigma));
+                localObjectiveGradient.push_back((sample[i]-mu[i])/(m_sigma*m_sigma));
             }
         }
 
@@ -87,7 +121,7 @@ private:
             return 1.0/(sigma*sqrt(2*M_PI)) * exp(-(x-mu)*(x-mu)/(2.0*sigma*sigma));
         }
 
-        LayeredNeuralNet * nn;
+protected:
         std::vector<ScalarType> sample;
         std::vector<ScalarType> localObjectiveGradient;
         double total_prob;
@@ -100,4 +134,6 @@ private:
         int out_size;
         Generator generator; //Thread safe generation
         double m_sigma = 1;
+
+        LayeredNeuralNet * m_nn;
 };
