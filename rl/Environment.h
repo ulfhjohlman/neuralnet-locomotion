@@ -12,6 +12,7 @@ public:
     virtual void reset() = 0;
     virtual int getActionSpaceDimensions() = 0;
     virtual int getStateSpaceDimensions() = 0;
+	virtual bool earlyAbort() = 0; //if the trajectory should be stopped early
 
     std::vector<ScalarType> state;
 };
@@ -46,6 +47,7 @@ public:
         state[1] = y;
         return state;
     };
+	virtual bool earlyAbort() { return false; }//never early abort in this env 
 
     virtual void reset(){ x=1; y=1;}
     virtual int getActionSpaceDimensions(){return 2;}

@@ -6,7 +6,8 @@
 #define _USE_MATH_DEFINES //for M_PI
 #include <math.h>
 
-// Wrapps a neuralnet into the context of a reinforcement learning policy function
+// Wrapps a neuralnet into the context of a reinforcement learning policy function. 
+// The NN outputs mu to parametrize a gaussian distribution with a given sigma
 class PolicyWrapper
 {
 public:

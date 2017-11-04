@@ -33,25 +33,6 @@ void keyboard(GLFWwindow* window, int key, int scancode, int act, int mods)
 
 class RL_MJ_Environment: public Environment {
 	public:
-        RL_MJ_Environment(){
-
-			if (!init()){
-                throw std::runtime_error("Unable to init() RL_MJ_environemnt!\n");
-            }
-			environment = new mjEnvironment(1,1);
-            nsensors = environment->m_model->nsensordata;
-        	nctrls	 = environment->m_model->nu;
-			model = environment->loadMujocoModel("humanoid.xml");
-			agent.setup(model);
-			data = agent.getData();
-            state.resize(nsensors);
-			mj_forward(model, data);
-
-			glfwSetKeyCallback(window, keyboard);
-
-			mjv_moveCamera(model, mjMOUSE_ZOOM, -1, -1, &environment->scn, &environment->cam);
-	}
-
 
     virtual void step(const std::vector<ScalarType>& actions)
     {
@@ -64,18 +45,72 @@ class RL_MJ_Environment: public Environment {
         double simstep = 0.003;
 
         // agent.simulate(1);
-        mj_step1(model, data);
-        for (int i = 0; i < model->nu; i++)
-        {
-            data->ctrl[i] = actions[i];
-        }
-        mj_step2(model, data);
+		double pos_before = data->qpos[0, 0]; 
+		double actionSqrSum = 0;
+		for (int i = 0; i < frameskip; i++)
+		{
+			mj_step1(model, data);
+			if (i == 0) {
+				for (int i = 0; i < model->nu; i++)
+				{
+					data->ctrl[i] = actions[i];
+					actionSqrSum += actions[i] * actions[i];
+				}
+			}
+			mj_step2(model, data);
+			render();
+		}
+		double pos_after = data->qpos[0, 0];
+		velocity = (pos_after - pos_before) / (simstep * frameskip);
+        m_time_simulated += simstep*frameskip;
+		++step_nr;
 
-        m_time_simulated += simstep;
 
-		
+    }
 
-		if(!glfwWindowShouldClose(window))
+	virtual ScalarType getReward() = 0;
+
+    virtual const std::vector<ScalarType>& getState()
+    {
+        //Copy input data
+        //for (int i = 0; i < nsensors; i++){
+        //    state[i] = data->sensordata[i];
+        //}
+		for (int i = 0; i < model->nq; i++) {
+			state[i] = data->qpos[i];
+		}
+		for (int i = 0; i < model->nv; i++) {
+			state[model->nq+i] = data->qvel[i];
+		}
+        return state;
+
+    }
+    virtual void reset()
+    {
+        mj_resetData(model, data);
+        mj_forward(model, data);
+        m_time_simulated = 0;
+		step_nr = 0;
+    }
+    virtual int getActionSpaceDimensions()
+    {
+        return nctrls;
+    }
+    virtual int getStateSpaceDimensions()
+    {
+       // return nsensors;
+		return (model->nq + model->nv);
+    }
+	virtual void set_frameskip(int new_skip)
+	{
+		frameskip = new_skip;
+	}
+protected:
+	virtual void loadEnv() { std::cout << "bajs\n"; };
+
+	void render()
+	{
+		if (!glfwWindowShouldClose(window))
 		{
 			//render here
 			if (b_render) {
@@ -84,7 +119,7 @@ class RL_MJ_Environment: public Environment {
 				glfwGetFramebufferSize(window, &viewport.width, &viewport.height);
 
 
-			
+
 				environment->render(viewport, model, data);
 
 				// swap OpenGL buffers (blocking call due to v-sync)
@@ -94,38 +129,8 @@ class RL_MJ_Environment: public Environment {
 			// process pending GUI events, call GLFW callbacks
 			glfwPollEvents();
 		}
-    }
-    virtual ScalarType getReward()
-    {
-        return data->site_xpos[2] + data->site_xpos[0] - std::abs(data->site_xpos[1]);
-    }
-    virtual const std::vector<ScalarType>& getState()
-    {
-        //Copy input data
-        for (int i = 0; i < nsensors; i++){
-            state[i] = data->sensordata[i];
-        }
-        return state;
+	}
 
-    }
-    virtual void reset()
-    {
-        model->qpos0[0] = 2 * m_col - m_cols; //Center rectangle
-        model->qpos0[1] = 2 * m_row - m_rows;
-        mj_resetData(model, data);
-        mj_forward(model, data);
-
-        m_time_simulated = 0;
-    }
-    virtual int getActionSpaceDimensions()
-    {
-        return nctrls;
-    }
-    virtual int getStateSpaceDimensions()
-    {
-        return nsensors;
-    }
-private:
     mjEnvironment* environment;
     mjData* data;
     mjAgent agent;
@@ -134,6 +139,9 @@ private:
 
     int nsensors;
     int nctrls;
+	double cntrlCostCoef = 1e-4;
+	//double cntrlCostCoef = 100;
+	int frameskip = 10;
     bool button_left = false;
     bool button_middle = false;
     bool button_right = false;
@@ -144,6 +152,10 @@ private:
     double lastx = 0;
     double lasty = 0;
     double m_time_simulated = 0;
+	int step_nr = 0;
+	double rew_quotient = 0;
+	double actionSqrSum = 0;
+	double velocity = 0;
 
     GLFWwindow* window = nullptr;
 	bool init();
@@ -173,3 +185,154 @@ bool RL_MJ_Environment::init() {
 
 	return true;
 }
+
+
+class HopperEnv : public RL_MJ_Environment
+{
+protected:
+
+	virtual void loadEnv() {
+		model = environment->loadMujocoModel("hopper.xml");
+	}
+public:
+	virtual bool earlyAbort() {
+		return (data->xpos)[2] < 0.4;
+	}
+
+	HopperEnv(){
+			if (!init()) {
+				throw std::runtime_error("Unable to init() RL_MJ_environemnt!\n");
+			}
+			environment = new mjEnvironment(1, 1);
+			loadEnv();
+			nsensors = model->nsensordata;
+			nctrls = model->nu;
+			//model = environment->loadMujocoModel("humanoid.xml");
+
+			agent.setup(model);
+			data = agent.getData();
+			//state.resize(nsensors);
+			state.resize(model->nq + model->nv);
+			mj_forward(model, data);
+
+			glfwSetKeyCallback(window, keyboard);
+
+			mjv_moveCamera(model, mjMOUSE_ZOOM, -1, -1, &environment->scn, &environment->cam);
+			//environment->cam.type = mjCAMERA_TRACKING;
+			//environment->cam.trackbodyid = 0;
+	}
+	virtual double getReward() {
+		return velocity - 1e-4*actionSqrSum + 0.02;
+	}
+
+};
+
+class AntEnv : public RL_MJ_Environment
+{
+protected:
+
+	virtual void loadEnv() {
+		model = environment->loadMujocoModel("ant.xml");
+	}
+public:
+	virtual bool earlyAbort() {
+		return false;
+	}
+	AntEnv() {
+		if (!init()) {
+			throw std::runtime_error("Unable to init() RL_MJ_environemnt!\n");
+		}
+		environment = new mjEnvironment(1, 1);
+		loadEnv();
+		nsensors = model->nsensordata;
+		nctrls = model->nu;
+		//model = environment->loadMujocoModel("humanoid.xml");
+
+		agent.setup(model);
+		data = agent.getData();
+		//state.resize(nsensors);
+		state.resize(model->nq + model->nv);
+		mj_forward(model, data);
+
+		glfwSetKeyCallback(window, keyboard);
+
+		mjv_moveCamera(model, mjMOUSE_ZOOM, -1, -1, &environment->scn, &environment->cam);
+	}
+	virtual double getReward() {
+		return velocity - 1e-4*actionSqrSum + 0.02;
+	}
+};
+
+class SwimmerEnv : public RL_MJ_Environment
+{
+protected:
+
+	virtual void loadEnv() {
+		model = environment->loadMujocoModel("swimmer.xml");
+	}
+public:
+	virtual bool earlyAbort() {
+		return false; 
+	}
+
+	SwimmerEnv() {
+		if (!init()) {
+			throw std::runtime_error("Unable to init() RL_MJ_environemnt!\n");
+		}
+		environment = new mjEnvironment(1, 1);
+		loadEnv();
+		nsensors = model->nsensordata;
+		nctrls = model->nu;
+		//model = environment->loadMujocoModel("humanoid.xml");
+
+		agent.setup(model);
+		data = agent.getData();
+		//state.resize(nsensors);
+		state.resize(model->nq + model->nv);
+		mj_forward(model, data);
+
+		glfwSetKeyCallback(window, keyboard);
+
+		mjv_moveCamera(model, mjMOUSE_ZOOM, -1, -1, &environment->scn, &environment->cam);
+	}
+	virtual double getReward() {
+		return velocity - 1e-4*actionSqrSum + 0.02;
+	}
+};
+
+class InvDoublePendEnv : public RL_MJ_Environment
+{
+protected:
+
+	virtual void loadEnv() {
+		model = environment->loadMujocoModel("invdoublependulum.xml");
+	}
+public:
+	virtual bool earlyAbort() {
+		return (data->site_xpos[5]<0);
+	}
+	InvDoublePendEnv() {
+		if (!init()) {
+			throw std::runtime_error("Unable to init() RL_MJ_environemnt!\n");
+		}
+		environment = new mjEnvironment(1, 1);
+		loadEnv();
+		nsensors = model->nsensordata;
+		nctrls = model->nu;
+		//model = environment->loadMujocoModel("humanoid.xml");
+
+		agent.setup(model);
+		data = agent.getData();
+		//state.resize(nsensors);
+		state.resize(model->nq + model->nv);
+		mj_forward(model, data);
+
+		glfwSetKeyCallback(window, keyboard);
+
+		mjv_moveCamera(model, mjMOUSE_ZOOM, -1, -1, &environment->scn, &environment->cam);
+	}
+	virtual double getReward() {
+		return data->site_xpos[5];  //invdoublepenulum;
+	}
+
+};

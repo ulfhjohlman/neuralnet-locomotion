@@ -21,11 +21,12 @@ public:
         for(int i=0; i < max_episodes; i++)
         {
             //generate a trajectory (an episode)
-            generateTrajectory(timesteps_per_episode);
+			generateTrajectory(timesteps_per_episode);
 
             //at end of an episode
             {
                 calcAdvFunc();
+				standardizeVector(adv_list);
 				mean_loss = calcLoss();
                 mean_loss_batch += mean_loss;
 				mean_return_batch += episode_return;
@@ -57,11 +58,16 @@ public:
 
                 //reset stuff
                 env->reset();
-                //clearLists();
+                clearLists(); //technically not necessary
+	
             }
 
         }
     }
+	void set_sigma(double new_sigma)
+	{
+		policy.setSigma(new_sigma);
+	}
 protected:
     virtual void clearLists()
     {
@@ -86,16 +92,17 @@ protected:
         grad_list.resize(len);
         mu_list.resize(len);
     }
+
 private:
     virtual void calcAdvFunc()
     {
         ScalarType decayed_rew = 0;
-        for(int i = ac_list.size()-1; i >= 0; i--)
+        for(int i = traj_length; i >= 0; i--)
         {
             decayed_rew = rew_list[i] + decayed_rew * m_gamma;
             adv_list[i] = decayed_rew;
         }
-        standardizeVector(adv_list);
+
     }
 
     // Loss with AdvFun estimate = decayed reward.
@@ -103,10 +110,9 @@ private:
     virtual double calcLoss()
     {
         ScalarType meanLoss = 0;
-        for(int i = 0; i < ac_list.size(); i++)
+        for(int i = 0; i < traj_length; i++)
         {
             loss_list[i] = - log(prob_list[i])* adv_list[i];
-            // loss_list[i] = - log(prob_list[i])* adv_list[i];
             meanLoss+=loss_list[i];
         }
         meanLoss /= ac_list.size();
@@ -117,7 +123,7 @@ private:
     virtual void calcGradients()
     {
         //TODO:vectorize with eigen instead of std::vectors
-        for(int i = 0 ;i < grad_list.size();i++)
+        for(int i = 0 ;i < traj_length ;i++)
         {
             for(int j = 0 ; j < action_space_dim; j++ )
             {
@@ -130,7 +136,7 @@ protected:
     {
         MatrixType x;
         MatrixType ob_input;
-        for(int i =0; i<grad_list.size();i++)
+        for(int i =0; i<traj_length;i++)
         {
             //FORWARD PASS OBSERVATION i AGAIN BEFORE BACKPROPING ERROR GRADIENT i
             Eigen::Map<MatrixType> ob_input(ob_list[i].data(),state_space_dim,1);
@@ -165,16 +171,14 @@ protected:
         }
     }
 
-    virtual void generateTrajectory(int traj_length)
+    virtual void generateTrajectory(int traj_max_length)
     {
         episode_return = 0;
-        for(int i=0; i< traj_length;i++)
+		traj_length = traj_max_length;  //can be shortened if env->earlyAbort() flags true
+        for(int i=0; i< traj_max_length;i++)
         {
             ob = env->getState();
-            if( i == (traj_length-1) && print_ob_final )
-            {
-                print_state(ob);
-            }
+
             #ifdef _DEBUG
                 if(ob.size() != state_space_dim){
                     char* str = new char[100];
@@ -184,8 +188,9 @@ protected:
             #endif
 
             ob_list[i] = ob;
+			
             ac = policy.samplePolicy(ob);
-
+			
             #ifdef _DEBUG
                 if(ac.size() != action_space_dim){
                     char* str = new char[100];
@@ -204,6 +209,11 @@ protected:
 
             grad_list[i] = policy.getlocalObjectiveGradient(); // modified later by advFunc
 
+			if (env->earlyAbort())
+			{
+				traj_length = i+1;
+				break;
+			}
         }
     }
 
@@ -219,11 +229,12 @@ protected:
 
 
 
-    bool print_ob_final = false;
+
     ScalarType m_gamma = 0.99;
     int state_space_dim;
     int action_space_dim;
     PolicyWrapper policy;
+	int traj_length;
     std::vector<ScalarType> ob;
     std::vector<ScalarType> ac;
     std::vector<ScalarType> adv_list;
