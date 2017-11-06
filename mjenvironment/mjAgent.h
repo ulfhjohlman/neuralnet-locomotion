@@ -9,6 +9,11 @@
 #include <tuple>
 
 #include "NeuralNet.h"
+#include "Generator.h"
+
+int g_simulation_steps = 10;
+float g_minimum_kill_height = 0.26f;
+float g_max_simulation_time = 1.0f;
 
 
 class mjAgent 
@@ -62,11 +67,11 @@ public:
 		m_rows = rows;
 		m_cols = cols;
 
-		m_col = index % rows;
-		m_row = index / cols;
+		m_col = index % m_cols;
+		m_row = index / m_rows;
 	}
 
-	void setup(const mjModel const* model, int index = 0, int rows = 1, int cols = 1) {
+	void setup(const mjModel const* model, int index = 0, int rows = 8, int cols = 8) {
 		if (!model)
 			throw std::runtime_error("Null model ptr.");
 		m_model = model;
@@ -95,22 +100,25 @@ public:
 		m_time_simulated = 0;
 	}
 
-	void simulate( int steps = 40 ) {
-		double simstep = 0.003;
+	void simulate( int steps = 10 ) {
+		double simstep = 0.001;
 		
+		steps = g_simulation_steps;
 		if(!m_done)
 			for (int i = 0; i < steps; i++) {
-				mj_step1(m_model, m_data);
-				agentControll();
-				mj_step2(m_model, m_data);
+				/*mj_step1(m_model, m_data);
+				mj_step2(m_model, m_data);*/
+				mj_step(m_model, m_data);
+				this->controll();
 
 				if (m_objective) {
 					m_integral += simstep * m_objective(m_model, m_data);
+					m_integral += - 0.000001 * m_controller->output().squaredNorm();
 				}
+				
 			}
-			
 			m_time_simulated += simstep*steps;
-			if (m_time_simulated > 7.0) {
+			if (m_time_simulated > g_max_simulation_time || m_data->site_xpos[2] < g_minimum_kill_height || m_data->site_xpos[0] < -3 || std::abs(m_data->site_xpos[1]) > 20) {
 				m_done = true;
 			}
 	}
@@ -135,22 +143,58 @@ public:
 
 	mjData* getData() const { return m_data; }
 protected:
-	void agentControll() {
+	void controll() {
+		Generator g;
 		if (m_controller) {
 			//Setup states
 			const int number_of_inputs = m_model->nsensordata;
-			MatrixType input(number_of_inputs, 1);
+			const int number_of_outputs = m_model->nu;
+			const int recurrent_inputs = 16;
+			MatrixType input(number_of_inputs + recurrent_inputs, 1);
+
+			m_data->sensordata[0] /= 500.0;
+			m_data->sensordata[1] /= 500.0;
+			m_data->sensordata[2] /= 500.0;
+			m_data->sensordata[3] /= 500.0;
+
+			m_data->sensordata[5] /= 10.0;
+			m_data->sensordata[6] /= 10.0;
+			m_data->sensordata[7] /= 10.0;
+
+			m_data->sensordata[11] /= 10.0;
+			m_data->sensordata[12] /= 10.0;
+			m_data->sensordata[13] /= 10.0;
+
+			//m_data->sensordata[4] /= 500.0;
+			//m_data->sensordata[5] /= 500.0;
+			//
+			////scale acc
+			//m_data->sensordata[6] /= 10.0;
+			//m_data->sensordata[7] /= 10.0;
+			//m_data->sensordata[8] /= 10.0;
+
+			//Scale gyro
+			/*m_data->sensordata[9] /= 3.0;
+			m_data->sensordata[10] /= 3.0;
+			m_data->sensordata[11] /= 3.0;*/
 			
 			//Copy input data
 			for (int i = 0; i < number_of_inputs; i++)
 				input(i) = m_data->sensordata[i];
 
+			int k = number_of_outputs;
+			for (int i = number_of_inputs; i < (number_of_inputs + recurrent_inputs); i++) {
+				input(i) = m_controller->output()(k);
+				k++;
+			}
+
+
 			m_controller->input(input);
 			const MatrixType& output = m_controller->output();
 
 			//Copy output data
-			for (int i = 0; i < m_model->nu; i++)
-				m_data->ctrl[i] = output(i);
+			for (int i = 0; i < number_of_outputs; i++)
+				m_data->ctrl[i] = output(i) + g.generate_normal<ScalarType>(0, 0.005);
 		}
 	}
 	
@@ -161,7 +205,6 @@ private:
 	NeuralNet* m_controller;
 
 	std::function<double( mjModel const *, mjData*)> m_objective;
-	std::promise<double> m_fitness_measure;
 
 	bool m_done;
 	double m_time_simulated;

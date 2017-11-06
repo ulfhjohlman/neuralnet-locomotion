@@ -4,7 +4,7 @@
 #include <stdexcept>
 #include <chrono>
 
-#include "../utility/XMLWrapper.h"
+#include "../utility/XMLFile.h"
 
 class TestFramework
 {

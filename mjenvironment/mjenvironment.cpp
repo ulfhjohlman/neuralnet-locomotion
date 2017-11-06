@@ -1,7 +1,8 @@
 #include "mjEnvironment.h"
 #include "GeneticAlgorithm.h"
+#include "RandomEngineFactory.h"
 
-const int g_population_size = 128;
+#include <stdexcept>
 
 mjEnvironment* environment;
 GeneticAlgorithm* ga;
@@ -21,19 +22,29 @@ void mouse_move(GLFWwindow* window, double xpos, double ypos);
 void scroll(GLFWwindow* window, double xoffset, double yoffset);
 bool init();
 
-int main() {
-	if (!init())
-		return 1;
+void setup() {
+	RandomEngineFactory::initialize();
 
-	environment  = new mjEnvironment(g_population_size);
+	environment = new mjEnvironment(g_population_size);
+	if (!environment)
+		throw std::runtime_error("Could not make environment.");
 	int nsensors = environment->m_model->nsensordata;
-	int nctrls	 = environment->m_model->nu;
-	ga			 = new GeneticAlgorithm(g_population_size, nsensors, nctrls);
+	int nctrls = environment->m_model->nu;
+	ga = new GeneticAlgorithm(g_population_size, nsensors, nctrls);
+	if (!ga)
+		throw std::runtime_error("Could not start make GA.");
 
-	auto objective = [](mjModel const* m, mjData* d) { return d->site_xpos[2] + d->site_xpos[0] - std::abs(d->site_xpos[1]); };
+	//auto objective = [](mjModel const* m, mjData* d) { return 1.0*d->site_xpos[5] - 0.1*std::abs(d->site_xpos[3]); };
+	auto objective = [](mjModel const* m, mjData* d) { return 1.0*d->site_xpos[2] + 1.2*d->site_xpos[0] - 0.45 * std::abs(d->site_xpos[1]); };
+	//auto objective = [](mjModel const* m, mjData* d) { return 1.0*d->site_xpos[2]; };
 	environment->setObjective(objective);
 
 	ga->setEnvironment(environment);
+}
+
+int main() {
+	if (!init())
+		return 1;
 	
 	while (!glfwWindowShouldClose(window))
 	{
@@ -55,6 +66,11 @@ int main() {
 		// process pending GUI events, call GLFW callbacks
 		glfwPollEvents();
 	}
+
+	if (environment)
+		delete environment;
+	if (ga)
+		delete ga;
 
 	return 0;
 }
@@ -82,6 +98,22 @@ bool init() {
 	glfwSetMouseButtonCallback(window, mouse_button);
 	glfwSetScrollCallback(window, scroll);
 
+	try {
+		setup();
+	}
+	catch (NeuralNetException e) {
+		std::cerr << e.what() << std::endl;
+		return false;
+	}
+	catch (std::runtime_error e) {
+		std::cerr << e.what() << std::endl;
+		return false;
+	}
+	catch (std::bad_alloc e) {
+		std::cerr << "bad alloc" << std::endl;
+		return false;
+	}
+
 	return true;
 }
 
@@ -95,10 +127,13 @@ void keyboard(GLFWwindow* window, int key, int scancode, int act, int mods)
 	}
 
 	if (act == GLFW_PRESS && key == GLFW_KEY_Q) {
-		//ga->mutate();
+		g_simulation_steps += 2;
 	}
 
 	if (act == GLFW_PRESS && key == GLFW_KEY_U) {
+		g_simulation_steps -= 2;
+		if (g_simulation_steps < 0)
+			g_simulation_steps = 0;
 	}
 
 	if (act == GLFW_PRESS && key == GLFW_KEY_R)
@@ -111,12 +146,56 @@ void keyboard(GLFWwindow* window, int key, int scancode, int act, int mods)
 	}
 	if (act == GLFW_PRESS && key == GLFW_KEY_S)
 	{
+		std::string input;
+		std::cout << "Type in the max simulation time: ";
+		std::cin >> input;
+		try {
+			g_max_simulation_time = std::stof(input);
+		}
+		catch (...)
+		{
+			std::cout << "Invalid value, try again\n";
+		}
 	}
-	if (act == GLFW_PRESS && key == GLFW_KEY_A)
+	if (act == GLFW_PRESS && key == GLFW_KEY_C)
 	{
+		std::string input;
+		std::cout << "Type in the crossover probability: ";
+		std::cin >> input;
+		try {
+			g_crossover_probability = std::stof(input);
+		}
+		catch (...)
+		{
+			std::cout << "Invalid value, try again\n";
+		}
 	}
 	if (act == GLFW_PRESS && key == GLFW_KEY_D)
 	{
+		std::string input;
+		std::cout << "Type in the generation number (mutation rate): ";
+		std::cin >> input;
+		try {
+			ga->m_generation = std::stoi(input);
+		}
+		catch (...)
+		{
+			std::cout << "Invalid value, try again\n";
+		}
+	}
+
+	if (act == GLFW_PRESS && key == GLFW_KEY_P)
+	{
+		std::string input;
+		std::cout << "Type in the kill height (0.95 default): ";
+		std::cin >> input;
+		try {
+			g_minimum_kill_height = std::stof(input);
+		}
+		catch (...)
+		{
+			std::cout << "Invalid value, try again\n";
+		}
 	}
 
 

@@ -28,7 +28,7 @@ void TestFramework::print() const
 void TestFramework::save() const
 {
 	try {
-		XMLWrapper doc;
+		XMLFile doc;
 		std::string filename;
 #ifdef _DEBUG
 		filename = m_name + "-debug";
@@ -36,14 +36,14 @@ void TestFramework::save() const
 		filename = m_name + "-release";
 #endif // _DEBUG
 
-		doc.insertNewRoot(filename.c_str());
+		doc.insert(filename.c_str());
 		doc.insertDate();
-		doc.insertNewElement("successful", m_success);
-		doc.insertNewElement("mean", m_mean);
-		doc.insertNewElement("min", m_min);
-		doc.insertNewElement("max", m_max);
-		doc.insertNewElement("std", standard_diviation);
-		doc.saveToFile(filename.c_str());
+		doc.insert("successful", m_success);
+		doc.insert("mean", m_mean);
+		doc.insert("min", m_min);
+		doc.insert("max", m_max);
+		doc.insert("std", standard_diviation);
+		doc.save(filename.c_str());
 	}
 	catch (XMLException e) {
 		std::cerr << e.what() << std::endl;

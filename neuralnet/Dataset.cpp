@@ -2,27 +2,27 @@
 
 void Dataset::createDataset(const char* name)
 {
-	m_doc.insertNewRoot(name);
+	m_doc.insert(name);
 	m_doc.insertDate();
 }
 
 void Dataset::setDescription(const char* dataset_description)
 {
-	m_doc.insertNewElement<const char*>("description", dataset_description);
+	//m_doc.insert<const char*>("description", dataset_description);
 }
 
 void Dataset::setInputInfo(int number_of_variables, int number_of_points)
 {
 	m_input_info.first = number_of_variables;
 	m_input_info.second = number_of_points;
-	m_doc.insertNewElements<int>("input", std::vector<int>{number_of_variables, number_of_points});
+	m_doc.insertElements<int>("input", std::vector<int>{number_of_variables, number_of_points});
 }
 
 void Dataset::setOutputInfo(int number_of_variables, int number_of_points)
 {
 	m_output_info.first = number_of_variables;
 	m_output_info.second = number_of_points;
-	m_doc.insertNewElements<int>("output", std::vector<int>{number_of_variables, number_of_points});
+	m_doc.insertElements<int>("output", std::vector<int>{number_of_variables, number_of_points});
 }
 
  void Dataset::setInputData(const char * data, const char * type) {
@@ -44,11 +44,11 @@ void Dataset::setOutputInfo(int number_of_variables, int number_of_points)
 }
 
  void Dataset::save(const char * filename) {
-	m_doc.saveToFile(filename);
+	m_doc.save(filename);
 }
 
  void Dataset::load(const char * filename) {
-	m_doc.loadFromFile(filename);
+	m_doc.load(filename);
 }
 
  void Dataset::print() const {

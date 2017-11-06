@@ -1,15 +1,14 @@
 #pragma once
-#include "config.h"
 #ifdef  _DEBUG
 #define _NEURALNET_DEBUG //Use this for error checking in subclasses.
 #endif //  _DEBUG
 
-#include "Dataset.h"
+#include "XMLFile.h"
 #include "NeuralNetException.h"
 #include "../lib/Eigen/Dense"
-typedef Eigen::MatrixXd MatrixType;
-typedef Eigen::VectorXd VectorType;
-typedef double			ScalarType;
+typedef Eigen::MatrixXf MatrixType;
+typedef Eigen::VectorXf VectorType;
+typedef float			ScalarType;
 
 class NeuralInput;
 class NeuralOutput;
@@ -26,9 +25,18 @@ public:
 	virtual void input(const MatrixType&) = 0;
 	virtual const MatrixType& output() = 0;
 
-	/*virtual void setDataset(const Dataset&) = 0;
-	virtual void train() = 0;*/
+	virtual void save(const char* toFile);
+	virtual void load(const char* fromFile);
 
-	virtual void save(const char* toFile) = 0;
-	virtual void load(const char* fromFile) = 0;
+protected:
+	XMLFile m_document;
 };
+
+void NeuralNet::save(const char* toFile) {
+	m_document.save(toFile);
+}
+
+void NeuralNet::load(const char* fromFile) {
+	m_document.load(fromFile);
+	m_document.print();
+}

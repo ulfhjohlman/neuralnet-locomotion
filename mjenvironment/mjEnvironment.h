@@ -1,12 +1,16 @@
 #pragma once
 #include <iostream>
-#include "glfw3.h"
+
 
 #include "mjAgent.h"
 #include "NeuralNet.h"
 #include "AgentScheduler.h"
 #include "ThreadsafeQueue.h"
 #include "ThreadPoolv2.h"
+#include "utilityfunctions.h"
+
+#include "glfw3.h"
+#include "mujoco.h"
 
 #include <future>
 #include <mutex>
@@ -32,8 +36,9 @@ public:
 
 		if (m_agents.empty()) {
 			std::unique_ptr<mjAgent> pAgent = std::make_unique<mjAgent>();
-			pAgent->setup(m_model);
+			pAgent->setup(m_model, 0, 1, 1);
 			m_agents.push_back(std::move(pAgent));
+			m_number_of_agents++;
 		}
 
 		auto agent = std::move(m_agents.back());
@@ -97,17 +102,6 @@ public:
 		mjr_render(viewport, &scn, &con);
 	}
 
-	void render(const mjrRect& viewport, const mjModel* model, mjData* data) {
-        //Make scene
-        mjv_updateScene(m_env, m_env_data, &opt, &pert, &cam, mjCAT_ALL, &scn);
-
-        //Add agent data structure to visuals
-        mjv_addGeoms(model, data, &opt, &pert, mjCAT_ALL, &scn);
-
-        //render
-        mjr_render(viewport, &scn, &con);
-    }
-
 	mjModel* loadMujocoModel(const char* filename);
 
 	mjModel* m_model;
@@ -148,7 +142,8 @@ mjEnvironment::mjEnvironment(int number_of_agents, int parallel_simulations = 12
 	
 	reload:
 	try {
-		m_model = loadMujocoModel("humanoid.xml");
+		//m_model = loadMujocoModel("invdoublependulum.xml");
+		m_model = loadMujocoModel("ant.xml");
 		m_env = loadMujocoModel("environment.xml");
 	}
 	catch(std::runtime_error e) {

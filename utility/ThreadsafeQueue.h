@@ -102,7 +102,7 @@ bool ThreadsafeQueue<T>::try_pop(T& value)
 	std::lock_guard<std::mutex> lk(m_mut);
 	if (m_queue.empty())
 		return false;
-	value = m_queue.front();
+	value = std::move(m_queue.front());
 	m_queue.pop();
 	return true;
 }

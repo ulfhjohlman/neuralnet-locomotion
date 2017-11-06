@@ -21,4 +21,11 @@ public:
 		Layer::updateGradients(backpass_gradients.array() *(m_outputs.array())*( static_cast<ScalarType>(1)-m_outputs.array()),
 			prev_layer_outputs);
 	}
+	virtual void setRandom() {
+		Layer::setRandom();
+
+		//Assumed inputs are distributed around 0, this ensures maximum input sensitivity.
+		//if activivation := g(Wx+b), then g(0) = 0.5; <- center of activation function
+		m_bias.array() = -m_weights.array().rowwise().sum() / static_cast<ScalarType>(2); //center crossing condition
+	}
 };
