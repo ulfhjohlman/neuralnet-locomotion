@@ -28,8 +28,8 @@ int ppo_test()
     const int softmax = Layer::LayerType::softmax;
     const int sigmoid = Layer::LayerType::sigmoid;
     const int tanh = Layer::LayerType::tanh;
-    std::vector<int> layerTypesPolicy {inputLayer, relu,relu,tanh};
-    std::vector<int> layerTypesOldPolicy {inputLayer, relu,relu,tanh};
+    std::vector<int> layerTypesPolicy {inputLayer, relu,relu,noactiv};
+    std::vector<int> layerTypesOldPolicy {inputLayer, relu,relu,noactiv};
     std::vector<int> layerTypesValueFunc {inputLayer, relu,relu,noactiv};
 
     //networks gain ownership/claening responsibilities for these topologies
@@ -87,8 +87,8 @@ int ppo_mj_test()
 	const int softmax = Layer::LayerType::softmax;
 	const int sigmoid = Layer::LayerType::sigmoid;
 	const int tanh = Layer::LayerType::tanh;
-	std::vector<int> layerTypesPolicy{ inputLayer, tanh,tanh,tanh };
-	std::vector<int> layerTypesOldPolicy{ inputLayer, tanh,tanh,tanh};
+	std::vector<int> layerTypesPolicy{ inputLayer, tanh,tanh,noactiv};
+	std::vector<int> layerTypesOldPolicy{ inputLayer, tanh,tanh,noactiv};
 	std::vector<int> layerTypesValueFunc{ inputLayer, relu,relu,noactiv };
 
 
@@ -220,10 +220,10 @@ int main()
 			std::cout << "_DEBUG FLAG OFF\n";
     #endif
     try{
-        ppo_mj_test();
+        //ppo_mj_test();
 		//pg_mj_test();
 		//ppo_test();
-        // pg_test();
+         pg_test();
     }
     catch(const std::runtime_error& e)
     {

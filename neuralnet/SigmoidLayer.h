@@ -12,7 +12,7 @@ public:
 		Layer::input(x);
 		m_outputs = logisticFunc(m_outputs);
 	}
-	MatrixType logisticFunc(const MatrixType& x)
+	static MatrixType logisticFunc(const MatrixType& x)
 	{
 		return (static_cast<ScalarType>(1) / (static_cast<ScalarType>(1) + (-x.array()).exp()));
 	}

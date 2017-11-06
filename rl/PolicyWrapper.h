@@ -3,6 +3,7 @@
 #include "LayeredNeuralNet.h"
 #include "stdlib.h"
 #include "Generator.h"
+#include "SigmoidLayer.h"
 #define _USE_MATH_DEFINES //for M_PI
 #include <math.h>
 
@@ -16,7 +17,7 @@
 class PolicyWrapper
 {
 public:
-        PolicyWrapper(LayeredNeuralNet * new_nn, int new_in_size, int new_out_size): m_nn(new_nn), in_size(new_in_size) {
+        PolicyWrapper(LayeredNeuralNet * new_nn, int new_in_size, int new_out_size): m_nn(new_nn), in_size(new_in_size), out_size(new_out_size){
             sample.reserve(new_out_size);
 			localSigmaObjectiveGradient.reserve(new_out_size);
 			localMuObjectiveGradient.reserve(new_out_size);
@@ -31,7 +32,6 @@ public:
 			if(new_nn->getTopology()->getLayerType(lastLayerIndex) != Layer::noActivation)
 			{
 				throw std::invalid_argument("Policy Network needs no activation functions on final layer. It handles them itself!\n");
-				TODO: THIS SLDLDFLF
 			}
 #endif
 			// the out_size is the dimensionality of the samples produced
@@ -62,7 +62,17 @@ public:
             m_nn->input(in_matrix);
             out_matrix_ptr = &m_nn->output();
 			mu = std::vector<ScalarType>(out_matrix_ptr->data(), out_matrix_ptr->data() + out_matrix_ptr->size()/2);
-			sigma = std::vector<ScalarType>(out_matrix_ptr->data() + out_matrix_ptr->size()/2 + 1, out_matrix_ptr->data() + out_matrix_ptr->size());
+			sigma = std::vector<ScalarType>(out_matrix_ptr->data() + out_matrix_ptr->size()/2, out_matrix_ptr->data() + out_matrix_ptr->size());
+			for (int i = 0; i < sigma.size(); i++)
+			{
+				sigma[i] = 1 / (1 + exp(-sigma[i]));
+				if (sigma[i] < 1e-8)
+				{
+					sigma[i] = 1e-8; //dont allow sigma = 0
+					std::cout << "min blocked\n";
+				}
+				//sigma[i] = 1;
+			}
         }
 
         virtual void input(const MatrixType& x)
@@ -103,6 +113,10 @@ public:
 
         void backprop(MatrixType err_gradients)
         {
+			for (int i = 0; i < sigma.size(); i++)
+			{
+				err_gradients(i + out_size / 2, 0) *= sigma[i]*(1-sigma[i]);
+			}
             m_nn->backprop(err_gradients);
         }
 
