@@ -196,7 +196,8 @@ protected:
 	}
 public:
 	virtual bool earlyAbort() {
-		return (data->xpos)[2] < 0.4;
+		//return (data->xpos)[2] < 0.4;
+		return false;
 	}
 
 	HopperEnv(){

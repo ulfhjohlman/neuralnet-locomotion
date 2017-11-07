@@ -31,8 +31,8 @@ public:
                 generateTrajectory(timesteps_per_episode);
 				//standardizeVector(rew_list); 
 				makeValuePredictions();
-                //GAE();
-				simpleAdvEstimates();
+                GAE();
+				//simpleAdvEstimates();
                 standardizeVector(adv_list);
 
 				TrainValueFunc();
@@ -223,7 +223,7 @@ protected:
 
                 // NEGATION because obejctive func = - loss func
 				MatrixType mu_error_gradients = -batch_adv_list[i][j] * r * (actionMatrix.array() - muMatrix.array()) / (sigmaMatrix.array().square());
-				MatrixType sigma_error_gradients = -batch_adv_list[i][j] * r * (actionMatrix.array() - muMatrix.array()) / (sigmaMatrix.array().square());
+				MatrixType sigma_error_gradients = -batch_adv_list[i][j] * r * (((actionMatrix.array() - muMatrix.array()) / sigmaMatrix.array()).square().array()-1).array()/sigmaMatrix.array();
 
 				MatrixType x(action_space_dim*2, 1);
 					x << mu_error_gradients,

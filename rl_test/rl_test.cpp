@@ -220,10 +220,10 @@ int main()
 			std::cout << "_DEBUG FLAG OFF\n";
     #endif
     try{
-        //ppo_mj_test();
+        ppo_mj_test();
 		//pg_mj_test();
 		//ppo_test();
-         pg_test();
+         //pg_test();
     }
     catch(const std::runtime_error& e)
     {
