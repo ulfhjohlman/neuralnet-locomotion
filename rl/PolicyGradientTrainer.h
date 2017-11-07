@@ -59,6 +59,7 @@ public:
                 //reset stuff
                 env->reset();
                 clearLists(); //technically not necessary
+				resizeLists(timesteps_per_episode);
 	
             }
 
@@ -97,7 +98,7 @@ private:
     virtual void calcAdvFunc()
     {
         ScalarType decayed_rew = 0;
-        for(int i = traj_length; i >= 0; i--)
+        for(int i = traj_length-1; i >= 0; i--)
         {
             decayed_rew = rew_list[i] + decayed_rew * m_gamma;
             adv_list[i] = decayed_rew;
