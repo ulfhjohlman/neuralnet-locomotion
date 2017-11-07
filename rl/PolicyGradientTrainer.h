@@ -217,7 +217,7 @@ protected:
             episode_return += rew_list[i];
 
 			mu_grad_list[i] = policy.getlocalMuObjectiveGradient(); // modified later by advFunc
-			sigma_grad_list[i] = policy.getlocalMuObjectiveGradient(); // modified later by advFunc
+			sigma_grad_list[i] = policy.getlocalSigmaObjectiveGradient(); // modified later by advFunc
 
 			if (env->earlyAbort())
 			{
