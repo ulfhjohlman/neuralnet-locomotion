@@ -71,7 +71,6 @@ public:
 					sigma[i] = 1e-8; //dont allow sigma = 0
 					std::cout << "min blocked\n";
 				}
-				//sigma[i] = 1;
 			}
         }
 
@@ -145,10 +144,10 @@ private:
         {
 			localMuObjectiveGradient.clear();
 			localSigmaObjectiveGradient.clear();
-            for(int i =0;i<mu.size();i++)
+            for(int i =0;i<out_size;i++)
             {
 				localMuObjectiveGradient.push_back((sample[i] - mu[i]) / (sigma[i]*sigma[i]));
-				localSigmaObjectiveGradient.push_back((sample[i] - mu[i])*(sample[i] - mu[i]) / (sigma[i]* sigma[i]* sigma[i]) - 1/(sigma[i]* sigma[i]));
+				localSigmaObjectiveGradient.push_back((sample[i] - mu[i])*(sample[i] - mu[i]) / (sigma[i]* sigma[i]* sigma[i]) - 1/(sigma[i]));
             }
         }
 

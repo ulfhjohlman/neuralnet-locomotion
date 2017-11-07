@@ -38,6 +38,7 @@ public:
         x+=dx;
         dy= actions[1];
         y+=dy;
+
     };
     virtual ScalarType getReward(){
         return -(sqrt(pow(x-10,2)+pow(y+10,2)));

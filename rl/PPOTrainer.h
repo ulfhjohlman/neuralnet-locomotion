@@ -31,8 +31,8 @@ public:
                 generateTrajectory(timesteps_per_episode);
 				//standardizeVector(rew_list); 
 				makeValuePredictions();
-                GAE();
-				//simpleAdvEstimates();
+                //GAE();
+				simpleAdvEstimates();
                 standardizeVector(adv_list);
 
 				TrainValueFunc();

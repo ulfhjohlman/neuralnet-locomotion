@@ -24,37 +24,38 @@ public:
 			generateTrajectory(timesteps_per_episode);
 
             //at end of an episode
-            {
-                calcAdvFunc();
+			{
+				calcAdvFunc();
 				standardizeVector(adv_list);
 				mean_loss = calcLoss();
-                mean_loss_batch += mean_loss;
+				mean_loss_batch += mean_loss;
 				mean_return_batch += episode_return;
 				//printf("Episode: %d. \tMean loss: %lf\n", i, mean_loss);
 
-                calcGradients();
+				calcGradients();
 
-                backpropGradients();
-                //cache loss gradients
 
-                //if end of a minibatch
-                if((i+1) % batch_size == 0)
-                {
-                    mean_return_batch/=batch_size;
-					mean_loss_batch = mean_loss_batch/ static_cast<double>(batch_size);
+				backpropGradients();
+				//cache loss gradients
+
+
+				//if end of a minibatch
+				if ((i + 1) % batch_size == 0)
+				{
+					mean_return_batch /= batch_size;
+					mean_loss_batch = mean_loss_batch / static_cast<double>(batch_size);
 					policy.popCacheLayerParams();
-				    policy.updateParams();
-                    //log progress
-					if((i/batch_size) % 10 == 0){
-                        printf(" ---- Batch Update %d ---- \tmean return: %lf \n", i / batch_size, mean_return_batch);
-                    }
-                    //std::cout << "Loss pre optimization:\t" << preloss << " Post:\t" << postloss << "\n";
+					policy.updateParams();
+					//log progress
+					if ((i / batch_size) % 10 == 0) {
+						printf(" ---- Batch Update %d ---- \tmean return: %lf \n", i / batch_size, mean_return_batch);
+					}
+					//std::cout << "Loss pre optimization:\t" << preloss << " Post:\t" << postloss << "\n";
 
 					mean_loss_batch = 0;
 					mean_return_batch = 0;
 
-                }
-
+				}
 
                 //reset stuff
                 env->reset();
@@ -147,7 +148,6 @@ protected:
 
 			//stack the error gradients and backprop them
 			std::vector<ScalarType> tmp; 
-			tmp.resize(action_space_dim * 2);
 			tmp.insert(tmp.end(), mu_grad_list[i].begin(), mu_grad_list[i].end());//unnecessary coppying being performed :/ EIGENIZE later
 			tmp.insert(tmp.end(), sigma_grad_list[i].begin(), sigma_grad_list[i].end());//unnecessary coppying being performed :/ EIGENIZE later
             Eigen::Map<MatrixType> x(tmp.data(),action_space_dim*2,1);
@@ -211,6 +211,8 @@ protected:
 			prob_list[i] = policy.getCumulativeProb();
             mu_list[i] = policy.getMu();
 			sigma_list[i] = policy.getSigma();
+			//std::cout << "Mu: \t (" << mu_list[i][0] << "," << mu_list[i][1] << ") \tSigma: \t(" << sigma_list[i][0] << "," << sigma_list[i][1] << ") \n";
+			//std::cout << "Ac: \t  (" << ac_list[i][0] << "," << ac_list[i][1] << ")\t ProbSample: \t(" << prob_list[i] << ")\n";
             env->step(ac);
 
             rew_list[i] = env->getReward();
@@ -223,6 +225,9 @@ protected:
 			{
 				traj_length = i+1;
 				break;
+			}
+			if (i ==( traj_length - 1)) {
+				print_state(ob_list[i]);
 			}
         }
     }
