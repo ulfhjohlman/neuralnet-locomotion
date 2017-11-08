@@ -209,6 +209,7 @@ protected: //members
 	std::vector<Layer*> m_layers;//replace with shared_ptr<Layer>
 private:   //members
 	LayeredTopology* m_topology = nullptr;
+public:
 	ParameterUpdater* m_parameter_updater = nullptr;
 
 protected: //Error checking

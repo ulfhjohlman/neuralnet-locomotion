@@ -21,17 +21,25 @@ public:
             sample.reserve(new_out_size);
 			localSigmaObjectiveGradient.reserve(new_out_size);
 			localMuObjectiveGradient.reserve(new_out_size);
-			sigma.reserve(new_out_size);
+			log_sigma.reserve(new_out_size);
+			non_log_sigma.resize(new_out_size);
 			mu.reserve(new_out_size);
+			log_sigma_matrix.resize(out_size,1);
+			log_sigma_gradients_cache.resize(out_size, 1);
+			non_log_sigma_matrix.resize(out_size, 1);
+			log_sigma_gradients_cache.setZero();
+			for (int i = 0; i < out_size; i++) {
+				log_sigma.push_back(-1);
+				log_sigma_matrix(i) = log_sigma[i];
+				non_log_sigma[i] = exp(log_sigma[i]);
+				non_log_sigma_matrix(i) = non_log_sigma[i];
+			}
+			m_nn->m_parameter_updater->addParam(&log_sigma_matrix,&log_sigma_gradients_cache);
 #ifdef _DEBUG
 			int lastLayerIndex = new_nn->getTopology()->getNumberOfLayers() - 1;
-			if (new_nn->getTopology()->getLayerSize(lastLayerIndex) != 2*new_out_size)
+			if (new_nn->getTopology()->getLayerSize(lastLayerIndex) != new_out_size)
 			{
-				throw std::invalid_argument("Policy Network needs 2*action_dim outputs!  ( ==2*out_size)\n");
-			}
-			if(new_nn->getTopology()->getLayerType(lastLayerIndex) != Layer::noActivation)
-			{
-				throw std::invalid_argument("Policy Network needs no activation functions on final layer. It handles them itself!\n");
+				throw std::invalid_argument("Policy Network needs 2*action_dim outputs!  ( ==out_size)\n");
 			}
 #endif
 			// the out_size is the dimensionality of the samples produced
@@ -47,10 +55,10 @@ public:
             total_prob = 1;
             for(int i=0;i<mu.size();i++)
             {
-                x = generator.generate_normal<ScalarType>(mu[i],sigma[i]);
+                x = generator.generate_normal<ScalarType>(mu[i],non_log_sigma[i]);
                 sample.push_back(x);
                 //store probability of the sample in 'prob'
-                total_prob *= norm_pdf(x,mu[i],sigma[i]);
+                total_prob *= norm_pdf(x,mu[i],non_log_sigma[i]);
 
             }
             calcLocalObjectiveGradients();
@@ -61,19 +69,7 @@ public:
             Eigen::Map<MatrixType> in_matrix(obs.data(),in_size,1);
             m_nn->input(in_matrix);
             out_matrix_ptr = &m_nn->output();
-			mu = std::vector<ScalarType>(out_matrix_ptr->data(), out_matrix_ptr->data() + out_matrix_ptr->size()/2);
-			sigma = std::vector<ScalarType>(out_matrix_ptr->data() + out_matrix_ptr->size()/2, out_matrix_ptr->data() + out_matrix_ptr->size());
-			for (int i = 0; i < sigma.size(); i++)
-			{
-				sigma[i] = 1 / (1 + exp(-sigma[i]));
-				if (sigma[i] < 1e-8)
-				{
-					sigma[i] = 1e-8; //dont allow sigma = 0
-					#ifdef _DEBUG
-						std::cout << "Warning: sigma close to zero in PolicyWrapper!\n";
-					#endif	
-				}
-			}
+			mu = std::vector<ScalarType>(out_matrix_ptr->data(), out_matrix_ptr->data() + out_matrix_ptr->size());
         }
 
         virtual void input(const MatrixType& x)
@@ -84,9 +80,9 @@ public:
         {
             forwardpassObs(obs);
             double prob = 1;
-            for(int i=0;i<mu.size();i++)
+            for(int i=0;i<out_size;i++)
             {
-                prob *= norm_pdf(action[i],mu[i],sigma[i]);
+                prob *= norm_pdf(action[i],mu[i],non_log_sigma[i]);
             }
             return prob;
         }
@@ -101,7 +97,7 @@ public:
 		}
 		const std::vector<ScalarType>& getSigma()
 		{
-			return sigma;
+			return non_log_sigma;
 		}
 		const std::vector<ScalarType>& getlocalMuObjectiveGradient()
 		{
@@ -114,11 +110,13 @@ public:
 
         void backprop(MatrixType err_gradients)
         {
-			for (int i = 0; i < sigma.size(); i++)
-			{
-				err_gradients(i + out_size / 2, 0) *= sigma[i]*(1-sigma[i]);
-			}
-            m_nn->backprop(err_gradients);
+			//Slice off Sigma portion
+			Eigen::Map<MatrixType> x(err_gradients.data(),out_size,1);
+            m_nn->backprop(x);
+
+			//Sigma graidents handled here
+			Eigen::Map<MatrixType> y(err_gradients.data() + out_size, out_size, 1);
+			log_sigma_gradients_cache.array() += y.array() * non_log_sigma_matrix.array();
         }
 
         void cacheLayerParams()
@@ -133,6 +131,11 @@ public:
 		void updateParams()
 		{
 			m_nn->updateParameters();
+			log_sigma = std::vector<ScalarType>(log_sigma_matrix.data(), log_sigma_matrix.data() + log_sigma_matrix.size());
+			for (int i = 0; i < out_size; i++) {
+				non_log_sigma[i] = exp(log_sigma[i]);
+			}
+			log_sigma_gradients_cache.setZero();
 		}
 
         void copyParams(const PolicyWrapper& otherPW)
@@ -148,8 +151,8 @@ private:
 			localSigmaObjectiveGradient.clear();
             for(int i =0;i<out_size;i++)
             {
-				localMuObjectiveGradient.push_back((sample[i] - mu[i]) / (sigma[i]*sigma[i]));
-				localSigmaObjectiveGradient.push_back((sample[i] - mu[i])*(sample[i] - mu[i]) / (sigma[i]* sigma[i]* sigma[i]) - 1/(sigma[i]));
+				localMuObjectiveGradient.push_back((sample[i] - mu[i]) / (non_log_sigma[i]*non_log_sigma[i]));
+				localSigmaObjectiveGradient.push_back((sample[i] - mu[i])*(sample[i] - mu[i]) / (non_log_sigma[i]* non_log_sigma[i]* non_log_sigma[i]) - 1/(non_log_sigma[i])); //simplify later
             }
         }
 
@@ -164,7 +167,11 @@ protected:
 		std::vector<ScalarType> localSigmaObjectiveGradient;
         double total_prob;
 		std::vector<ScalarType> mu;
-		std::vector<ScalarType> sigma;
+		std::vector<ScalarType> log_sigma;
+		std::vector<ScalarType> non_log_sigma;
+		MatrixType log_sigma_gradients_cache;
+		MatrixType log_sigma_matrix;
+		MatrixType non_log_sigma_matrix;
 
         MatrixType in_matrix;
         const MatrixType * out_matrix_ptr = nullptr;

@@ -19,8 +19,8 @@ int ppo_test()
     int state_space_dim = env.getStateSpaceDimensions();
 
     //constructing networks
-    std::vector<int> layerSizesPolicy {state_space_dim,16,16,2*action_space_dim};
-    std::vector<int> layerSizesOldPolicy {state_space_dim,16,16,2*action_space_dim};
+    std::vector<int> layerSizesPolicy {state_space_dim,16,16,action_space_dim};
+    std::vector<int> layerSizesOldPolicy {state_space_dim,16,16,action_space_dim};
     std::vector<int> layerSizesValueFunc {state_space_dim,16,16,1};
     const int relu = Layer::LayerType::relu;
     const int inputLayer = Layer::LayerType::inputLayer;
@@ -28,9 +28,9 @@ int ppo_test()
     const int softmax = Layer::LayerType::softmax;
     const int sigmoid = Layer::LayerType::sigmoid;
     const int tanh = Layer::LayerType::tanh;
-    std::vector<int> layerTypesPolicy {inputLayer, relu,relu,noactiv};
-    std::vector<int> layerTypesOldPolicy {inputLayer, relu,relu,noactiv};
-    std::vector<int> layerTypesValueFunc {inputLayer, relu,relu,noactiv};
+    std::vector<int> layerTypesPolicy {inputLayer, tanh,tanh,tanh};
+    std::vector<int> layerTypesOldPolicy {inputLayer, tanh,tanh,tanh};
+    std::vector<int> layerTypesValueFunc {inputLayer, tanh,tanh,tanh};
 
     //networks gain ownership/claening responsibilities for these topologies
     LayeredTopology* topPolicy = new LayeredTopology(layerSizesPolicy,layerTypesPolicy);
@@ -78,8 +78,8 @@ int ppo_mj_test()
 	int state_space_dim = env.getStateSpaceDimensions();
 
 	//constructing networks
-	std::vector<int> layerSizesPolicy{ state_space_dim,64,64,2*action_space_dim };
-	std::vector<int> layerSizesOldPolicy{ state_space_dim,64,64,2*action_space_dim };
+	std::vector<int> layerSizesPolicy{ state_space_dim,64,64,action_space_dim };
+	std::vector<int> layerSizesOldPolicy{ state_space_dim,64,64,action_space_dim };
 	std::vector<int> layerSizesValueFunc{ state_space_dim,32,32,1 };
 	const int relu = Layer::LayerType::relu;
 	const int inputLayer = Layer::LayerType::inputLayer;
@@ -87,8 +87,8 @@ int ppo_mj_test()
 	const int softmax = Layer::LayerType::softmax;
 	const int sigmoid = Layer::LayerType::sigmoid;
 	const int tanh = Layer::LayerType::tanh;
-	std::vector<int> layerTypesPolicy{ inputLayer, tanh,tanh,noactiv};
-	std::vector<int> layerTypesOldPolicy{ inputLayer, tanh,tanh,noactiv};
+	std::vector<int> layerTypesPolicy{ inputLayer, tanh,tanh,tanh};
+	std::vector<int> layerTypesOldPolicy{ inputLayer, tanh,tanh,tanh};
 	std::vector<int> layerTypesValueFunc{ inputLayer, relu,relu,noactiv };
 
 
@@ -139,7 +139,7 @@ int pg_test()
     int state_space_dim = env.getStateSpaceDimensions();
 
     //constructing networks
-    std::vector<int> layerSizesPolicy {state_space_dim,8,8,2*action_space_dim};
+    std::vector<int> layerSizesPolicy {state_space_dim,8,8,action_space_dim};
     const int relu = Layer::LayerType::relu;
     const int inputLayer = Layer::LayerType::inputLayer;
     const int noactiv = Layer::noActivation;
@@ -178,14 +178,14 @@ int pg_mj_test()
 	int state_space_dim = env.getStateSpaceDimensions();
 
 	//constructing networks
-	std::vector<int> layerSizesPolicy{ state_space_dim,32,32,2*action_space_dim };
+	std::vector<int> layerSizesPolicy{ state_space_dim,32,32,action_space_dim };
 	const int relu = Layer::LayerType::relu;
 	const int inputLayer = Layer::LayerType::inputLayer;
 	const int noactiv = Layer::noActivation;
 	const int softmax = Layer::LayerType::softmax;
 	const int sigmoid = Layer::LayerType::sigmoid;
 	const int tanh = Layer::LayerType::tanh;
-	std::vector<int> layerTypesPolicy{ inputLayer, tanh,tanh,noactiv };
+	std::vector<int> layerTypesPolicy{ inputLayer, tanh,tanh,tanh };
 
 	//networks gain ownership/claening responsibilities for these topologies
 	LayeredTopology* topPolicy = new LayeredTopology(layerSizesPolicy, layerTypesPolicy);
@@ -205,7 +205,7 @@ int pg_mj_test()
 
 	int frameskip = 3;
 	env.set_frameskip(frameskip);
-	trainer.trainPG(1e10, 4096/frameskip, 64);
+	trainer.trainPG(1e10, 2048/frameskip, 8);
 
 
 	return 0;
