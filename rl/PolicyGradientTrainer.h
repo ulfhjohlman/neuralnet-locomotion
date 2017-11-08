@@ -211,8 +211,6 @@ protected:
 			prob_list[i] = policy.getCumulativeProb();
             mu_list[i] = policy.getMu();
 			sigma_list[i] = policy.getSigma();
-			//std::cout << "Mu: \t (" << mu_list[i][0] << "," << mu_list[i][1] << ") \tSigma: \t(" << sigma_list[i][0] << "," << sigma_list[i][1] << ") \n";
-			//std::cout << "Ac: \t  (" << ac_list[i][0] << "," << ac_list[i][1] << ")\t ProbSample: \t(" << prob_list[i] << ")\n";
             env->step(ac);
 
             rew_list[i] = env->getReward();
@@ -226,9 +224,7 @@ protected:
 				traj_length = i+1;
 				break;
 			}
-			if (i ==( traj_length - 1)) {
-				print_state(ob_list[i]);
-			}
+		
         }
     }
 

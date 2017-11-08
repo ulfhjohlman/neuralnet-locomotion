@@ -178,7 +178,7 @@ int pg_mj_test()
 	int state_space_dim = env.getStateSpaceDimensions();
 
 	//constructing networks
-	std::vector<int> layerSizesPolicy{ state_space_dim,8,8,2*action_space_dim };
+	std::vector<int> layerSizesPolicy{ state_space_dim,32,32,2*action_space_dim };
 	const int relu = Layer::LayerType::relu;
 	const int inputLayer = Layer::LayerType::inputLayer;
 	const int noactiv = Layer::noActivation;
@@ -203,9 +203,9 @@ int pg_mj_test()
 	PolicyGradientTrainer trainer(&env, &policy);
 	//arguments: max_episodes, timesteps_per_episode, batch_size
 
-	int frameskip = 20;
+	int frameskip = 3;
 	env.set_frameskip(frameskip);
-	trainer.trainPG(1e6, 2048/frameskip, 5);
+	trainer.trainPG(1e10, 4096/frameskip, 64);
 
 
 	return 0;
@@ -221,9 +221,9 @@ int main()
     #endif
     try{
         // ppo_mj_test();
-		// pg_mj_test();
+		 pg_mj_test();
 		//ppo_test();
-         pg_test();
+         //pg_test();
     }
     catch(const std::runtime_error& e)
     {

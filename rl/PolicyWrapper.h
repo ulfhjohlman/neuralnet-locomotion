@@ -69,7 +69,9 @@ public:
 				if (sigma[i] < 1e-8)
 				{
 					sigma[i] = 1e-8; //dont allow sigma = 0
-					std::cout << "min blocked\n";
+					#ifdef _DEBUG
+						std::cout << "Warning: sigma close to zero in PolicyWrapper!\n";
+					#endif	
 				}
 			}
         }
@@ -151,9 +153,9 @@ private:
             }
         }
 
-        ScalarType norm_pdf( ScalarType x , ScalarType mu ,ScalarType sigma)
+        ScalarType norm_pdf( ScalarType x , ScalarType local_mu ,ScalarType local_sigma)
         {
-            return 1.0/(sigma*sqrt(2*M_PI)) * exp(-(x-mu)*(x-mu)/(2.0*sigma*sigma));
+            return 1.0/(local_sigma*sqrt(2*M_PI)) * exp(-(x-local_mu)*(x-local_mu)/(2.0*local_sigma*local_sigma));
         }
 
 protected:
