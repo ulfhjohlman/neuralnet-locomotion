@@ -25,10 +25,10 @@ public:
             total_prob = 1;
             for(int i=0;i<mu.size();i++)
             {
-                x = generator.generate_normal<ScalarType>(mu[i],sigma);
+                x = generator.generate_normal<ScalarType>(mu[i],m_sigma);
                 sample.push_back(x);
                 //store probability of the sample in 'prob'
-                total_prob *= norm_pdf(x,mu[i],sigma);
+                total_prob *= norm_pdf(x,mu[i],m_sigma);
 
             }
             calcLocalMuObjectiveGradient();
@@ -126,7 +126,6 @@ protected:
         std::vector<ScalarType> localObjectiveGradient;
         double total_prob;
         std::vector<ScalarType> mu;
-		ScalarType sigma = 0.1;
 
         MatrixType in_matrix;
         const MatrixType * out_matrix_ptr = nullptr;
