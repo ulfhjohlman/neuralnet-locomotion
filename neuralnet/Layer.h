@@ -4,14 +4,15 @@
 
 //Utility
 #include "Generator.h"
+#include "BinaryFile.h"
 
 //STL
 #include <sstream>
 class Layer : public NeuralNet
 {
 public:
-	Layer() = default;
-	Layer(int size, int inputSize) {
+	Layer() : m_layerIndex(0) { }
+	Layer(int size, int inputSize) : Layer() {
 		setLayer(size, inputSize);
 	}
 	virtual ~Layer() = default;
@@ -20,7 +21,6 @@ public:
 		m_weights( copy_this.m_weights ),
 		m_outputs( copy_this.m_outputs ),
 	 	m_bias( copy_this.m_bias),
-		//m_outputs_pre_activation( copy_this.m_outputs_pre_activation),
 		m_gradients_inputs( copy_this.m_gradients_inputs),
 		m_gradients_weights( copy_this.m_gradients_weights),
 		m_gradients_bias(copy_this.m_gradients_bias)  { }
@@ -29,7 +29,6 @@ public:
 		m_weights.swap(move_this.m_weights);
 		m_outputs.swap(move_this.m_outputs);
 		m_bias.swap(move_this.m_bias);
-		//m_outputs_pre_activation.swap(move_this.m_outputs_pre_activation);
 		m_gradients_weights.swap(move_this.m_gradients_weights);
 		m_gradients_inputs.swap(move_this.m_gradients_inputs);
 		m_gradients_bias.swap(move_this.m_gradients_bias);
@@ -40,7 +39,7 @@ public:
 
 	virtual void setRandom() {
 		Generator generator; //Thread safe generation
-		generator.fill_vector_normal<ScalarType>(m_weights.data(), m_weights.size(), 0, 1);
+		generator.fill_vector_normal<ScalarType>(m_weights.data(), m_weights.size(), 0, 2.0 / double( m_weights.rows() + m_weights.cols() ));
 		generator.fill_vector_uniform<ScalarType>(m_bias.data(), m_bias.size(), -0.05, 0.05);
 
 		m_outputs.setZero();
@@ -57,12 +56,15 @@ public:
 		m_weights.array() *= static_cast<ScalarType>(sqrt( 1.0 / m_weights.rows()));
 	}
 
+	void setLayerIndex(int i) {
+		m_layerIndex = i;
+	}
+
 	virtual void setLayer(int size, int inputSize) {
 		checkSize(size);
 		checkSize(inputSize);
 
 		m_outputs.resize(size, 1);
-		//m_outputs_pre_activation.resizeLike(m_outputs);
 
 		m_weights.resize(size, inputSize);
 		m_bias.resize(size,1);
@@ -129,8 +131,48 @@ public:
 		m_bias = otherlayer.m_bias;
 	}
 
-	virtual void save(const char* toFile) { }
-	virtual void load(const char* fromFile) { }
+	virtual void save(const char* path) { 
+		m_document.clear();
+		std::string data_structure_name = "layer_" + std::to_string(m_layerIndex);
+		m_document.insert(data_structure_name.c_str());
+
+		//size and type
+		m_document.insertAttribute("layer_type", static_cast<int>(Layer::noActivation));
+		m_document.insertAttribute("rows_output_size", static_cast<int>(m_outputs.rows()));
+		m_document.insertAttribute("cols_input_size", static_cast<int>(m_weights.cols()));
+
+		std::string weightsNode = path + data_structure_name + "_weights.bin";
+		std::string biasNode    = path + data_structure_name + "_bias.bin";
+		std::string outputNode  = path + data_structure_name + "_outputs.bin";
+
+		m_document.insert("weights", weightsNode.c_str());
+		saveMatrix(weightsNode, m_weights);
+
+		m_document.insert("bias", biasNode.c_str());
+		saveMatrix(biasNode, m_bias);
+
+		m_document.insert("output", outputNode.c_str());
+		saveMatrix(outputNode, m_outputs);
+
+		NeuralNet::save((path + data_structure_name).c_str());
+	}
+	virtual void load(const char* fromFile) { 
+		NeuralNet::load(fromFile);
+		int rows, cols;
+		m_document.getAttribute("rows_output_size", rows);
+		m_document.getAttribute("cols_input_size", cols);
+
+		char buffer[256];
+
+		m_document.getElement("weights", buffer);
+		loadMatrix(buffer, m_weights, rows, cols);
+
+		m_document.getElement("bias", buffer);
+		loadMatrix(buffer, m_bias, rows, 1);
+
+		m_document.getElement("output", buffer);
+		loadMatrix(buffer, m_outputs, rows, 1); //Potential error, argument of 1.
+	}
 
 	enum LayerType
 	{
@@ -143,11 +185,11 @@ public:
 		softmax = 6,
 		noLayer = 7 //always last for errorChecking
 	};
-	const MatrixType& getWeights()
+	MatrixType& getWeights()
 	{
 		return m_weights;
 	}
-	const MatrixType& getBias()
+	MatrixType& getBias()
 	{
 		return m_bias;
 	}
@@ -211,12 +253,23 @@ protected:
 		std::cout << std::endl;
 	}
 
+	virtual void saveMatrix(std::string filename, const MatrixType& m) {
+		BinaryFile file(filename);
+		file.write(m.data(), m.size());
+	}
+	virtual void loadMatrix(std::string filename, MatrixType& m, int rows, int cols) {
+		BinaryFile file(filename);
+		m.resize(rows, cols);
+		file.read(m.data(), m.size());
+	}
+
 protected: //members
 	MatrixType m_outputs;
-	//MatrixType m_outputs_pre_activation;
 	MatrixType m_weights;
 	MatrixType m_bias;
 	std::vector<MatrixType> m_outputs_cache;
+
+	int m_layerIndex;
 
 private: //members
 

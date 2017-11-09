@@ -1,0 +1,124 @@
+<mujoco model="ant">
+  <compiler angle="degree" coordinate="local" inertiafromgeom="true"/>
+  <option integrator="RK4" timestep="0.01"/>
+  <custom>
+    <numeric data="0.0 0.0 0.55 1.0 0.0 0.0 0.0 0.0 1.0 0.0 -1.0 0.0 -1.0 0.0 1.0" name="init_qpos"/>
+  </custom>
+  <default>
+    <joint armature="1" damping="1" limited="true"/>
+    <geom conaffinity="0" condim="3" density="5.0" friction="1 0.5 0.5" margin="0.01" rgba="0.8 0.6 0.4 1"/>
+  </default>
+  <asset>
+    <texture builtin="gradient" height="100" rgb1="1 1 1" rgb2="0 0 0" type="skybox" width="100"/>
+    <texture builtin="flat" height="1278" mark="cross" markrgb="1 1 1" name="texgeom" random="0.01" rgb1="0.8 0.6 0.4" rgb2="0.8 0.6 0.4" type="cube" width="127"/>
+    <texture builtin="checker" height="100" name="texplane" rgb1="0 0 0" rgb2="0.8 0.8 0.8" type="2d" width="100"/>
+    <material name="MatPlane" reflectance="0.5" shininess="1" specular="1" texrepeat="60 60" texture="texplane"/>
+    <material name="geom" texture="texgeom" texuniform="true"/>
+  </asset>
+  <worldbody>
+    <geom conaffinity="1" condim="3" name="floor" pos='0 0 0' size='50 50 .125' type='plane' rgba="0.0 0.0 0.0 0.0"/>
+    <geom conaffinity="1" condim="3" name="hurdle1" pos='10 0  0.05' size='0.5 30 0.05' type='box' rgba="1.0 1.0 0.0 0.5"/>
+    <geom conaffinity="1" condim="3" name="hurdle2" pos='16 0  0.1' size='0.5 30 0.1' type='box' rgba="1.0 1.0 0.0 0.5"/>
+    <geom conaffinity="1" condim="3" name="hurdle3" pos='20 0  0.2' size='0.5 30 0.2' type='box' rgba="1.0 1.0 0.0 0.5"/>
+    <geom conaffinity="1" condim="3" name="hurdle4" pos='22 0  0.4' size='0.5 30 0.4' type='box' rgba="1.0 1.0 0.0 0.5"/>
+    <geom conaffinity="1" condim="3" name="hurdle5" pos='17 0  0.4' size='0.2 0.4 0.8' type='box' rgba="1.0 1.0 0.0 0.5"/>
+    <geom conaffinity="1" condim="3" name="hurdle6" pos='40 0  0.4' size='0.1 50 0.8' type='box' rgba="1.0 1.0 0.0 0.5"/>
+    <body name="torso" pos="0 0 0.75">
+      <site name="head" pos="0 0 0" size="0.251" type="sphere" rgba="0.3 0.2 0.1 0.3"/>
+      <site name="eye1" pos="0.26 0.125 0" zaxis="1 0 -0.25" size="0.05" type="sphere" rgba="0.3 0.7 0.1 0.3"/>
+      <site name="eye2" pos="0.26 -0.125 0" zaxis="1 0 -0.25" size="0.05" type="sphere" rgba="0.3 0.7 0.1 0.3"/>
+      <site name="eye3" pos="0.26 0 -0.025" zaxis="1 0 -0.5" size="0.05" type="sphere" rgba="0.3 0.7 0.1 0.3"/>
+      <geom name="torso_geom" pos="0 0 0" size="0.25" type="sphere"/>
+      <joint armature="0" damping="0" limited="false" margin="0.01" name="root" pos="0 0 0" type="free"/>
+      <body name="front_left_leg" pos="0 0 0">
+        <geom fromto="0.0 0.0 0.0 0.2 0.2 0.0" name="aux_1_geom" size="0.08" type="capsule"/>
+        <body name="aux_1" pos="0.2 0.2 0">
+          <joint axis="0 0 1" name="hip_1" pos="0.0 0.0 0.0" range="-30 30" type="hinge"/>
+          <geom fromto="0.0 0.0 0.0 0.2 0.2 0.0" name="left_leg_geom" size="0.08" type="capsule"/>
+          <body pos="0.2 0.2 0">
+	    <site name="feet1" pos="0.4 0.4 0" size="0.082" type="sphere" rgba="0.3 0.2 0.1 0.3"/>
+            <joint axis="-1 1 0" name="ankle_1" pos="0.0 0.0 0.0" range="30 70" type="hinge"/>
+            <geom fromto="0.0 0.0 0.0 0.4 0.4 0.0" name="left_ankle_geom" size="0.08" type="capsule"/>
+          </body>
+        </body>
+      </body>
+      <body name="front_right_leg" pos="0 0 0">
+        <geom fromto="0.0 0.0 0.0 -0.2 0.2 0.0" name="aux_2_geom" size="0.08" type="capsule"/>
+        <body name="aux_2" pos="-0.2 0.2 0">
+          <joint axis="0 0 1" name="hip_2" pos="0.0 0.0 0.0" range="-30 30" type="hinge"/>
+          <geom fromto="0.0 0.0 0.0 -0.2 0.2 0.0" name="right_leg_geom" size="0.08" type="capsule"/>
+          <body pos="-0.2 0.2 0">
+	    <site name="feet2" pos="-0.4 0.4 0" size="0.082" type="sphere" rgba="0.3 0.2 0.1 0.3"/>
+            <joint axis="1 1 0" name="ankle_2" pos="0.0 0.0 0.0" range="-70 -30" type="hinge"/>
+            <geom fromto="0.0 0.0 0.0 -0.4 0.4 0.0" name="right_ankle_geom" size="0.08" type="capsule"/>
+          </body>
+        </body>
+      </body>
+      <body name="back_leg" pos="0 0 0">
+        <geom fromto="0.0 0.0 0.0 -0.2 -0.2 0.0" name="aux_3_geom" size="0.08" type="capsule"/>
+        <body name="aux_3" pos="-0.2 -0.2 0">
+          <joint axis="0 0 1" name="hip_3" pos="0.0 0.0 0.0" range="-30 30" type="hinge"/>
+          <geom fromto="0.0 0.0 0.0 -0.2 -0.2 0.0" name="back_leg_geom" size="0.08" type="capsule"/>
+          <body pos="-0.2 -0.2 0">
+	    <site name="feet3" pos="-0.4 -0.4 0" size="0.082" type="sphere" rgba="0.3 0.2 0.1 0.3"/>
+            <joint axis="-1 1 0" name="ankle_3" pos="0.0 0.0 0.0" range="-70 -30" type="hinge"/>
+            <geom fromto="0.0 0.0 0.0 -0.4 -0.4 0.0" name="third_ankle_geom" size="0.08" type="capsule"/>
+          </body>
+        </body>
+      </body>
+      <body name="right_back_leg" pos="0 0 0">
+        <geom fromto="0.0 0.0 0.0 0.2 -0.2 0.0" name="aux_4_geom" size="0.08" type="capsule"/>
+        <body name="aux_4" pos="0.2 -0.2 0">
+          <joint axis="0 0 1" name="hip_4" pos="0.0 0.0 0.0" range="-30 30" type="hinge"/>
+          <geom fromto="0.0 0.0 0.0 0.2 -0.2 0.0" name="rightback_leg_geom" size="0.08" type="capsule"/>
+          <body pos="0.2 -0.2 0">
+	    <site name="feet4" pos="0.4 -0.4 0" size="0.082" type="sphere" rgba="0.3 0.2 0.1 0.3"/>
+            <joint axis="1 1 0" name="ankle_4" pos="0.0 0.0 0.0" range="30 70" type="hinge"/>
+            <geom fromto="0.0 0.0 0.0 0.4 -0.4 0.0" name="fourth_ankle_geom" size="0.08" type="capsule"/>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+  <actuator>
+    <motor ctrllimited="true" ctrlrange="-1.0 1.0" joint="hip_4" gear="150"/>
+    <motor ctrllimited="true" ctrlrange="-1.0 1.0" joint="ankle_4" gear="150"/>
+    <motor ctrllimited="true" ctrlrange="-1.0 1.0" joint="hip_1" gear="150"/>
+    <motor ctrllimited="true" ctrlrange="-1.0 1.0" joint="ankle_1" gear="150"/>
+    <motor ctrllimited="true" ctrlrange="-1.0 1.0" joint="hip_2" gear="150"/>
+    <motor ctrllimited="true" ctrlrange="-1.0 1.0" joint="ankle_2" gear="150"/>
+    <motor ctrllimited="true" ctrlrange="-1.0 1.0" joint="hip_3" gear="150"/>
+    <motor ctrllimited="true" ctrlrange="-1.0 1.0" joint="ankle_3" gear="150"/>
+  </actuator>
+    <sensor>
+    	<touch name="rightfoottouch" site="feet1" />
+	<touch name="leftfoottouch" site="feet2" />
+	<touch name="rightfoottouch2" site="feet3" />
+	<touch name="leftfoottouch2" site="feet4" />
+
+	<touch name="headtouch" cutoff="1.0" site="head" />
+	
+	<accelerometer name="accHead" site="head" />
+	<gyro name="gyroHead" site="head" />
+
+	<rangefinder name="eye1" site="eye1" cutoff="7.0"/>
+	<rangefinder name="eye2" site="eye2" cutoff="7.0"/>
+	<rangefinder name="eye3" site="eye3" cutoff="7.0"/>
+
+	<framexaxis name="orientation" objtype="site" objname="head"/>
+	<framelinvel name="speed" objtype="site" objname="head"/>
+
+
+	<jointpos name="abdomen_y"    		joint="hip_1" />
+        <jointpos name="abdomen_z"    		joint="hip_2" />
+        <jointpos name="abdomen_x"    		joint="hip_3" />
+	<jointpos name="abdomen_w"    		joint="hip_4" />
+	
+	<jointpos name="leg_y"    		joint="ankle_1" />
+        <jointpos name="leg_z"    		joint="ankle_2" />
+        <jointpos name="leg_x"    		joint="ankle_3" />
+	<jointpos name="leg_w"    		joint="ankle_4" />
+    </sensor>
+
+
+</mujoco>

@@ -14,7 +14,7 @@ public:
 		return *this;
 	}
 
-	virtual void mutate(float mutation_probability) = 0;
+	//virtual void mutate(float mutation_probability) = 0;
 	//virtual std::vector<Genome*> cut(int cuts) = 0;
 private:
 	

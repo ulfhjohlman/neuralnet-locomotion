@@ -6,51 +6,47 @@
 #include "ThreadsafeQueue.h"
 
 #include "NeuralNetGenome.h"
+#include "Layer.h"
 #include "NeuralNetChromosome.h"
 #include "Mutation.h"
 #include "Population.h"
 
+#include "tinyxml2.h"
+#include "XMLFile.h"
+#include "BinaryFile.h"
+#include "LayeredTopology.h"
+
 #include <future>
 #include <thread>
 
+#include <experimental/filesystem>
+namespace fs = std::experimental::filesystem;
 
-std::promise<int> prom;                      // create promise
-std::future<int> contract() {
-	return prom.get_future();
-}
 
 int main()
 {
 	RandomEngineFactory::initialize(); //optional
 
-	Population<LayeredNeuralNet> population;
-	Mutation<LayeredNeuralNet> mutation_op(0.05);
-	
-	std::unique_ptr<NeuralNetChromosome> member ( new NeuralNetChromosome(5, 5) );
-	LayeredNeuralNet* ffnn = member->decode();
-	
-	population.members.push_back( std::move( member) );
+	std::vector<int> layerSizes = { 2, 128, 128, 128, 15 };
+	std::vector<int> layerTypes = { Layer::inputLayer, 1, 1, 0, 0 };
+	LayeredTopology* top1 = new LayeredTopology(layerSizes, layerTypes);
+	LayeredNeuralNet* nn = new LayeredNeuralNet(top1);
 
-	MatrixType x(5, 1);
-	x.setRandom();
+	fs::create_directory("asd");
+	nn->initializeRandomWeights();
+	nn->save("asd/");
 
-	ffnn->input(x);
-	std::cout << ffnn->output() << std::endl <<std::endl;
-	
-	mutation_op >> population;
+	MatrixType m(2, 1);
+	m(0, 0) = 1;
+	m(1, 0) = 1;
+	nn->input(m);
 
-	ffnn->input(x);
-	std::cout << ffnn->output() << std::endl;
+	LayeredNeuralNet nn2;
+	nn2.load("asd/unnamed");
+	nn2.input(m);
 
-	using namespace std::chrono_literals;
-	
-	int a = 1;
-	ThreadsafeQueue<int> q;
-	parallel_for(0, 100, 8, [a, &q](int i, int extra) { q.push(a + i + extra); }, -1);
-
-	int N = q.size();
-	for (int i = 0; i < N; i++)
-		std::cout << q.sequential_pop() << std::endl;
+	std::cout << nn->output() << std::endl << std::endl;
+	std::cout << nn2.output() << std::endl;
 
 	std::cin.get();
 	return 0;

@@ -2,6 +2,9 @@
 
 #include "Individual.h"
 #include "LayeredNeuralNet.h"
+#include "CascadeTopology.h"
+#include "CascadeNeuralNet.h"
+
 #include "NeuralNetGenome.h"
 
 class NeuralNetChromosome : public Individual<LayeredNeuralNet> //Add genome template
@@ -40,9 +43,20 @@ private:
 
 private:
 	void createNeuralController() {
-		std::vector<int> layerSizes = { m_number_of_inputs, 64, 64, m_number_of_outputs };
+		/*std::vector<int> layerSizes = { m_number_of_inputs, 64, 64, 64, 64, 64, m_number_of_outputs };
+		std::vector<int> layerTypes = { Layer::inputLayer, 1, 1, 1, 1, 1, 1 };
+		CascadeTopology* top = new CascadeTopology(layerSizes, layerTypes);
+		top->addLayerConnection(1, { 0 });
+		top->addLayerConnection(2, { 1 });
+		top->addLayerConnection(3, { 1, 2 });
+		top->addLayerConnection(4, { 2, 3 });
+		top->addLayerConnection(5, { 4 });
+		top->addLayerConnection(6, { 5 });*/
+
+		std::vector<int> layerSizes = { m_number_of_inputs + 16, 32, 16, m_number_of_outputs + 16};
 		std::vector<int> layerTypes = { Layer::inputLayer, 1, 1, 1 };
 		LayeredTopology* top = new LayeredTopology(layerSizes, layerTypes);
+
 
 		m_controller = new LayeredNeuralNet(top); //memory is managed by network
 		m_controller->initializeRandomWeights();

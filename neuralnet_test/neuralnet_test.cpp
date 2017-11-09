@@ -17,7 +17,7 @@
 #include "Stopwatch.h"
 #include "XMLException.h"
 #include "DataPrinter.h"
-#include "XMLWrapper.h"
+#include "XMLFile.h"
 #include "utilityfunctions.h"
 #include "ThreadPoolv2.h"
 
@@ -34,6 +34,7 @@
 #include <cstdlib>
 #include <sstream> //ostringstream
 #include <iomanip> //std::get_time
+#include <random>
 
 //Function prototypes
 void single_threaded_tests();
@@ -63,10 +64,12 @@ int main()
 	#else
 			std::cout << "_NEURALNET_DEBUG FLAG OFF" << std::endl;
 	#endif
+
+
 	//std::cout << cascadeNeuralNet_test() << std::endl;
 	//std::cout << feedForwardNeuralNet_test();
 	//std::cout << relu_ff_test() << std::endl;
-	std::cout << training_XOR_test() << std::endl;
+	//std::cout << training_XOR_test() << std::endl;
 	//test
 	//single_threaded_tests();
 	//multi_threaded_tests();
@@ -268,24 +271,23 @@ void single_threaded_tests()
 
 std::string XMLWrapper_test()
 {
-	XMLWrapper d;
+	XMLFile d;
 	std::ostringstream output;
 	output << "XMLWrapper test:" << std::endl;
 	try {
-		d.clearDocument();
-		d.insertNewRoot("XML");
-		d.insertNewRoot("newRoot"); //overwrite XML
-		d.insertNewElement<int>("int", 5);
+		d.clear();
+		d.insert("XML");
+		d.insert("newRoot"); //overwrite XML
+		d.insert<int>("int", 5);
 		std::vector<float> floats = { 1, 2, 3, 4, 5, 6.005f, 42.01f }; //Will not be exact representation
-		d.insertNewElements<float>("floats", floats);
 		d.insertDate();
 
-		d.selectRootNode("newRoot");
-		d.selectCurrentElement("floats");
+		d.select("newRoot");
+		d.select("floats");
 		output << "item count: " << d.getNumberOfItems() << "==" << floats.size() << std::endl;
 
 		d.print();
-		output << "Dataset test passed" << std::endl;
+		output << "XMLwrapper test passed" << std::endl;
 		return output.str();
 	}
 	catch (XMLException& e) {

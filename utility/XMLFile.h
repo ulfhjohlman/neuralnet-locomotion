@@ -23,61 +23,79 @@
 ///
 /// <para/>Not completed.
 /// </summary>
-class XMLWrapper
+class XMLFile
 {
 public:
-	XMLWrapper() : m_doc(false), m_rootNode(nullptr), m_currentElement(nullptr) { }
+	XMLFile() : m_doc(false), m_rootNode(nullptr), m_currentElement(nullptr) { }
 
-	virtual ~XMLWrapper() = default;
+	virtual ~XMLFile() = default;
 
-	virtual void saveToFile(const char* name, bool compact = false) {
+	virtual void save(const char* name, bool compact = false) {
 		tinyxml2::XMLError error = m_doc.SaveFile(name, compact);
 		XMLCheckResult(error);
 	}
-	virtual void loadFromFile(const char* name) {
+	virtual void load(const char* name) {
+		if (m_rootNode) {
+			this->clear();
+			//throw XMLException("There is already a active document.", tinyxml2::XML_ERROR_FILE_READ_ERROR);
+		}
+
 		tinyxml2::XMLError error = m_doc.LoadFile(name);
 		XMLCheckResult(error);
 
-		m_rootNode = nullptr;
 		m_rootNode = m_doc.FirstChild();
+		m_currentElement = m_rootNode->ToElement();
 		if (m_rootNode == nullptr)
 			throw XMLException("No elements in xml file found.", tinyxml2::XML_ERROR_FILE_READ_ERROR);
 	}
 
-	virtual void clearDocument() {
+	virtual void clear() {
 		m_doc.DeleteChildren();
 		m_rootNode = nullptr;
 		m_currentElement = nullptr;
 	}
 
 	/// <summary>
-	/// Set the first node in the xml document. Only renames if root already present.
+	/// insert the node in the xml document.
 	/// </summary>
 	/// <param name="documentRoot"></param>
-	virtual void insertNewRoot(const char* documentRoot = "Root") {
-		if (m_rootNode == nullptr)
-			m_rootNode = m_doc.NewElement(documentRoot);
-		else
-			m_rootNode->SetValue(documentRoot);
-		m_doc.InsertFirstChild(m_rootNode);
-	}
-	virtual void insertNewNode(const char* name) {
-		tinyxml2::XMLElement* node = m_doc.NewElement(name);
-		m_doc.InsertEndChild(node);
+	virtual void insert(const char* node_name) {
+		if (m_rootNode == nullptr) {
+			m_rootNode = m_doc.NewElement(node_name);
+			m_doc.InsertFirstChild(m_rootNode);
+			m_currentElement = m_rootNode->ToElement();
+		}
+		else {
+			checkCurrentElement();
+			tinyxml2::XMLElement* element = m_doc.NewElement(node_name);
+			m_currentElement->InsertEndChild(element);
+		}
 	}
 
 	/// <summary>
-	/// Can not select with duplicate names.
+	/// Inserts a new element of type valid in tinyxml2. That is, uint float double bool char* etc
 	/// </summary>
-	/// <param name="name"></param>
-	virtual void selectRootNode(const char* name) {
-		m_rootNode = m_doc.FirstChildElement(name);
+	/// <param name="elementName"></param>
+	/// <param name="textValue"></param>
+	template<typename T>
+	void insert(const char* elementName, T textValue) {
 		checkRootNode();
+		checkCurrentElement();
+		tinyxml2::XMLElement* element = m_doc.NewElement(elementName);
+		element->SetText(textValue);
+
+		m_currentElement->InsertEndChild(element);
 	}
 
-	virtual void selectCurrentElement(const char* name) {
+	virtual void select(const char* name) {
 		checkRootNode();
-		m_currentElement = m_rootNode->FirstChildElement(name);
+		m_currentElement = m_currentElement->FirstChildElement(name);
+		checkCurrentElement();
+	}
+
+	virtual void selectRoot() {
+		checkRootNode();
+		m_currentElement = m_rootNode->ToElement();
 		checkCurrentElement();
 	}
 
@@ -85,10 +103,10 @@ public:
 	/// Get the number of items in current element
 	/// </summary>
 	/// <returns></returns>
-	virtual unsigned int getNumberOfItems() {
+	virtual int getNumberOfItems() {
 		checkCurrentElement();
-		unsigned int ret = 0;
-		tinyxml2::XMLError error = m_currentElement->QueryUnsignedAttribute("itemCount", &ret);
+	    int ret = 0;
+		tinyxml2::XMLError error = m_currentElement->QueryIntAttribute("itemCount", &ret);
 		XMLCheckResult(error, "Not able to get item count.");
 		return ret;
 	}
@@ -115,42 +133,26 @@ public:
 		m_rootNode->InsertFirstChild(date);
 	}
 
-	/// <summary>
-	/// Inserts a new element of type valid in tinyxml2. That is, uint float double bool char* etc
-	/// </summary>
-	/// <param name="elementName"></param>
-	/// <param name="textValue"></param>
 	template<typename T>
-	void insertNewElement(const char* elementName, T textValue) {
+	void insertElements(const char* node_name, const std::vector<T>& elements, const char* item_name = "") {
 		checkRootNode();
+		checkCurrentElement();
 
-		m_currentElement = m_doc.NewElement(elementName);
-		m_currentElement->SetText(textValue);
-
-		m_rootNode->InsertEndChild(m_currentElement);
-	}
-
-	template<typename T>
-	void insertNewElements(const char* listName, const std::vector<T>& elements) {
-		checkRootNode();
-
-		const size_t size = elements.size();
+		int size = static_cast<int>(elements.size());
 		if (size < 1) throw std::runtime_error("Empty vector.");
 
-		m_currentElement = m_doc.NewElement(listName);
+		tinyxml2::XMLElement* new_element = m_doc.NewElement(node_name);
 
 		for (const auto& element : elements) {
-			tinyxml2::XMLElement* item = m_doc.NewElement("Item");
-			item->SetText(element);
+			tinyxml2::XMLElement* item = m_doc.NewElement(item_name);
+			item->SetText(static_cast<T>(element));
 
-			m_currentElement->InsertEndChild(item);
+			new_element->InsertEndChild(item);
 		}
 
-#ifdef _DEBUG
-		assert(elements.size() < UINT32_MAX); //one massive vector
-#endif // _DEBUG
-		m_currentElement->SetAttribute("itemCount", static_cast<unsigned int>(size));
-		m_rootNode->InsertEndChild(m_currentElement);
+		new_element->SetAttribute("itemCount", size);
+		m_currentElement->InsertEndChild(new_element);
+		//Does not change current element
 	}
 
 	template<typename T>
@@ -160,7 +162,7 @@ public:
 #ifdef _DEBUG
 		assert(data.size() < UINT32_MAX);
 #endif // _DEBUG
-		const unsigned int size = data.size();
+		int size = static_cast<int>(data.size());
 		if (size < 1) throw std::runtime_error("Empty vector.");
 
 		m_currentElement = m_doc.NewElement(dataName);
@@ -195,67 +197,80 @@ public:
 		m_doc.Print();
 	}
 
-	template<typename T>
-	void getElement(const char* elementName, T& element) {
-		checkRootNode();
-		m_currentElement = m_rootNode->FirstChildElement(elementName);
-		checkCurrentElement();
-
-		throw XMLException("Fuck this.");
+	void getAttribute(const char* name, int& a) {
+		auto error = m_currentElement->QueryIntAttribute(name, &a);
+		XMLCheckResult(error);
 	}
 
-	void getElements(const char* elementName, std::vector<int>& elements) {
+	void getElement(const char* elementName, char data[]) {
 		checkRootNode();
-		m_currentElement = m_rootNode->FirstChildElement(elementName);
+		checkCurrentElement();
+		tinyxml2::XMLElement* element = m_currentElement; //hold previous
+		m_currentElement = m_currentElement->FirstChildElement(elementName);
 		checkCurrentElement();
 
+		std::strcpy(data, m_currentElement->GetText());
+		m_currentElement = element; //return
+	}
+
+	void getElements(const char* elementName, std::vector<int>& elements, const char* item_name= "") {
+		checkRootNode();
+		checkCurrentElement();
+		tinyxml2::XMLElement* it = m_currentElement->FirstChildElement(elementName);
+		if (it == nullptr)
+			throw XMLException("not list.");
+
 		int group_size;
-		XMLCheckResult(m_currentElement->QueryIntAttribute("itemCount",&group_size));
-		m_currentElement = m_currentElement->FirstChildElement("Item");
-		for (size_t i = 0; i < group_size; i++) {
+		XMLCheckResult(it->QueryIntAttribute("itemCount", &group_size));
+		it = it->FirstChildElement(item_name);
+		elements.reserve(group_size);
+		for (int i = 0; i < group_size; i++) {
 			int out;
-			checkCurrentElement();
 
-			XMLCheckResult(m_currentElement->QueryIntText(&out));
+			XMLCheckResult(it->QueryIntText(&out));
 
 			elements.push_back(out);
-			m_currentElement = m_currentElement->NextSiblingElement();
+			it = it->NextSiblingElement();
 		}
 	}
-	void getElements(const char* elementName, std::vector<float>& elements) {
+	void getElements(const char* elementName, std::vector<float>& elements, const char* item_name = "") {
 		checkRootNode();
-		m_currentElement = m_rootNode->FirstChildElement(elementName);
 		checkCurrentElement();
+		tinyxml2::XMLElement* it = m_currentElement->FirstChildElement(elementName);
+		if (it == nullptr)
+			throw XMLException("not list.");
 
 		int group_size;
-		XMLCheckResult(m_currentElement->QueryIntAttribute("itemCount", &group_size));
-		m_currentElement = m_currentElement->FirstChildElement("Item");
-		for (size_t i = 0; i < group_size; i++) {
+		XMLCheckResult(it->QueryIntAttribute("itemCount", &group_size));
+		it = it->FirstChildElement(item_name);
+		elements.reserve(group_size);
+		for (int i = 0; i < group_size; i++) {
 			float out;
-			checkCurrentElement();
 
-			XMLCheckResult(m_currentElement->QueryFloatText(&out));
+			XMLCheckResult(it->QueryFloatText(&out));
 
 			elements.push_back(out);
-			m_currentElement = m_currentElement->NextSiblingElement();
+			it = it->NextSiblingElement();
 		}
 	}
-	void getElements(const char* elementName, std::vector<double>& elements) {
+	void getElements(const char* elementName, std::vector<double>& elements, const char* item_name = "") {
 		checkRootNode();
-		m_currentElement = m_rootNode->FirstChildElement(elementName);
 		checkCurrentElement();
+		tinyxml2::XMLElement* it = m_currentElement->FirstChildElement(elementName);
+		if (it == nullptr)
+			throw XMLException("not list.");
 
 		int group_size;
-		XMLCheckResult(m_currentElement->QueryIntAttribute("itemCount", &group_size));
-		m_currentElement = m_currentElement->FirstChildElement("Item");
-		for (size_t i = 0; i < group_size; i++) {
+		XMLCheckResult(it->QueryIntAttribute("itemCount", &group_size));
+		it = it->FirstChildElement(item_name);
+		elements.reserve(group_size);
+		for (int i = 0; i < group_size; i++) {
 			double out;
-			checkCurrentElement();
 
-			XMLCheckResult(m_currentElement->QueryDoubleText(&out));
+			XMLCheckResult(it->QueryDoubleText(&out));
 
 			elements.push_back(out);
-			m_currentElement = m_currentElement->NextSiblingElement();
+			it = it->NextSiblingElement();
 		}
 	}
 

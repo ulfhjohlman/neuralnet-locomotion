@@ -49,18 +49,8 @@ double lasty = 0;
 int sign = 1;
 
 void createNeuralController() {
-	std::vector<int> layerSizes = { n_inputs,		   40, 4000, 400, 40, 21 };
-	std::vector<int> layerTypes = { Layer::inputLayer, 1,  1,  1,  1,  1 };
-	LayeredTopology* top = new LayeredTopology(layerSizes, layerTypes);
-
-	ffnn = new LayeredNeuralNet(top); //memory is managed by network
-	ffnn->initializeRandomWeights();
-
-	std::vector<int> layerSizesfeedback = { 21, 40, 40, 40, 40, 3 };
-	LayeredTopology* feedbacktop = new LayeredTopology(layerSizesfeedback, layerTypes);
-
-	feedbacknn = new LayeredNeuralNet(feedbacktop);
-	feedbacknn->initializeRandomWeights();
+	ffnn = new LayeredNeuralNet; //memory is managed by network
+	ffnn->load("generation100000/stand1");
 }
 
 void destroyNeuralController() {
@@ -303,34 +293,49 @@ void scroll(GLFWwindow* window, double xoffset, double yoffset)
 // simple controller applying damping to each dof
 void test_controller(const mjModel* m, mjData* d)
 {
-	if (controller_on) {
-		feedbacknn->input(ffnn->output());
-		insignal.block(2, 0, 3, 1) = feedbacknn->output();
-		ffnn->input(insignal);
-		const MatrixType& outsignal = ffnn->output();
-		//std::cout << outsignal;
-		for (int i = 0; i < m->nu; i++) {
-			*(d->act + i) = outsignal(i, 0);
-		}
-	}
-	else {
-		for (int i = 0; i < m->nu; i++) {
-			*(d->act + i) = 0;
-		}
-	}
+	const int number_of_inputs = m->nsensordata;
+	const int number_of_outputs = m->nu;
+	MatrixType input(number_of_inputs, 1);
+
+	d->sensordata[0] /= 500.0;
+	d->sensordata[1] /= 500.0;
+	d->sensordata[2] /= 500.0;
+	d->sensordata[3] /= 500.0;
+	d->sensordata[4] /= 500.0;
+	d->sensordata[5] /= 500.0;
+
+	//scale acc
+	d->sensordata[6] /= 10.0;
+	d->sensordata[7] /= 10.0;
+	d->sensordata[8] /= 10.0;
+
+	//Scale gyro
+	/*m_data->sensordata[9] /= 3.0;
+	m_data->sensordata[10] /= 3.0;
+	m_data->sensordata[11] /= 3.0;*/
+
+	//Copy input data
+	for (int i = 0; i < number_of_inputs; i++)
+		input(i) = d->sensordata[i];
+
+	ffnn->input(input);
+	const MatrixType& output = ffnn->output();
+
+	//Copy output data
+	for (int i = 0; i < number_of_outputs; i++)
+		d->ctrl[i] = output(i); //g.generate_normal<ScalarType>(0, 0.001);
 }
 
 
 // main function
-int main2()
+void main2()
 {
-	srand(time(NULL));
 	// activate software
 	int activate_result = mj_activate("mjkey.txt");
 	if (activate_result == 0) {
 		std::cout << "Add mjkey.txt to mjenvironment/" << std::endl;
 		std::cin.get();
-		return 1;
+		return;
 	}
 
 	//load and compile model
@@ -378,7 +383,7 @@ int main2()
 		//  this loop will finish on time for the next frame to be rendered at 60 fps.
 		//  Otherwise add a cpu timer and exit this loop when it is time to render.
 		mjtNum simstart = d->time;
-		while (d->time - simstart < 1.0 / 30.0) {
+		while (d->time - simstart < 1.0 / 60.0) {
 			mj_step(m, d);
 		}
 		mj_agent.simulate();
@@ -423,7 +428,5 @@ int main2()
 	mj_deleteModel(m);
 
 	mj_deactivate();
-
-	return 1;
 }
 

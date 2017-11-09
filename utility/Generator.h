@@ -75,7 +75,6 @@ public:
 			v[i] = generate_uniform_int(a, b);
 	}
 
-
 private:
 	std::unique_ptr<RandomEngine> m_engine;
 

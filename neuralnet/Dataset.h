@@ -2,7 +2,7 @@
 #include "../lib/tinyxml2/tinyxml2.h"
 #include "DatasetException.h"
 
-#include "../utility/XMLWrapper.h"
+#include "../utility/XMLFile.h"
 #include "../utility/XMLException.h"
 #include "../utility/DataPrinter.h"
 #include "../utility/utilityfunctions.h"
@@ -73,5 +73,5 @@ public:
 
 private:
 	std::pair<int, int> m_input_info, m_output_info;
-	XMLWrapper m_doc;
+	XMLFile m_doc;
 };

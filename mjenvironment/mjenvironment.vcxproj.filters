@@ -14,16 +14,11 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="glfwWrapper.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="mjEnvironment.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="mjAgent.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="oldMujocoBasic.h" />
     <ClInclude Include="AgentScheduler.h" />
+    <ClInclude Include="glfwWrapper.h" />
+    <ClInclude Include="mjAgent.h" />
+    <ClInclude Include="mjEnvironment.h" />
+    <ClInclude Include="oldMujocoBasic.h" />
+    <ClInclude Include="ModelSetup.h" />
   </ItemGroup>
 </Project>

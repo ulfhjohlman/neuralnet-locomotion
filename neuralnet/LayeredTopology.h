@@ -1,6 +1,7 @@
 #pragma once
 #include "Topology.h"
 #include "Layer.h"
+#include "XMLFile.h"
 
 #include <vector>
 #include <stdexcept>
@@ -83,6 +84,23 @@ public:
 		}
 		return true;
 	}
+
+	virtual void save(const char* file_name) {
+		m_document.clear();
+		m_document.insert("LayeredTopology");
+		m_document.insertElements("layerSizes", m_layerSizes, "size");
+		m_document.insertElements("layerTypes", m_layerTypes, "type");
+		Topology::save(file_name);
+	}
+	virtual void load(const char* file_name) {
+		Topology::load(file_name);
+		m_layerTypes.clear();
+		m_layerSizes.clear();
+
+		m_document.getElements("layerSizes", m_layerSizes, "size");
+		m_document.getElements("layerTypes", m_layerTypes, "type");
+	}
+
 protected:
 	void checkSize(int size) {
 #ifdef _NEURALNET_DEBUG

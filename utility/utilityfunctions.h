@@ -73,15 +73,14 @@ void parallel_for(Index first, Index last, Index block_size, Function f, Args &&
 		block_start = block_end;
 	}
 
-	//Add last work item if there is one
+	//Add last work items if there is any
 	if (block_end != last) {
 		block_end = last;
 		auto loop = std::bind(partial_for_loop, block_start, block_end);
 		pool.addWork(std::move(loop)); //Important to move, otherwise reference bite you in the ass
 	}
 
-	pool.help();
-	while (!pool.isDone()) { }
+	pool.finish();
 }
 
 /// <summary>

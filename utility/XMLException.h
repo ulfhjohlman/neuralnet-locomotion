@@ -1,5 +1,5 @@
 #pragma once
-#include<exception>
+#include<stdexcept>
 #include "../lib/tinyxml2/tinyxml2.h"
 class XMLException : public std::runtime_error
 {

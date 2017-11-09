@@ -9,14 +9,15 @@
 #include <vector>
 #include <stdexcept>
 #include <memory>
+#include <string>
 
 //Change to "LayeredNeuralNet"
 class LayeredNeuralNet :
 	public NeuralNet
 {
 public:
-	LayeredNeuralNet(){ }
-	LayeredNeuralNet(LayeredTopology * topology){
+	LayeredNeuralNet() : m_topology(nullptr) { }
+	LayeredNeuralNet(LayeredTopology * topology) : m_topology(nullptr) {
 		setTopology(topology);
 		constructFromTopology();
 	}
@@ -182,31 +183,66 @@ public:
 	virtual Layer* getLayer(int i) const {
 		return m_layers[i];
 	}
-	bool hasParameterUpdater()
-	{
-		return m_parameter_updater != nullptr;
-	}
 
-	//copies weights and biases from another neuralnet into this one
-	virtual void copyParams(const LayeredNeuralNet& otherNet)
-	{
-		#ifdef _DEBUG
-			if(!m_topology->equals(*otherNet.getTopology()))
-			{
-				throw std::invalid_argument("Cannot copy parameters between NNs of different topologies!\n");
-			}
-		#endif
-		//skip inputlayer
-		for(int i=1 ; i<m_layers.size();i++)
-		{
-			m_layers[i]->copyParamsFrom(*otherNet.m_layers[i]);
+	virtual void save(const char* path) {
+		//Save this, gonna aggregate members in future here
+		if (m_name == "")
+			m_name = "unnamed";
+		std::string data_structure_name = path + m_name;
+		m_document.clear();
+		m_document.insert(m_name.c_str());
+		NeuralNet::save(data_structure_name.c_str());
+
+		//save layers
+		for (int i = 0; i < static_cast<int>(m_layers.size()); i++) {
+			Layer* layer = m_layers[i];
+			layer->setLayerIndex(i);
+			layer->save(data_structure_name.c_str());
+		}
+
+		//save topology
+		if (m_topology) {
+			std::string topology_string = "topology";
+			topology_string = data_structure_name + topology_string;
+			m_topology->save(topology_string.c_str());
+		} 
+	}
+	virtual void load(const char* path) {
+		NeuralNet::load(path);
+		//Load topology.
+		if (!m_topology)
+			m_topology = new LayeredTopology;
+		std::string string_full_path = "topology";
+		string_full_path = path + string_full_path;
+		m_topology->load(string_full_path.c_str());
+
+		//Allocate memory and build layer types.
+		constructFromTopology();
+
+		//Load layer data.
+		for (int i = 0; i < static_cast<int>(m_layers.size()); i++) {
+			Layer* layer = m_layers[i];
+			layer->setLayerIndex(i);
+			
+			string_full_path = "layer_";
+			string_full_path = path + string_full_path + std::to_string(i);
+
+			layer->load(string_full_path.c_str());
 		}
 	}
-
-	virtual void save(const char* toFile) { }
-	virtual void load(const char* fromFile) { }
 protected: //members
 	std::vector<Layer*> m_layers;//replace with shared_ptr<Layer>
+
+	void destroyLayers()
+	{
+		for (size_t i = 0; i < m_layers.size(); i++)
+			if (m_layers[i]) {
+				//std::cout << "deleted:" << m_layers[i] << std::endl;
+				delete m_layers[i];
+			}
+		m_layers.clear();
+	}
+
 private:   //members
 	LayeredTopology* m_topology = nullptr;
 	ParameterUpdater* m_parameter_updater = nullptr;
@@ -217,15 +253,6 @@ protected: //Error checking
 		if (m_layers.empty()) throw NeuralNetException("Empty neural net");
 #endif // _NEURALNET_DEBUG
 	}
-	void destroyLayers()
-	{
-		for (size_t i = 0; i < m_layers.size(); i++)
-			if (m_layers[i]) {
-				delete m_layers[i];
-			}
-		m_layers.clear();
-	}
-
 private: //Error checking
 	void checkTopology(LayeredTopology* topology)
 	{

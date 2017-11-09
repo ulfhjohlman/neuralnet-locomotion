@@ -129,7 +129,7 @@ public:
 	/// </summary>
 	void finish() {
 		FunctorWrapper f = [] {};
-		while (m_done)
+		while (!this->isDone())
 		{
 			bool can_work = tryPopWork(f);
 			if (can_work)
