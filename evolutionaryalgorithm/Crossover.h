@@ -27,5 +27,12 @@ public:
 
 		child->getGenome()->directionalCrossover(*population[mate2]->getGenome());
 	}
+
+	template<typename T>
+	static void nParentWeightedCrossover(Population<T>& population, ScalarType step_size, std::unique_ptr<Individual<T>>& child) {
+		//*child = the individual to change
+
+		throw std::runtime_error("not yet implemented");
+	}
 private:
 };

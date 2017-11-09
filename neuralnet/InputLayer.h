@@ -51,8 +51,6 @@ void InputLayer::save(const char* path) {
 	m_document.insertAttribute("rows_output_size", static_cast<int>(m_outputs.rows()));
 	m_document.insertAttribute("cols_input_size", static_cast<int>(m_weights.cols()));
 
-	m_document.print();
-
 	NeuralNet::save((path + data_structure_name).c_str());
 }
 

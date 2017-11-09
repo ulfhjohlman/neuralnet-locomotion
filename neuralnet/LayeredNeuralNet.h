@@ -185,22 +185,27 @@ public:
 	}
 
 	virtual void save(const char* path) {
-		m_document.insert(path);
-		NeuralNet::save(path);
+		//Save this, gonna aggregate members in future here
+		if (m_name == "")
+			m_name = "unnamed";
+		std::string data_structure_name = path + m_name;
+		m_document.clear();
+		m_document.insert(m_name.c_str());
+		NeuralNet::save(data_structure_name.c_str());
+
 		//save layers
 		for (int i = 0; i < static_cast<int>(m_layers.size()); i++) {
 			Layer* layer = m_layers[i];
 			layer->setLayerIndex(i);
-			layer->save(path);
+			layer->save(data_structure_name.c_str());
 		}
 
 		//save topology
 		if (m_topology) {
 			std::string topology_string = "topology";
-			topology_string = path + topology_string;
+			topology_string = data_structure_name + topology_string;
 			m_topology->save(topology_string.c_str());
 		} 
-		
 	}
 	virtual void load(const char* path) {
 		NeuralNet::load(path);
@@ -248,15 +253,6 @@ protected: //Error checking
 		if (m_layers.empty()) throw NeuralNetException("Empty neural net");
 #endif // _NEURALNET_DEBUG
 	}
-	void destroyLayers()
-	{
-		for (size_t i = 0; i < m_layers.size(); i++)
-			if (m_layers[i]) {
-				delete m_layers[i];
-			}
-		m_layers.clear();
-	}
-
 private: //Error checking
 	void checkTopology(LayeredTopology* topology)
 	{

@@ -2,18 +2,32 @@
 #include "InputLayer.h"
 #include <string>
 
-class ScalingLayer : public Layer {
+class ScalingLayer : public NeuralNet {
 public:
+	ScalingLayer() = default;
 	ScalingLayer(int input_size, int cols) {
 		m_scale_vector.resize(input_size, cols);
+		m_scale_vector.setOnes();
 	}
 	virtual ~ScalingLayer() = default;
+	ScalingLayer(const ScalingLayer& copy_this) {
+		this->m_scale_vector = copy_this.m_scale_vector;
+	}
+	ScalingLayer(ScalingLayer&& move_this) {
+		this->m_scale_vector.swap(move_this.m_scale_vector);
+	}
+	ScalingLayer& operator=(const ScalingLayer& copy_this) {
+		this->m_scale_vector.resizeLike(copy_this.m_scale_vector);
+		this->m_scale_vector = copy_this.m_scale_vector;
+		return *this;
+	}
 
 	void setScaling(const MatrixType& scale_vector) {
 		m_scale_vector = scale_vector;
 	}
-	void operator()(const Eigen::Index row, const Eigen::Index col, ScalarType x) {
-		m_scale_vector(row, col) = x;
+
+	ScalarType& operator()(const Eigen::Index index) {
+		return m_scale_vector(index);
 	}
 
 	virtual void input(const MatrixType& x) {
@@ -29,3 +43,5 @@ private:
 	//MatrixType m_mean;
 	//std::vector<std::string> m_scale_description;
 };
+
+typedef ScalingLayer Receptors;

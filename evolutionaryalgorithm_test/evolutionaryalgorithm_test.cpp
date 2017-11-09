@@ -27,12 +27,14 @@ int main()
 {
 	RandomEngineFactory::initialize(); //optional
 
-	std::vector<int> layerSizes = { 2, 128, 128, 2 };
-	std::vector<int> layerTypes = { Layer::inputLayer, 1, 1, 1 };
+	std::vector<int> layerSizes = { 2, 128, 128, 128, 15 };
+	std::vector<int> layerTypes = { Layer::inputLayer, 1, 1, 0, 0 };
 	LayeredTopology* top1 = new LayeredTopology(layerSizes, layerTypes);
 	LayeredNeuralNet* nn = new LayeredNeuralNet(top1);
+
+	fs::create_directory("asd");
 	nn->initializeRandomWeights();
-	nn->save("NN");
+	nn->save("asd/");
 
 	MatrixType m(2, 1);
 	m(0, 0) = 1;
@@ -40,7 +42,7 @@ int main()
 	nn->input(m);
 
 	LayeredNeuralNet nn2;
-	nn2.load("NN");
+	nn2.load("asd/unnamed");
 	nn2.input(m);
 
 	std::cout << nn->output() << std::endl << std::endl;

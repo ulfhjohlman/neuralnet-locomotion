@@ -34,7 +34,7 @@ public:
 			layer = new InputLayer(layerSize, numberOfInputs); // for now
 			break;
 		case Layer::scalingLayer:
-			layer = new ScalingLayer(numberOfInputs, 1);
+			//layer = new ScalingLayer(numberOfInputs, 1);
 			break;
 		case Layer::softmax:
 			layer = new SoftmaxLayer(layerSize, numberOfInputs);

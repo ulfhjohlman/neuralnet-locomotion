@@ -116,10 +116,10 @@ public:
 			m_generation++;
 
 			const double start_kill_index = g_survivor_fraction*double(g_population_size);
-			Death::linearDeath(m_population, m_object_pool, start_kill_index, g_start_survival_percentage);
-			//Duplicate::duplicate(m_population);
+			//Death::linearDeath(m_population, m_object_pool, start_kill_index, g_start_survival_percentage);
+			Duplicate::duplicate(m_population);
 
-			applyCrossover();
+			//applyCrossover();
 
 			applyMutation();
 
@@ -141,7 +141,7 @@ public:
 			if (!has_stored_individual)
 				newIndividual = std::unique_ptr<Individual<LayeredNeuralNet>>(new NeuralNetChromosome(m_ninputs, m_nouputs));
 
-			Crossover::uniformCrossover<LayeredNeuralNet>(m_population, mates.first, mates.second, newIndividual);
+			Crossover::directionalCrossover<LayeredNeuralNet>(m_population, mates.first, mates.second, newIndividual);
 			container.push(std::move(newIndividual));
 		};
 		

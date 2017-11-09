@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -97,6 +97,7 @@
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;_WINDOWS;CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -111,7 +112,8 @@
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <PostBuildEvent>
-      <Message>				</Message>
+      <Message>
+      </Message>
       <Command>setlocal
 "C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different "C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/lib/mjpro150/bin/mujoco150.dll" "C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/mjenvironment/Debug"
 if %errorlevel% neq 0 goto :cmEnd
@@ -167,7 +169,8 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <ImportLibrary>C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/mjenvironment/Debug/mjenvironment.lib</ImportLibrary>
       <ProgramDataBaseFile>C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/mjenvironment/Debug/mjenvironment.pdb</ProgramDataBaseFile>
       <SubSystem>Console</SubSystem>
-      <Version></Version>
+      <Version>
+      </Version>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>false</LinkLibraryDependencies>
@@ -187,7 +190,9 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
-      <DebugInformationFormat></DebugInformationFormat>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -202,7 +207,8 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <PostBuildEvent>
-      <Message>				</Message>
+      <Message>
+      </Message>
       <Command>setlocal
 "C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different "C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/lib/mjpro150/bin/mujoco150.dll" "C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/mjenvironment/Release"
 if %errorlevel% neq 0 goto :cmEnd
@@ -258,7 +264,8 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <ImportLibrary>C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/mjenvironment/Release/mjenvironment.lib</ImportLibrary>
       <ProgramDataBaseFile>C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/mjenvironment/Release/mjenvironment.pdb</ProgramDataBaseFile>
       <SubSystem>Console</SubSystem>
-      <Version></Version>
+      <Version>
+      </Version>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>false</LinkLibraryDependencies>
@@ -278,7 +285,9 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR="MinSizeRel";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
-      <DebugInformationFormat></DebugInformationFormat>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"MinSizeRel\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -293,7 +302,8 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <PostBuildEvent>
-      <Message>				</Message>
+      <Message>
+      </Message>
       <Command>setlocal
 "C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different "C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/lib/mjpro150/bin/mujoco150.dll" "C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/mjenvironment/MinSizeRel"
 if %errorlevel% neq 0 goto :cmEnd
@@ -349,7 +359,8 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <ImportLibrary>C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/mjenvironment/MinSizeRel/mjenvironment.lib</ImportLibrary>
       <ProgramDataBaseFile>C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/mjenvironment/MinSizeRel/mjenvironment.pdb</ProgramDataBaseFile>
       <SubSystem>Console</SubSystem>
-      <Version></Version>
+      <Version>
+      </Version>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>false</LinkLibraryDependencies>
@@ -370,6 +381,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR="RelWithDebInfo";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"RelWithDebInfo\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -384,7 +396,8 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <PostBuildEvent>
-      <Message>				</Message>
+      <Message>
+      </Message>
       <Command>setlocal
 "C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different "C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/lib/mjpro150/bin/mujoco150.dll" "C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/mjenvironment/RelWithDebInfo"
 if %errorlevel% neq 0 goto :cmEnd
@@ -440,7 +453,8 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <ImportLibrary>C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/mjenvironment/RelWithDebInfo/mjenvironment.lib</ImportLibrary>
       <ProgramDataBaseFile>C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/mjenvironment/RelWithDebInfo/mjenvironment.pdb</ProgramDataBaseFile>
       <SubSystem>Console</SubSystem>
-      <Version></Version>
+      <Version>
+      </Version>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>false</LinkLibraryDependencies>
@@ -503,7 +517,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\mjenvironment.cpp"  />
+    <ClCompile Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\mjenvironment.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\ZERO_CHECK.vcxproj">
@@ -534,6 +548,14 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <Project>{0BEB3724-A879-3E87-A420-C1B3D7BBF2B2}</Project>
       <Name>utility</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AgentScheduler.h" />
+    <ClInclude Include="glfwWrapper.h" />
+    <ClInclude Include="mjAgent.h" />
+    <ClInclude Include="mjEnvironment.h" />
+    <ClInclude Include="ModelSetup.h" />
+    <ClInclude Include="oldMujocoBasic.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

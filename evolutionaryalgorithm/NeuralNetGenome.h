@@ -14,7 +14,7 @@ const ScalarType max_variance = 2.0f;
 const ScalarType min_moment = -0.5f;
 const ScalarType max_moment = 0.5f;
 
-const ScalarType variance_gain = 0.01f;
+const ScalarType variance_gain = 0.005f;
 const ScalarType variance_mutation = 0.02f;
 
 const ScalarType decay_factor = 0.9f; //momentum decay
@@ -100,17 +100,17 @@ public:
 		ScalarType r =  Generator::generate_uniform_shared<ScalarType>(0, 1);
 		for (int i = 0; i < m_weight_data.size(); i++) {
 			*m_weight_data[i] += r*(*mate.m_weight_data[i] - *m_weight_data[i]);
-			*m_bias_data[i] += r*(*mate.m_bias_data[i] - *m_bias_data[i]);
+			*m_bias_data[i]   += r*(*mate.m_bias_data[i] - *m_bias_data[i]);
 
 			m_moment_weight[i] += r*(mate.m_moment_weight[i] - m_moment_weight[i]);
-			m_moment_bias[i] += r*(mate.m_moment_bias[i] - m_moment_bias[i]);
+			m_moment_bias[i]   += r*(mate.m_moment_bias[i] - m_moment_bias[i]);
 
 			m_mutation_variance_weights[i] += r*(mate.m_mutation_variance_weights[i] - m_mutation_variance_weights[i]);
-			m_mutation_variance_bias[i] += r*(mate.m_mutation_variance_bias[i] - m_mutation_variance_bias[i]);
+			m_mutation_variance_bias[i]    += r*(mate.m_mutation_variance_bias[i] - m_mutation_variance_bias[i]);
 		}
 	}
 
-
+	//bottleneck in large networks
 	void mixGenes(Generator &generator, MatrixType& genes, const MatrixType &mateGenes)
 	{
 		MatrixType rolls;
@@ -118,6 +118,8 @@ public:
 		generator.fill_vector_uniform<ScalarType>(rolls.data(), rolls.size(), 0.0f, 1.0f);
 		genes = (rolls.array() < static_cast<ScalarType>(0.5)).select(genes, mateGenes);
 	}
+
+	//bottleneck in large networks
 	void mixGenes(Generator &generator, VectorType& genes, const VectorType &mateGenes)
 	{
 		VectorType rolls;
@@ -131,10 +133,10 @@ public:
 			m_moment_weight[i].array() *= static_cast<ScalarType>(.95);
 			m_moment_bias[i].array() *= static_cast<ScalarType>(.95);
 
-			m_mutation_variance_weights[i].array() *= static_cast<ScalarType>(.98);
+			m_mutation_variance_weights[i].array() *= static_cast<ScalarType>(.99);
 			m_mutation_variance_weights[i].array().max(static_cast<ScalarType>(min_variance));
 
-			m_mutation_variance_bias[i].array() *= static_cast<ScalarType>(.98);
+			m_mutation_variance_bias[i].array() *= static_cast<ScalarType>(.99);
 			m_mutation_variance_bias[i].array().max(static_cast<ScalarType>(min_variance));
 		}
 	}

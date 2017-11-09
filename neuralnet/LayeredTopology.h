@@ -86,6 +86,7 @@ public:
 	}
 
 	virtual void save(const char* file_name) {
+		m_document.clear();
 		m_document.insert("LayeredTopology");
 		m_document.insertElements("layerSizes", m_layerSizes, "size");
 		m_document.insertElements("layerTypes", m_layerTypes, "type");

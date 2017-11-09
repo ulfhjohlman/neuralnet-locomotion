@@ -21,11 +21,17 @@ class mjEnvironment
 {
 public:
 	mjEnvironment() = delete;
-	mjEnvironment(int number_of_agents, int parallel_simulations);
+	mjEnvironment(int number_of_agents, int parallel_simulations, const char* model, const char* environment);
 	~mjEnvironment();
 
 	void setObjective(std::function<double(mjModel const *, mjData*)> objective) {
 		m_objective = objective;
+	}
+	void setTerminateCondition(std::function<bool(mjModel const *, mjData*)> condition) {
+		m_condition = condition;
+	}
+	void setScalingLayer(const ScalingLayer& scale_input) {
+		m_agent_receptor_scaling = scale_input;
 	}
 
 	void evaluateController(NeuralNet* controller, size_t index) {
@@ -35,12 +41,10 @@ public:
 			throw std::runtime_error("Null controller ptr.");
 
 		if (m_agents.empty()) {
-			std::unique_ptr<mjAgent> pAgent = std::make_unique<mjAgent>();
-			pAgent->setup(m_model, 0, 1, 1);
-			m_agents.push_back(std::move(pAgent));
-			m_number_of_agents++;
+			auto new_agent = makeNewAgent();
+			m_agents.push_back(std::move(new_agent));
 		}
-
+		
 		auto agent = std::move(m_agents.back());
 		m_agents.pop_back();
 		agent->reset();
@@ -48,8 +52,18 @@ public:
 		agent->setController(controller);
 		agent->setIdentifier(index);
 		agent->setObjective(m_objective);
+		agent->setTerminateCondition(m_condition);
+		agent->setScalingLayer(m_agent_receptor_scaling);
 
 		m_schedule.schedule(std::move(agent));
+	}
+
+	std::unique_ptr<mjAgent> makeNewAgent()
+	{
+		std::unique_ptr<mjAgent> pAgent = std::make_unique<mjAgent>();
+		pAgent->setup(m_model, 0, 1, 1);
+		m_number_of_agents++;
+		return pAgent;
 	}
 
 	void simulate() {
@@ -114,14 +128,16 @@ public:
 	mjrContext con;                     // custom GPU context
 	mjvPerturb pert;
 private:
+	std::mutex m_mutex;
 	std::vector< std::unique_ptr<mjAgent> > m_agents;
 	AgentScheduler<mjAgent> m_schedule;
+
 	ThreadsafeQueue<std::pair<size_t, double>> m_pending_simulation_result; //pair < index, fitness >
 	int m_number_of_agents;
 
-	std::mutex m_mutex;
-
 	std::function<double(mjModel const *, mjData*)> m_objective;
+	std::function<bool(mjModel const *, mjData*)> m_condition;
+	ScalingLayer m_agent_receptor_scaling;
 
 private: //methods
 	
@@ -131,10 +147,15 @@ private: //Class members
 };
 
 
-mjEnvironment::mjEnvironment(int number_of_agents, int parallel_simulations = 128) :
+mjEnvironment::mjEnvironment(
+	int number_of_agents, 
+	int parallel_simulations = 128, 
+	const char* model = "ant.xml", 
+	const char* environment = "environment.xml") :
 	m_objective(nullptr),
+	m_condition(nullptr),
 	m_schedule(parallel_simulations),
-	m_number_of_agents(number_of_agents)
+	m_number_of_agents(0)
 {
 	bool initOk = initializeMujoco();
 	if (!initOk)
@@ -143,8 +164,8 @@ mjEnvironment::mjEnvironment(int number_of_agents, int parallel_simulations = 12
 	reload:
 	try {
 		//m_model = loadMujocoModel("invdoublependulum.xml");
-		m_model = loadMujocoModel("ant.xml");
-		m_env = loadMujocoModel("environment.xml");
+		m_model = loadMujocoModel(model);
+		m_env = loadMujocoModel(environment);
 	}
 	catch(std::runtime_error e) {
 		std::cerr << e.what() << std::endl;
@@ -167,12 +188,10 @@ mjEnvironment::mjEnvironment(int number_of_agents, int parallel_simulations = 12
 	std::cout << "done\n";
 
 	m_agents.reserve(number_of_agents);
-	//int squareGridSize = static_cast<int>(std::sqrt(number_of_agents)) + 1;
 	std::cout << "Generating " << number_of_agents << " agents... ";
 	for (int i = 0; i < number_of_agents; i++) {
-		std::unique_ptr<mjAgent> agent = std::make_unique<mjAgent>();
-		agent->setup(m_model, 0, 1, 1);
-		m_agents.push_back(std::move(agent));
+		auto pAgent = this->makeNewAgent();
+		m_agents.push_back(std::move(pAgent));
 	}
 	std::cout << " done.\n";
 }

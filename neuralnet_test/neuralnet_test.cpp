@@ -280,7 +280,6 @@ std::string XMLWrapper_test()
 		d.insert("newRoot"); //overwrite XML
 		d.insert<int>("int", 5);
 		std::vector<float> floats = { 1, 2, 3, 4, 5, 6.005f, 42.01f }; //Will not be exact representation
-		d.insertNewElements<float>("floats", floats);
 		d.insertDate();
 
 		d.select("newRoot");

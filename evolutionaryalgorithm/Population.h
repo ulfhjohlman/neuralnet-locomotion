@@ -17,7 +17,7 @@ public:
 	~Population() = default;
 	std::vector<PopulationMember> members;
 
-	Population subPopulation(size_t from, size_t to) {
+	Population<T> subPopulation(size_t from, size_t to) {
 		Population<T> sub_population;
 		sub_population.members.insert(sub_population.members.end(), 
 			std::make_move_iterator(members.begin() + from), 
@@ -34,8 +34,7 @@ public:
 
 	//descending sort
 	void sort() {
-		auto cmp_by_fitness = [](const std::unique_ptr<Individual<LayeredNeuralNet>>& a, const std::unique_ptr<Individual<LayeredNeuralNet>>& b)
-		{
+		auto cmp_by_fitness = [](const std::unique_ptr<Individual<T>>& a, const std::unique_ptr<Individual<T>>& b) {
 			return a->getFitness() > b->getFitness();
 		};
 		std::sort(members.begin(), members.end(), cmp_by_fitness);
@@ -43,9 +42,9 @@ public:
 	void save(int generation, const char* name, int n_best = 1) {
 		std::string s = "generation" + std::to_string(generation) + "/";
 		std::experimental::filesystem::create_directory(s.c_str());
-		s += name;
-		for (int i = 0; i < n_best; i++)
-		{
+
+		for (int i = 0; i < n_best; i++) {
+			members[i]->decode()->setName(name);
 			s += "_" + std::to_string(i);
 			members[i]->decode()->save(s.c_str());
 		}
