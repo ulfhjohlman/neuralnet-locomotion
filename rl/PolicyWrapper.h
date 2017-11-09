@@ -29,7 +29,7 @@ public:
 			non_log_sigma_matrix.resize(out_size, 1);
 			log_sigma_gradients_cache.setZero();
 			for (int i = 0; i < out_size; i++) {
-				log_sigma.push_back(-1);
+				log_sigma.push_back(0);
 				log_sigma_matrix(i) = log_sigma[i];
 				non_log_sigma[i] = exp(log_sigma[i]);
 				non_log_sigma_matrix(i) = non_log_sigma[i];
@@ -134,7 +134,9 @@ public:
 			log_sigma = std::vector<ScalarType>(log_sigma_matrix.data(), log_sigma_matrix.data() + log_sigma_matrix.size());
 			for (int i = 0; i < out_size; i++) {
 				non_log_sigma[i] = exp(log_sigma[i]);
+				
 			}
+			std::cout << "non_log_sigma: " << non_log_sigma[0] << ", " << non_log_sigma[1] << ", " << non_log_sigma[2] << " \n";
 			log_sigma_gradients_cache.setZero();
 		}
 

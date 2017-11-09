@@ -123,7 +123,7 @@ int ppo_mj_test()
 	int frameskip = 3;
 
 	env.set_frameskip(frameskip);
-	trainer.trainPPO(1e7 , 64, 4096/frameskip, 16, 4);
+	trainer.trainPPO(1e7 , 32, 4096/frameskip, 8, 2);
 
 
 
@@ -220,8 +220,8 @@ int main()
 			std::cout << "_DEBUG FLAG OFF\n";
     #endif
     try{
-        // ppo_mj_test();
-		 pg_mj_test();
+         ppo_mj_test();
+		// pg_mj_test();
 		//ppo_test();
          //pg_test();
     }

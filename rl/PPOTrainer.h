@@ -32,7 +32,8 @@ public:
 				//standardizeVector(rew_list); 
 				makeValuePredictions();
                 //GAE();
-				simpleAdvEstimates();
+				//simpleAdvEstimates();
+				simpleAdvEstimates2();
                 standardizeVector(adv_list);
 
 				TrainValueFunc();
@@ -60,11 +61,12 @@ public:
 
 
                     //if end of a minibatch
-                    if((traj+1) % mini_batch_size == 0)
-                    {
-					    policy.popCacheLayerParams();
-				        policy.updateParams();
-                        //printf(" ---- Mini Batch Update %d ---- \n", (traj+1) / mini_batch_size);
+					if ((traj + 1) % mini_batch_size == 0)
+					{
+						policy.popCacheLayerParams();
+						policy.updateParams();
+						//printf(" ---- Mini Batch Update %d ---- \n", (traj+1) / mini_batch_size);
+						//std::cout << "non_log_sigma: " << sigma_list[0][0] << ", " << sigma_list[0][1] << ", " << sigma_list[0][2] << " \n";
                     }
 
                 }
@@ -154,6 +156,18 @@ protected:
 		for (int i = traj_length-1; i >= 0; i--)
 		{
 			adv_list[i] = valueTargTD1[i];
+		}
+	}
+	void simpleAdvEstimates2() {
+		valueTargTD1[traj_length - 1] = rew_list[traj_length - 1];
+		for (int i = traj_length - 2; i >= 0; i--)
+		{
+			valueTargTD1[i] = rew_list[i] + m_gamma*valueTargTD1[i + 1];
+		}
+		// same thing!
+		for (int i = traj_length - 1; i >= 0; i--)
+		{
+			adv_list[i] = valueTargTD1[i] - valuePred_list[i];
 		}
 	}
 
