@@ -116,6 +116,17 @@ public:
 		mjr_render(viewport, &scn, &con);
 	}
 
+	void render(const mjrRect& viewport, const mjModel* model, mjData* data) {
+		//Make scene
+		mjv_updateScene(m_env, m_env_data, &opt, &pert, &cam, mjCAT_ALL, &scn);
+
+		//Add agent data structure to visuals
+		mjv_addGeoms(model, data, &opt, &pert, mjCAT_ALL, &scn);
+
+		//render
+		mjr_render(viewport, &scn, &con);
+	}
+
 	mjModel* loadMujocoModel(const char* filename);
 
 	mjModel* m_model;

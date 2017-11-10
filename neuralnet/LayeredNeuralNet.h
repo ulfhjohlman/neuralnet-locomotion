@@ -249,9 +249,6 @@ public:
 		m_layers.clear();
 	}
 
-private:   //members
-	LayeredTopology* m_topology = nullptr;
-	ParameterUpdater* m_parameter_updater = nullptr;
 
 protected: //Error checking
 	void checkEmptyNetwork() const {

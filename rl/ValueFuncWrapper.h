@@ -15,7 +15,7 @@ public:
         {
             throw std::invalid_argument("Value Network has wrong number of inputs!\n");
         };
-        if(!m_nn->hasParameterUpdater())
+        if(m_nn->m_parameter_updater == nullptr)
         {
             throw std::invalid_argument("Value Network initialized without a ParameterUpdater\n");
         }
