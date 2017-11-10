@@ -6,8 +6,8 @@
 class PPOTrainer : public PolicyGradientTrainer
 {
 public:
-    PPOTrainer(Environment * new_env, LayeredNeuralNet * new_policy, LayeredNeuralNet * new_oldPolicy, LayeredNeuralNet * new_valueFunc)
-            : PolicyGradientTrainer(new_env, new_policy), oldPolicy(new_oldPolicy,state_space_dim,action_space_dim), valueFunc(new_valueFunc,state_space_dim)  {}
+    PPOTrainer(Environment * new_env, LayeredNeuralNet * new_policy, LayeredNeuralNet * new_valueFunc)
+            : PolicyGradientTrainer(new_env, new_policy), valueFunc(new_valueFunc,state_space_dim)  {}
 
     void set_GAE_lambda(double new_lambda)
     {
@@ -22,7 +22,7 @@ public:
         {
 			std::cout << "---- Iteration: " << iteration << " ----\n";
             double mean_return_batch = 0;
-            updateOldPolicy();
+            //updateOldPolicy();
             reserveBatchLists(batch_size);
             for(int traj=0; traj < batch_size ; traj++)
             {
@@ -32,7 +32,8 @@ public:
 				//standardizeVector(rew_list); 
 				makeValuePredictions();
                 //GAE();
-				simpleAdvEstimates();
+				//simpleAdvEstimates();
+				simpleAdvEstimates2();
                 standardizeVector(adv_list);
 
 				TrainValueFunc();
@@ -60,11 +61,12 @@ public:
 
 
                     //if end of a minibatch
-                    if((traj+1) % mini_batch_size == 0)
-                    {
-					    policy.popCacheLayerParams();
-				        policy.updateParams();
-                        //printf(" ---- Mini Batch Update %d ---- \n", (traj+1) / mini_batch_size);
+					if ((traj + 1) % mini_batch_size == 0)
+					{
+						policy.popCacheLayerParams();
+						policy.updateParams();
+						//printf(" ---- Mini Batch Update %d ---- \n", (traj+1) / mini_batch_size);
+						//std::cout << "non_log_sigma: " << sigma_list[0][0] << ", " << sigma_list[0][1] << ", " << sigma_list[0][2] << " \n";
                     }
 
                 }
@@ -99,6 +101,7 @@ protected:
 		batch_ob_list.clear();
 		batch_prob_list.clear();
 		batch_mu_list.clear();
+		batch_sigma_list.clear();
 		batch_vpred_list.clear();
 		batch_vtarg_list.clear();
 		batch_valueTargTD1.clear();
@@ -110,7 +113,8 @@ protected:
         batch_ac_list.reserve(size);
         batch_ob_list.reserve(size);
         batch_prob_list.reserve(size);
-        batch_mu_list.reserve(size);
+		batch_mu_list.reserve(size);
+		batch_sigma_list.reserve(size);
         batch_vpred_list.reserve(size);
         batch_vtarg_list.reserve(size);
 		batch_valueTargTD1.reserve(size);
@@ -152,6 +156,18 @@ protected:
 		for (int i = traj_length-1; i >= 0; i--)
 		{
 			adv_list[i] = valueTargTD1[i];
+		}
+	}
+	void simpleAdvEstimates2() {
+		valueTargTD1[traj_length - 1] = rew_list[traj_length - 1];
+		for (int i = traj_length - 2; i >= 0; i--)
+		{
+			valueTargTD1[i] = rew_list[i] + m_gamma*valueTargTD1[i + 1];
+		}
+		// same thing!
+		for (int i = traj_length - 1; i >= 0; i--)
+		{
+			adv_list[i] = valueTargTD1[i] - valuePred_list[i];
 		}
 	}
 
@@ -215,12 +231,19 @@ protected:
 				//reforward pass for correct "input gradients"
 				policy.forwardpassObs(batch_ob_list[i][j]);
                 Eigen::Map<MatrixType> actionMatrix(batch_ac_list[i][j].data(),action_space_dim,1);
-                Eigen::Map<MatrixType> muMatrix(batch_mu_list[i][j].data(),action_space_dim,1);
-                // NEGATION because obejctive func = - loss func
-                policy.backprop(- batch_adv_list[i][j] * r * ( actionMatrix.array() - muMatrix.array() )/(policy.getSigma()*policy.getSigma()));
-                policy.cacheLayerParams();
+				Eigen::Map<MatrixType> muMatrix(batch_mu_list[i][j].data(), action_space_dim, 1);
+				Eigen::Map<MatrixType> sigmaMatrix(batch_sigma_list[i][j].data(), action_space_dim, 1);
 
-				//std::cout << "Vpred: " << batch_vpred_list[i][j] << "\tVtarg: " << batch_vtarg_list[i][j] << "\tReal: " << batch_valueTargTD1[i][j] << "\tOb:  " << batch_ob_list[i][j][0] << "," << batch_ob_list[i][j][1] << "\n";
+
+                // NEGATION because obejctive func = - loss func
+				MatrixType mu_error_gradients = -batch_adv_list[i][j] * r * (actionMatrix.array() - muMatrix.array()) / (sigmaMatrix.array().square());
+				MatrixType sigma_error_gradients = -batch_adv_list[i][j] * r * (((actionMatrix.array() - muMatrix.array()) / sigmaMatrix.array()).square().array()-1).array()/sigmaMatrix.array();
+
+				MatrixType x(action_space_dim*2, 1);
+					x << mu_error_gradients,
+						sigma_error_gradients;
+                policy.backprop(x);
+                policy.cacheLayerParams();
             }
         }
     }
@@ -233,10 +256,10 @@ protected:
         return new_policy_prob / old_policy_prob;
     }
 
-    virtual void updateOldPolicy()
+    /*virtual void updateOldPolicy()
     {
         oldPolicy.copyParams(policy);
-    }
+    }*/
 
     void storeBatchData()
     {
@@ -244,7 +267,8 @@ protected:
         batch_ac_list.push_back(std::move(ac_list));
         batch_ob_list.push_back(std::move(ob_list));
         batch_prob_list.push_back(std::move(prob_list));
-        batch_mu_list.push_back(std::move(mu_list));
+		batch_mu_list.push_back(std::move(mu_list));
+		batch_sigma_list.push_back(std::move(sigma_list));
         batch_vpred_list.push_back(std::move(valuePred_list));
         batch_vtarg_list.push_back(std::move(valueTarg_list));
 		batch_valueTargTD1.push_back(std::move(valueTargTD1));
@@ -276,7 +300,7 @@ protected:
     }
 
     ValueFuncWrapper valueFunc;
-    PolicyWrapper oldPolicy;
+    //PolicyWrapper oldPolicy;
     std::vector<ScalarType> valuePred_list;
     std::vector<ScalarType> valueTarg_list;
 	std::vector<ScalarType> valueTargTD1;
@@ -290,7 +314,8 @@ protected:
     std::vector<std::vector<std::vector<ScalarType>>>   batch_ac_list;
     std::vector<std::vector<std::vector<ScalarType>>>   batch_ob_list;
     std::vector<std::vector<double>>                    batch_prob_list;
-    std::vector<std::vector<std::vector<ScalarType>>>   batch_mu_list;
+	std::vector<std::vector<std::vector<ScalarType>>>   batch_mu_list;
+	std::vector<std::vector<std::vector<ScalarType>>>   batch_sigma_list;
     std::vector<std::vector<ScalarType>>                batch_vpred_list;
     std::vector<std::vector<ScalarType>>                batch_vtarg_list;
 	std::vector<std::vector<ScalarType>>				batch_valueTargTD1;

@@ -68,7 +68,7 @@ class RL_MJ_Environment: public Environment {
 
     }
 
-	virtual ScalarType getReward() = 0;
+	virtual double getReward() = 0;
 
     virtual const std::vector<ScalarType>& getState()
     {
@@ -196,8 +196,12 @@ protected:
 	}
 public:
 	virtual bool earlyAbort() {
-		//return (data->xpos)[2] < 0.4;
-		return false;
+
+		double height = data->geom_xpos[5];
+		
+		//for (int i =0; i < 15 ; i++)
+		//std::cout << "geom_xpos[" << i << "]: " << data->geom_xpos[i] << "\n";
+		return height < 0.7;
 	}
 
 	HopperEnv(){
@@ -223,7 +227,7 @@ public:
 			//environment->cam.trackbodyid = 0;
 	}
 	virtual double getReward() {
-		return velocity - 1e-4*actionSqrSum + 0.02;
+		return velocity - 1e-3*actionSqrSum + 1;
 	}
 
 };

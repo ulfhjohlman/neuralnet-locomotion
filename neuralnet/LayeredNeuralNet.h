@@ -233,6 +233,12 @@ public:
 protected: //members
 	std::vector<Layer*> m_layers;//replace with shared_ptr<Layer>
 
+private:   //members
+	LayeredTopology* m_topology = nullptr;
+public:
+	ParameterUpdater* m_parameter_updater = nullptr;
+
+
 	void destroyLayers()
 	{
 		for (size_t i = 0; i < m_layers.size(); i++)

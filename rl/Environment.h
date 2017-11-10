@@ -7,7 +7,7 @@ class Environment
 {
 public:
     virtual void step(const std::vector<ScalarType>& actions) = 0;
-    virtual ScalarType getReward() = 0;
+    virtual double getReward() = 0;
     virtual const std::vector<ScalarType>& getState() = 0;
     virtual void reset() = 0;
     virtual int getActionSpaceDimensions() = 0;
@@ -38,8 +38,9 @@ public:
         x+=dx;
         dy= actions[1];
         y+=dy;
+
     };
-    virtual ScalarType getReward(){
+    virtual double getReward(){
         return -(sqrt(pow(x-10,2)+pow(y+10,2)));
         // return x > 1 ? 1 : -1;
     };
