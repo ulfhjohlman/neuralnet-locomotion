@@ -15,16 +15,18 @@ public:
     }
 
 
-    void trainPPO(int max_iterations, int batch_size , int timesteps_per_episode, int mini_batch_size,int num_epochs)
+    void trainPPO(int max_iterations, int traj_batch_size , int timesteps_per_episode, int mini_batch_size,int num_epochs)
     {
-        m_timesteps_per_episode = timesteps_per_episode;
+		value_batch_size = mini_batch_size;
+		update_batch_size = mini_batch_size;
+		m_timesteps_per_episode = timesteps_per_episode;
         for(int iteration = 0; iteration < max_iterations; iteration++)
         {
 			std::cout << "---- Iteration: " << iteration << " ----\n";
             double mean_return_batch = 0;
             //updateOldPolicy();
-            reserveBatchLists(batch_size);
-            for(int traj=0; traj < batch_size ; traj++)
+            reserveBatchLists(traj_batch_size);
+            for(int traj=0; traj < traj_batch_size ; traj++)
             {
                 //generate a trajectory (an episode)
                 resizeLists(timesteps_per_episode); //redo each loop as the lists are std::moved at storeDataBatch()
@@ -34,9 +36,8 @@ public:
                 //GAE();
 				//simpleAdvEstimates();
 				simpleAdvEstimates2();
-                standardizeVector(adv_list);
 
-				TrainValueFunc();
+				//TrainValueFunc();
 
                 mean_return_batch += episode_return;
 				//std::cout << "ValueFuncPred[0]:\t" << valuePred_list[0] << " TD1[0]:\t " << valueTargTD1[0] << " TD1[400]:\t " << valueTargTD1[400] << " Return: " << episode_return << "\n";
@@ -46,33 +47,27 @@ public:
                 //reset stuff
                 env->reset();
             }
-            mean_return_batch /= batch_size;
-            std::cout << "Batch of " << batch_size <<
+            mean_return_batch /= traj_batch_size;
+            std::cout << "Batch of " << traj_batch_size <<
                 " trajectories generated. Mean return over batch: " << mean_return_batch << "\n";
             std::cout << "Optimizing over trajectories\n";
-            for(int epoch=0; epoch < num_epochs; epoch++)
+        	BatchTrainValueFunc();
+			standardizeBatchVector(batch_adv_list);
+			
+			for(int epoch=0; epoch < num_epochs; epoch++)
             {
 				///std::cout << "Epoch: " << epoch << "\n";
-                for(int traj=0; traj < batch_size ; traj++)
+                for(int traj=0; traj < traj_batch_size ; traj++)
                 {
+
                     //cache loss gradients
-                    calcAndBackpropGradients(traj);
+                    calcAndBackpropGradients(traj, update_batch_size);
                     // double meanLoss = calcLoss(traj);
-
-
-                    //if end of a minibatch
-					if ((traj + 1) % mini_batch_size == 0)
-					{
-						policy.popCacheLayerParams();
-						policy.updateParams();
-						//printf(" ---- Mini Batch Update %d ---- \n", (traj+1) / mini_batch_size);
-						//std::cout << "non_log_sigma: " << sigma_list[0][0] << ", " << sigma_list[0][1] << ", " << sigma_list[0][2] << " \n";
-                    }
-
                 }
 
 
             }
+			std::cout << "non_log_sigma: " << batch_sigma_list[0][0][0] << ", " << batch_sigma_list[0][0][1] << ", " << batch_sigma_list[0][0][2] << " \n";
             //clearLists();
             clearBatchLists();
 
@@ -168,6 +163,7 @@ protected:
 		for (int i = traj_length - 1; i >= 0; i--)
 		{
 			adv_list[i] = valueTargTD1[i] - valuePred_list[i];
+			valueTarg_list[i] = valueTargTD1[i];
 		}
 	}
 
@@ -182,25 +178,24 @@ protected:
             delta = rew_list[i] + m_gamma * valuePred_list[i+1] - valuePred_list[i];
             adv_list[i] = delta + m_lambda*m_gamma*adv_list[i+1];
         }
-        for(int i=0;i<adv_list.size();i++)
-        {
-            valueTarg_list[i] = valuePred_list[i] + adv_list[i]; //TD_lambda residual error
-            
-        }
+		for (int i = 0; i < adv_list.size(); i++)
+		{
+			valueTarg_list[i] = valuePred_list[i] + adv_list[i]; //TD_lambda residual error
+
+		}
 		// could instead use TD(1):
 		// valueTarg_list[i] = sum[from i to end] of rew_list;
-		valueTargTD1[adv_list.size() - 1] = rew_list[adv_list.size()-1];
+		valueTargTD1[adv_list.size() - 1] = rew_list[adv_list.size() - 1];
 		for (int i = adv_list.size() - 2; i >= 0; i--)
 		{
 			valueTargTD1[i] = rew_list[i] + m_gamma*valueTargTD1[i + 1];
 		}
-    }
+	}
 
 	void TrainValueFunc()
 	{
 		for (int j = 0; j < traj_length; j++) {
 			Eigen::Matrix<ScalarType, 1, 1> vFuncGrad;
-			//vFuncGrad(0, 0) = 2 * (batch_vpred_list[i][j] - batch_vtarg_list[i][j]);
 
 			//reforward pass for correct "input gradients"
 			Eigen::Map<MatrixType> ob_matrix(ob_list[j].data(), state_space_dim, 1);
@@ -213,67 +208,137 @@ protected:
 		}
 	}
 
-    // Calculate the loss gradients over the entire trajectory i
-    virtual void calcAndBackpropGradients(int i)
-    {
-        for(int j=0; j < batch_traj_length[i]; j++)
-        {
+	void BatchTrainValueFunc()
+	{
+		int count = 0;
+		for (int i = 0; i < batch_vtarg_list.size(); i++) {
+			
+			for (int j = 0; j < batch_traj_length[i]; j++) {
+				//reforward pass for correct "input gradients"
+				Eigen::Map<MatrixType> ob_matrix(batch_ob_list[i][j].data(), state_space_dim, 1);
+				double vPred  = valueFunc.predict(ob_matrix)(0, 0);
+
+				Eigen::Matrix<ScalarType, 1, 1> vFuncGrad;
+				vFuncGrad(0, 0) = 2 * (vPred - batch_vtarg_list[i][j]);
+
+				valueFunc.backprop(vFuncGrad);
+				valueFunc.cacheLayerParams();
+				count++;
+				if (count % value_batch_size == 0) {
+					valueFunc.popCacheLayerParams();
+					valueFunc.updateParams();
+				}
+			}
+		}
+		valueFunc.popCacheLayerParams();
+		valueFunc.updateParams();
+	}
+	// Calculate the loss gradients over the entire trajectory i
+	virtual void calcAndBackpropGradients(int i, int mini_batch_size)
+	{
+		for (int j = 0; j < batch_traj_length[i]; j++)
+		{
 
 
-            double r = calcPolicyRatio(i,j);
-            if((r * batch_adv_list[i][j]) > (batch_adv_list[i][j]*clipRelativeOne(r, eps)) && ((r > 1+eps) || (r<1-eps)))
-            {
-                // then derivative = 0
-                continue;
-            }
-            else //backprop grads
-            {
+			double r = calcPolicyRatio(i, j);
+			if ((r * batch_adv_list[i][j]) > (batch_adv_list[i][j] * clipRelativeOne(r, eps)) && ((r > 1 + eps) || (r < 1 - eps)))
+			{
+				// then derivative = 0
+				continue;
+			}
+			else //backprop grads
+			{
 				//reforward pass for correct "input gradients"
 				policy.forwardpassObs(batch_ob_list[i][j]);
-                Eigen::Map<MatrixType> actionMatrix(batch_ac_list[i][j].data(),action_space_dim,1);
+				Eigen::Map<MatrixType> actionMatrix(batch_ac_list[i][j].data(), action_space_dim, 1);
 				Eigen::Map<MatrixType> muMatrix(batch_mu_list[i][j].data(), action_space_dim, 1);
 				Eigen::Map<MatrixType> sigmaMatrix(batch_sigma_list[i][j].data(), action_space_dim, 1);
 
 
-                // NEGATION because obejctive func = - loss func
+				// NEGATION because obejctive func = - loss func
 				MatrixType mu_error_gradients = -batch_adv_list[i][j] * r * (actionMatrix.array() - muMatrix.array()) / (sigmaMatrix.array().square());
-				MatrixType sigma_error_gradients = -batch_adv_list[i][j] * r * (((actionMatrix.array() - muMatrix.array()) / sigmaMatrix.array()).square().array()-1).array()/sigmaMatrix.array();
+				MatrixType sigma_error_gradients = -batch_adv_list[i][j] * r * (((actionMatrix.array() - muMatrix.array()) / sigmaMatrix.array()).square().array() - 1).array() / sigmaMatrix.array();
 
-				MatrixType x(action_space_dim*2, 1);
-					x << mu_error_gradients,
-						sigma_error_gradients;
-                policy.backprop(x);
-                policy.cacheLayerParams();
-            }
-        }
-    }
+				MatrixType x(action_space_dim * 2, 1);
+				x << mu_error_gradients,
+					sigma_error_gradients;
+				policy.backprop(x);
+				policy.cacheLayerParams();
+			}
+			if (((j+1) % mini_batch_size) == 0)
+			{
+				policy.popCacheLayerParams();
+				policy.updateParams();
+			}
+		}
+		if ((batch_traj_length[i] % mini_batch_size) == 0)//incase of residual updates
+		{
+			policy.popCacheLayerParams();
+			policy.updateParams();
+		}
+	}
 
-    //ratio pi(a|s)/pi_old(a|s) for batched trajectory i timestep j
-    double calcPolicyRatio(int i, int j)
-    {
-        double new_policy_prob = policy.probAcGivenState(batch_ac_list[i][j], batch_ob_list[i][j]);
-        double old_policy_prob = batch_prob_list[i][j];
-        return new_policy_prob / old_policy_prob;
-    }
+	//ratio pi(a|s)/pi_old(a|s) for batched trajectory i timestep j
+	double calcPolicyRatio(int i, int j)
+	{
+		double new_policy_prob = policy.probAcGivenState(batch_ac_list[i][j], batch_ob_list[i][j]);
+		double old_policy_prob = batch_prob_list[i][j];
+		return new_policy_prob / old_policy_prob;
+	}
 
-    /*virtual void updateOldPolicy()
-    {
-        oldPolicy.copyParams(policy);
-    }*/
+	/*virtual void updateOldPolicy()
+	{
+		oldPolicy.copyParams(policy);
+	}*/
 
-    void storeBatchData()
-    {
-        batch_adv_list.push_back(std::move(adv_list));
-        batch_ac_list.push_back(std::move(ac_list));
-        batch_ob_list.push_back(std::move(ob_list));
-        batch_prob_list.push_back(std::move(prob_list));
+	void storeBatchData()
+	{
+		batch_adv_list.push_back(std::move(adv_list));
+		batch_ac_list.push_back(std::move(ac_list));
+		batch_ob_list.push_back(std::move(ob_list));
+		batch_prob_list.push_back(std::move(prob_list));
 		batch_mu_list.push_back(std::move(mu_list));
 		batch_sigma_list.push_back(std::move(sigma_list));
-        batch_vpred_list.push_back(std::move(valuePred_list));
-        batch_vtarg_list.push_back(std::move(valueTarg_list));
+		batch_vpred_list.push_back(std::move(valuePred_list));
+		batch_vtarg_list.push_back(std::move(valueTarg_list));
 		batch_valueTargTD1.push_back(std::move(valueTargTD1));
 		batch_traj_length.push_back(traj_length);
-    }
+	}
+
+	void standardizeBatchVector(std::vector<std::vector< ScalarType >> batch_list)
+	{
+		double mean = 0;
+		double var = 0;
+		int count = 0;
+		for(int i = 0; i < batch_list.size(); i++)
+		{
+			for (int j = 0; j < batch_traj_length[i]; j++)
+			{
+				mean += batch_list[i][j];
+				count++;
+			}
+        }
+		mean /= count;
+		for (int i = 0; i < batch_list.size(); i++)
+		{
+			for (int j = 0; j < batch_traj_length[i]; j++)
+			{
+				var += (batch_list[i][j] - mean)*(batch_list[i][j] - mean);
+			}
+		}
+		var /= count;
+        if(var ==0){
+            throw std::runtime_error("Cannot standardizeVector because var == 0.\n");
+        }
+        double std = sqrt(var);
+		for (int i = 0; i < batch_list.size(); i++)
+		{
+			for (int j = 0; j < batch_traj_length[i]; j++)
+			{
+				batch_list[i][j] = (batch_list[i][j] - mean) / std;
+			}
+		}
+	}
 
     ScalarType lClippObjFunc(ScalarType ratio, ScalarType adv)
     {
@@ -304,6 +369,8 @@ protected:
     std::vector<ScalarType> valuePred_list;
     std::vector<ScalarType> valueTarg_list;
 	std::vector<ScalarType> valueTargTD1;
+	int value_batch_size = 64;
+	int update_batch_size = 64;
 
     int m_timesteps_per_episode=0;
     double m_lambda = 0.95;

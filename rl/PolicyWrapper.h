@@ -138,7 +138,6 @@ public:
 				non_log_sigma[i] = exp(log_sigma[i]);
 				
 			}
-			std::cout << "non_log_sigma: " << non_log_sigma[0] << ", " << non_log_sigma[1] << ", " << non_log_sigma[2] << " \n";
 			log_sigma_gradients_cache.setZero();
 		}
 

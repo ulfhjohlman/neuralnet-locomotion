@@ -71,8 +71,8 @@ int ppo_mj_test()
 	int state_space_dim = env.getStateSpaceDimensions();
 
 	//constructing networks
-	std::vector<int> layerSizesPolicy{ state_space_dim,64,64,action_space_dim };
-	std::vector<int> layerSizesValueFunc{ state_space_dim,32,32,1 };
+	std::vector<int> layerSizesPolicy{ state_space_dim,96,96,action_space_dim };
+	std::vector<int> layerSizesValueFunc{ state_space_dim,96,96,1 };
 	const int relu = Layer::LayerType::relu;
 	const int inputLayer = Layer::LayerType::inputLayer;
 	const int noactiv = Layer::noActivation;
@@ -109,7 +109,7 @@ int ppo_mj_test()
 	int frameskip = 3;
 
 	env.set_frameskip(frameskip);
-	trainer.trainPPO(1e7 , 32, 4096/frameskip, 8, 2);
+	trainer.trainPPO(1e7 , 64, 4096/frameskip, 64, 10);
 
 
 
