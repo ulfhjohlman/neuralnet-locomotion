@@ -161,7 +161,7 @@ private: //Class members
 mjEnvironment::mjEnvironment(
 	int number_of_agents, 
 	int parallel_simulations = 128, 
-	const char* model = "ant.xml", 
+	const char* model = "invdoublependulum.xml", 
 	const char* environment = "environment.xml") :
 	m_objective(nullptr),
 	m_condition(nullptr),
