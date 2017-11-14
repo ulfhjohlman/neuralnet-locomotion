@@ -37,7 +37,7 @@ public:
 				//simpleAdvEstimates();
 				simpleAdvEstimates2();
 
-				//TrainValueFunc();
+				TrainValueFunc();
 
                 mean_return_batch += episode_return;
 				//std::cout << "ValueFuncPred[0]:\t" << valuePred_list[0] << " TD1[0]:\t " << valueTargTD1[0] << " TD1[400]:\t " << valueTargTD1[400] << " Return: " << episode_return << "\n";
@@ -51,7 +51,7 @@ public:
             std::cout << "Batch of " << traj_batch_size <<
                 " trajectories generated. Mean return over batch: " << mean_return_batch << "\n";
             std::cout << "Optimizing over trajectories\n";
-        	BatchTrainValueFunc();
+        	//BatchTrainValueFunc();
 			standardizeBatchVector(batch_adv_list);
 			
 			for(int epoch=0; epoch < num_epochs; epoch++)
@@ -67,6 +67,9 @@ public:
 
 
             }
+			std::cout << "Ratio of Zero/non-zero derivatives: " << static_cast<double>(zero_derivatives) / static_cast<double>(non_zero_derivatives) << "\n";
+			zero_derivatives = 0;
+			non_zero_derivatives = 0;
 			std::cout << "non_log_sigma: " << batch_sigma_list[0][0][0] << ", " << batch_sigma_list[0][0][1] << ", " << batch_sigma_list[0][0][2] << " \n";
             //clearLists();
             clearBatchLists();
@@ -202,12 +205,16 @@ protected:
 			double valuePred = valueFunc.predict(ob_matrix)(0, 0);
 			vFuncGrad(0, 0) = 2 * (valuePred - valueTargTD1[j]);
 			valueFunc.backprop(vFuncGrad);
-			//valueFunc.cacheLayerParams();
-			//valueFunc.popCacheLayerParams();
-			valueFunc.updateParams();
+			valueFunc.cacheLayerParams();
+			if ((j+1) % value_batch_size == 0) {
+				valueFunc.popCacheLayerParams();
+				valueFunc.updateParams();
+			}
 		}
+		valueFunc.popCacheLayerParams();
+		valueFunc.updateParams();
 	}
-
+	
 	void BatchTrainValueFunc()
 	{
 		int count = 0;
@@ -244,6 +251,7 @@ protected:
 			if ((r * batch_adv_list[i][j]) > (batch_adv_list[i][j] * clipRelativeOne(r, eps)) && ((r > 1 + eps) || (r < 1 - eps)))
 			{
 				// then derivative = 0
+				zero_derivatives++;
 				continue;
 			}
 			else //backprop grads
@@ -264,6 +272,7 @@ protected:
 					sigma_error_gradients;
 				policy.backprop(x);
 				policy.cacheLayerParams();
+				non_zero_derivatives++;
 			}
 			if (((j+1) % mini_batch_size) == 0)
 			{
@@ -271,7 +280,7 @@ protected:
 				policy.updateParams();
 			}
 		}
-		if ((batch_traj_length[i] % mini_batch_size) == 0)//incase of residual updates
+		if ((batch_traj_length[i] % mini_batch_size) != 0)//incase of residual updates
 		{
 			policy.popCacheLayerParams();
 			policy.updateParams();
@@ -371,6 +380,8 @@ protected:
 	std::vector<ScalarType> valueTargTD1;
 	int value_batch_size = 64;
 	int update_batch_size = 64;
+	int zero_derivatives = 0;
+	int non_zero_derivatives = 0;
 
     int m_timesteps_per_episode=0;
     double m_lambda = 0.95;

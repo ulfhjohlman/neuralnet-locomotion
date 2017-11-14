@@ -7,6 +7,13 @@
 
 
 bool b_render = true;
+bool button_left = false;
+bool button_middle = false;
+bool button_right = false;
+double lastx = 0;
+double lasty = 0;
+mjEnvironment* global_environment = nullptr;
+
 
 void keyboard(GLFWwindow* window, int key, int scancode, int act, int mods)
 {
@@ -28,6 +35,63 @@ void keyboard(GLFWwindow* window, int key, int scancode, int act, int mods)
 	}
 
 }
+// mouse button callback
+void mouse_button(GLFWwindow* window, int button, int act, int mods)
+{
+	// update button state
+	button_left = (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS);
+	button_middle = (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_PRESS);
+	button_right = (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS);
+
+	// update mouse position
+	glfwGetCursorPos(window, &lastx, &lasty);
+}
+
+
+// mouse move callback
+void mouse_move(GLFWwindow* window, double xpos, double ypos)
+{
+	// no buttons down: nothing to do
+	if (!button_left && !button_middle && !button_right)
+		return;
+
+	// compute mouse displacement, save
+	double dx = xpos - lastx;
+	double dy = ypos - lasty;
+	lastx = xpos;
+	lasty = ypos;
+
+	// get current window size
+	int width, height;
+	glfwGetWindowSize(window, &width, &height);
+
+	// get shift key state
+	bool mod_shift = (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ||
+		glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS);
+
+	// determine action based on mouse button
+	mjtMouse action;
+	if (button_right)
+		action = mod_shift ? mjMOUSE_MOVE_H : mjMOUSE_MOVE_V;
+	else if (button_left)
+		action = mod_shift ? mjMOUSE_ROTATE_H : mjMOUSE_ROTATE_V;
+	else
+		action = mjMOUSE_ZOOM;
+
+	// move camera
+	if (global_environment)
+		mjv_moveCamera(global_environment->m_model, action, dx / height, dy / height, &global_environment->scn, &global_environment->cam);
+}
+
+
+// scroll callback
+void scroll(GLFWwindow* window, double xoffset, double yoffset)
+{
+	// emulate vertical mouse motion = 5% of window height
+	if (global_environment)
+		mjv_moveCamera(global_environment->m_model, mjMOUSE_ZOOM, 0, -0.05*yoffset, &global_environment->scn, &global_environment->cam);
+}
+
 
 
 
@@ -186,7 +250,53 @@ bool RL_MJ_Environment::init() {
 	return true;
 }
 
+class HumanoidEnv : public RL_MJ_Environment
+{
+protected:
 
+	virtual void loadEnv() {
+		model = environment->loadMujocoModel("humanoid.xml");
+	}
+public:
+	virtual bool earlyAbort() {
+
+		double height = data->qpos[2];
+
+		//for (int i =0; i < 15 ; i++)
+		//std::cout << "geom_xpos[" << i << "]: " << data->geom_xpos[i] << "\n";
+		return height < 1.0 || height > 2.0;
+		//return false;
+	}
+
+	HumanoidEnv() {
+		if (!init()) {
+			throw std::runtime_error("Unable to init() RL_MJ_environemnt!\n");
+		}
+		environment = new mjEnvironment(1, 1);
+		loadEnv();
+		nsensors = model->nsensordata;
+		nctrls = model->nu;
+
+		agent.setup(model);
+		data = agent.getData();
+		state.resize(model->nq + model->nv);
+		mj_forward(model, data);
+
+		global_environment = environment;
+		glfwSetKeyCallback(window, keyboard);
+		glfwSetCursorPosCallback(window, mouse_move);
+		glfwSetMouseButtonCallback(window, mouse_button);
+		glfwSetScrollCallback(window, scroll);
+
+		//mjv_moveCamera(model, mjMOUSE_ZOOM, -3, -3, &environment->scn, &environment->cam);
+		//environment->cam.type = mjCAMERA_TRACKING;
+		//environment->cam.trackbodyid = 0;
+	}
+	virtual double getReward() {
+		return 0.25*velocity - 1e-3*actionSqrSum + 5;
+	}
+
+};
 class HopperEnv : public RL_MJ_Environment
 {
 protected:
@@ -220,7 +330,11 @@ public:
 			state.resize(model->nq + model->nv);
 			mj_forward(model, data);
 
+			global_environment = environment;
 			glfwSetKeyCallback(window, keyboard);
+			glfwSetCursorPosCallback(window, mouse_move);
+			glfwSetMouseButtonCallback(window, mouse_button);
+			glfwSetScrollCallback(window, scroll);
 
 			mjv_moveCamera(model, mjMOUSE_ZOOM, -1, -1, &environment->scn, &environment->cam);
 			//environment->cam.type = mjCAMERA_TRACKING;
@@ -259,7 +373,11 @@ public:
 		state.resize(model->nq + model->nv);
 		mj_forward(model, data);
 
+		global_environment = environment;
 		glfwSetKeyCallback(window, keyboard);
+		glfwSetCursorPosCallback(window, mouse_move);
+		glfwSetMouseButtonCallback(window, mouse_button);
+		glfwSetScrollCallback(window, scroll);
 
 		mjv_moveCamera(model, mjMOUSE_ZOOM, -1, -1, &environment->scn, &environment->cam);
 	}
@@ -296,7 +414,11 @@ public:
 		state.resize(model->nq + model->nv);
 		mj_forward(model, data);
 
+		global_environment = environment;
 		glfwSetKeyCallback(window, keyboard);
+		glfwSetCursorPosCallback(window, mouse_move);
+		glfwSetMouseButtonCallback(window, mouse_button);
+		glfwSetScrollCallback(window, scroll);
 
 		mjv_moveCamera(model, mjMOUSE_ZOOM, -1, -1, &environment->scn, &environment->cam);
 	}

@@ -66,21 +66,21 @@ int ppo_mj_test()
 
 	//initalize environment
 	//InvDoublePendEnv env;
-	HopperEnv env;
+	HumanoidEnv env;
 	int action_space_dim = env.getActionSpaceDimensions();
 	int state_space_dim = env.getStateSpaceDimensions();
 
 	//constructing networks
-	std::vector<int> layerSizesPolicy{ state_space_dim,96,96,action_space_dim };
-	std::vector<int> layerSizesValueFunc{ state_space_dim,96,96,1 };
+	std::vector<int> layerSizesPolicy{ state_space_dim,128,96,64,action_space_dim };
+	std::vector<int> layerSizesValueFunc{ state_space_dim,128,96,64,1 };
 	const int relu = Layer::LayerType::relu;
 	const int inputLayer = Layer::LayerType::inputLayer;
 	const int noactiv = Layer::noActivation;
 	const int softmax = Layer::LayerType::softmax;
 	const int sigmoid = Layer::LayerType::sigmoid;
 	const int tanh = Layer::LayerType::tanh;
-	std::vector<int> layerTypesPolicy{ inputLayer, tanh,tanh,tanh};
-	std::vector<int> layerTypesValueFunc{ inputLayer, relu,relu,noactiv };
+	std::vector<int> layerTypesPolicy{ inputLayer, relu,relu,relu,noactiv};
+	std::vector<int> layerTypesValueFunc{ inputLayer, relu,relu,relu,noactiv };
 
 
 	//networks gain ownership/claening responsibilities for these topologies
@@ -96,8 +96,8 @@ int ppo_mj_test()
 	
 
 	//ParameterUpdater
-	AdamUpdater policyUpdater(1e-4);
-	AdamUpdater valueFuncUpdater(1e-4);
+	AdamUpdater policyUpdater(3*1e-4);
+	AdamUpdater valueFuncUpdater(3*1e-4);
 
 	policy.setParameterUpdater(policyUpdater);
 	valueFunc.setParameterUpdater(valueFuncUpdater);

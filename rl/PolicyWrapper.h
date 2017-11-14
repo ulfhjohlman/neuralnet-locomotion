@@ -133,10 +133,15 @@ public:
 		void updateParams()
 		{
 			m_nn->updateParameters();
+			//log_sigma_matrix += -1e-4 * log_sigma_gradients_cache;
 			log_sigma = std::vector<ScalarType>(log_sigma_matrix.data(), log_sigma_matrix.data() + log_sigma_matrix.size());
 			for (int i = 0; i < out_size; i++) {
 				non_log_sigma[i] = exp(log_sigma[i]);
-				
+				if (non_log_sigma[i] < MIN_SIGMA)
+				{
+					non_log_sigma[i] = MIN_SIGMA;
+					log_sigma[i] = log(non_log_sigma[i]);
+				}
 			}
 			log_sigma_gradients_cache.setZero();
 		}
@@ -165,6 +170,7 @@ private:
         }
 
 protected:
+		double MIN_SIGMA = 0.2;
         std::vector<ScalarType> sample;
 		std::vector<ScalarType> localMuObjectiveGradient;
 		std::vector<ScalarType> localSigmaObjectiveGradient;
