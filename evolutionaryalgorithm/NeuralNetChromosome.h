@@ -53,7 +53,7 @@ private:
 		top->addLayerConnection(5, { 4 });
 		top->addLayerConnection(6, { 5 });*/
 
-		std::vector<int> layerSizes = { m_number_of_inputs + 16, 32, 16, m_number_of_outputs + 16};
+		std::vector<int> layerSizes = { m_number_of_inputs + 16, 64, 32, m_number_of_outputs + 16};
 		std::vector<int> layerTypes = { Layer::inputLayer, 1, 1, 1 };
 		LayeredTopology* top = new LayeredTopology(layerSizes, layerTypes);
 

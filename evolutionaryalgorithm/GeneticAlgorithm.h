@@ -45,15 +45,15 @@
 
 const int g_population_size = 128;
 const double g_mutation_probability = 0.01;
-double g_crossover_probability = 0.1;
+double g_crossover_probability = 0.15;
 double g_niche_crossover_probability = 0.4;
 const double g_ptour = 0.75;
-const int g_tournamentSize = 5;
+const int g_tournamentSize = 10;
 
 const double g_start_survival_percentage = 4.0 / 7.0; //half dies if with 0.3 top survivors
-const double g_survivor_fraction = 0.1; //top x%
+const double g_survivor_fraction = 0.3; //top x%
 
-const int g_elitism_count = 2;
+const int g_elitism_count = 1;
  
 double pmut = 0.01;
 
@@ -106,6 +106,7 @@ public:
 
 		if (m_environment->all_done()) {
 			m_population.sort();
+			m_niche_set.sort();
 
 			if (m_generation % 1000 == 0) {
 				m_population.save(m_generation, "ant1");
@@ -159,6 +160,11 @@ public:
 				i--;
 			}
 		}
+
+		if (m_population.size() > 200) {
+			const double start_kill_index = g_survivor_fraction*double(g_population_size);
+			Death::linearDeath(m_population, m_niche_set, m_object_pool, start_kill_index, g_start_survival_percentage);
+		}
 	}
 
 	void applyElitism() {
@@ -176,8 +182,10 @@ public:
 		
 		for (size_t i = 0; i < m_niche_set.size(); i++) {
 			auto & population = m_niche_set[i];
-			if (population.size() < 2)
+			if (population.size() < 2) {
+				Duplicate::asexualReproduction(population, m_object_pool, container, 2, m_ninputs, m_nouputs);
 				continue;
+			}
 			int n_mated = Generator::generate_binomial_shared<int>(population.size(), g_niche_crossover_probability);
 			auto cross = [this, &population, &container](int i) {
 				std::pair<int, int> mates = m_selection.selectPair(population);
@@ -224,7 +232,7 @@ public:
 	void applyMutation()
 	{
 		const ScalarType T = 1000;
-		pmut = 0.05;
+		pmut = 0.01;
 		pmut *= std::exp(-ScalarType(m_generation) / T);
 		if (pmut < 0.0005)
 			pmut = 0.0005;

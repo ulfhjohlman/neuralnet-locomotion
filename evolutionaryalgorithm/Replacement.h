@@ -47,6 +47,11 @@ public:
 			}
 		}
 	}
+
+	template<typename T>
+	static void extinction(Population<T>& population, int start_index, ScalarType start_survival_rate) {
+		
+	}
 	
 private:
 	
@@ -64,6 +69,24 @@ public:
 				*population.members[it + j] = *population.members[i];
 
 			it += duplications - 1;
+		}
+	}
+
+	template<typename T>
+	static void asexualReproduction(Population<T>& population, 
+		ThreadsafeQueue< std::shared_ptr< Individual<T> > >& pool, 
+		ThreadsafeQueue< std::shared_ptr< Individual<T> > >& container, 
+		size_t copies, int m_ninputs, int m_nouputs)
+	{
+		for (int i = 0; i < copies; i++) {
+			std::shared_ptr<Individual<T>> newIndividual = nullptr;
+			bool has_stored_individual = pool.try_pop(newIndividual);
+			if (!has_stored_individual)
+				newIndividual = std::shared_ptr<Individual<T>>(new NeuralNetChromosome(m_ninputs, m_nouputs));
+
+			*newIndividual = *population[0];
+
+			container.push(newIndividual);
 		}
 	}
 };

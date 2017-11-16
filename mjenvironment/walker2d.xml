@@ -71,7 +71,7 @@
     <jointpos name="rot6"  joint="foot_left_joint"/>
 
     <jointpos name="rot7"  joint="rooty"/>
-   
+    <jointpos name="rot8"  joint="rootz"/>
   </sensor>
     <asset>
         <texture type="skybox" builtin="gradient" rgb1=".4 .5 .6" rgb2="0 0 0"

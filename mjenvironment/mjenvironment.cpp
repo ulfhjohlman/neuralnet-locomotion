@@ -92,11 +92,11 @@ void setup_humanoid() {
 	if (!ga)
 		throw std::runtime_error("Could not start make GA.");
 
-	auto objective = [](mjModel const* m, mjData* d) { return 1.0*d->site_xpos[2] * d->site_xpos[2]; };
+	auto objective = [](mjModel const* m, mjData* d) { return 1.0*d->site_xpos[2] - 0.01*( d->site_xpos[2] < 0.7 ); };
 	environment->setObjective(objective);
 
 	ScalingLayer input_scaling(nsensors + nrecurrent, 1);
-	const ScalarType scale_touch = 1.0 / 500.0;
+	const ScalarType scale_touch = 1.0 / 1000.0;
 	input_scaling(0) = scale_touch;
 	input_scaling(1) = scale_touch;
 	input_scaling(2) = scale_touch;
@@ -264,8 +264,8 @@ bool init() {
 		//setup_humanoid();
 		//setup_invdoublepole();
 		//setup_swimmer();
-		//setup_walker2d();
-		setup_hopper();
+		setup_walker2d();
+		//setup_hopper();
 	}
 	catch (NeuralNetException e) {
 		std::cerr << e.what() << std::endl;
