@@ -76,8 +76,7 @@ void loadmodel(const char* filename)
 		mnew = mj_loadModel(filename, 0);
 	else
 		mnew = mj_loadXML(filename, 0, error, 1000);
-	if (!mnew)
-	{
+	if (!mnew) {
 		printf("%s\n", error);
 		using namespace std::chrono_literals;
 		return;

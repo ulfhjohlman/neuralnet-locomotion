@@ -137,6 +137,26 @@ void setup_swimmer() {
 	ga->setEnvironment(environment);
 }
 
+void setup_walker2d() {
+	environment = new mjEnvironment(g_population_size, 128, "walker2d.xml", "environment.xml");
+	if (!environment)
+		throw std::runtime_error("Could not make environment.");
+	int nsensors = environment->m_model->nsensordata;
+	int nctrls = environment->m_model->nu;
+	int nrecurrent = 16;
+	ga = new GeneticAlgorithm(g_population_size, nsensors, nctrls);
+	if (!ga)
+		throw std::runtime_error("Could not start make GA.");
+
+	auto objective = [](mjModel const* m, mjData* d) { return 1.0*d->site_xpos[0]; };
+	environment->setObjective(objective);
+
+	ScalingLayer input_scaling(nsensors + nrecurrent, 1);
+
+	environment->setScalingLayer(input_scaling);
+	ga->setEnvironment(environment);
+}
+
 
 void setup_invdoublepole() {
 	environment = new mjEnvironment(g_population_size, 128, "invdoublependulum.xml", "environment.xml");
@@ -157,6 +177,30 @@ void setup_invdoublepole() {
 	environment->setScalingLayer(input_scaling);
 	ga->setEnvironment(environment);
 }
+
+void setup_hopper() {
+	environment = new mjEnvironment(g_population_size, 128, "hopper.xml", "environment.xml");
+	if (!environment)
+		throw std::runtime_error("Could not make environment.");
+	int nsensors = environment->m_model->nsensordata;
+	int nctrls = environment->m_model->nu;
+	int nrecurrent = 16;
+	ga = new GeneticAlgorithm(g_population_size, nsensors, nctrls);
+	if (!ga)
+		throw std::runtime_error("Could not start make GA.");
+
+	auto objective = [](mjModel const* m, mjData* d) { return 1.0*d->site_xpos[0] + .3*d->site_xpos[2] + 0.01; };
+	environment->setObjective(objective);
+
+	ScalingLayer input_scaling(nsensors + nrecurrent, 1);
+	const ScalarType scale_touch = 1.0 / 1000.0;
+	input_scaling(0) = scale_touch;
+	input_scaling(1) = scale_touch;
+
+	environment->setScalingLayer(input_scaling);
+	ga->setEnvironment(environment);
+}
+
 
 int main() {
 	RandomEngineFactory::initialize();
@@ -219,7 +263,9 @@ bool init() {
 		//setup_ant();
 		//setup_humanoid();
 		//setup_invdoublepole();
-		setup_swimmer();
+		//setup_swimmer();
+		//setup_walker2d();
+		setup_hopper();
 	}
 	catch (NeuralNetException e) {
 		std::cerr << e.what() << std::endl;

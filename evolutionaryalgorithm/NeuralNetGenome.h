@@ -129,6 +129,9 @@ public:
 	}
 
 	virtual void decayMomentum() {
+		if ( !m_atomic_exclusion.exchange(false))
+			return; //already mutated.
+
 		for (int i = 0; i < m_moment_weight.size(); i++) {
 			m_moment_weight[i].array() *= static_cast<ScalarType>(.95);
 			m_moment_bias[i].array() *= static_cast<ScalarType>(.95);
@@ -142,6 +145,9 @@ public:
 	}
 
 	virtual void mutate(ScalarType mutation_probability) {
+		if ( !m_atomic_exclusion.exchange(false))
+			return; //already mutated.
+
 		checkMutationRate(mutation_probability);
 
 		Generator generator;
@@ -207,6 +213,38 @@ public:
 		return m_layer_size.back();
 	}
 
+	void getGeneSet(VectorType& v) const {
+		Eigen::Index weight_genome_size = 0;
+		Eigen::Index bias_genome_size = 0;
+		for (int i = 0; i < m_weight_data.size(); i++) {
+			weight_genome_size += m_weight_data[i]->size();
+			bias_genome_size += m_bias_data[i]->size();
+		}
+		Eigen::Index genome_size = weight_genome_size + bias_genome_size;
+		if(v.size() != genome_size)
+			v.resize(genome_size);
+
+		Eigen::Index it = 0;
+		for (int i = 0; i < m_weight_data.size(); i++) {
+			Eigen::Index n = m_weight_data[i]->size(); //n genes in layer i
+			v.segment(it, n) = Eigen::Map<VectorType>((*m_weight_data[i]).data(), n);
+			it += n;
+
+			n = m_bias_data[i]->size();
+			v.segment(it, n) = Eigen::Map<VectorType>((*m_bias_data[i]).data(), n);
+			it += n;
+
+			
+		}
+		/*std::cout << v.transpose() << std::endl;
+		std::cin.get();*/
+
+	}
+
+	void clearMutationFlag() {
+		m_atomic_exclusion.store(true);
+	}
+
 protected:
 	void reserve(size_t number_of_layers)
 	{
@@ -248,4 +286,6 @@ private:
 	std::vector<VectorType> m_mutation_variance_bias;
 
 	std::vector<int>	     m_layer_size;
+
+	std::atomic_bool m_atomic_exclusion = true;
 };

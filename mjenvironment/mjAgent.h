@@ -13,7 +13,7 @@
 #include "ScalingLayer.h"
 
 int g_simulation_steps = 10;
-float g_minimum_kill_height = 0.26f;
+float g_minimum_kill_height = 0.75f;
 float g_max_simulation_time = 1.0f;
 
 
@@ -127,12 +127,12 @@ public:
 
 				if (m_objective) {
 					m_reward += simstep * m_objective(m_model, m_data);
-					m_reward += - 0.000001 * m_controller->output().squaredNorm();
+					m_reward += - 0.00001 * m_controller->output().squaredNorm();
 				}
 				
 			}
 			m_time_simulated += simstep*steps;
-			if (m_time_simulated > g_max_simulation_time ) {
+			if (m_time_simulated > g_max_simulation_time || m_data->site_xpos[2] < g_minimum_kill_height ) {
 				m_done = true;
 			}
 			//|| m_data->site_xpos[5] < g_minimum_kill_height
@@ -195,7 +195,7 @@ protected:
 
 			//Copy output data
 			for (int i = 0; i < number_of_outputs; i++)
-				m_data->ctrl[i] = m_controller->output()(i) + g.generate_normal<ScalarType>(0, 0.005);
+				m_data->ctrl[i] = m_controller->output()(i) + g.generate_normal<ScalarType>(0, 0.000005);
 		}
 	}
 	

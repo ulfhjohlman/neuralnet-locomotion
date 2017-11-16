@@ -59,7 +59,7 @@ private:
 
 
 		m_controller = new LayeredNeuralNet(top); //memory is managed by network
-		m_controller->initializeRandomWeights();
+		m_controller->initializeXavier();
 
 		Individual::m_genome = std::shared_ptr<NeuralNetGenome>(new NeuralNetGenome(m_controller));
 	}

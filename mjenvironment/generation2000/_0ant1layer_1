@@ -1,4 +1,4 @@
-<layer_1 layer_type="0" rows_output_size="32" cols_input_size="19">
+<layer_1 layer_type="0" rows_output_size="32" cols_input_size="25">
     <weights>generation2000/_0ant1layer_1_weights.bin</weights>
     <bias>generation2000/_0ant1layer_1_bias.bin</bias>
     <output>generation2000/_0ant1layer_1_outputs.bin</output>

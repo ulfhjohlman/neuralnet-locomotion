@@ -12,7 +12,7 @@ class Mutation
 public:
 	Mutation(ScalarType mutation_probability, size_t nelites) :
 		m_mutation_probability(mutation_probability),
-		m_elitism_count(nelites) {
+		m_elitism_count(nelites) { 
 	}
 	~Mutation() = default;
 
@@ -24,14 +24,13 @@ public:
 	}
 
 	void operator>>(Population<T>& population) {
-		for (size_t i = 0; i < m_elitism_count; i++)
-			population.members[i]->getGenome()->decayMomentum();
+		auto start_index = std::min(m_elitism_count, population.size());
 
 		auto f = [&population, this](int i) {
 			population.members[i]->getGenome()->mutate(m_mutation_probability);
 		};
 
-		parallel_for<size_t>(m_elitism_count, population.members.size(), 16, f);
+		parallel_for<size_t>(start_index, population.members.size(), 16, f);
 		//for(size_t i = m_elitism_count; i < population.members.size(); i++)
 		//	population.members[i]->getGenome()->mutate(m_mutation_probability);
 	}

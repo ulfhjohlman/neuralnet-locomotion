@@ -1,9 +1,9 @@
 <LayeredTopology>
     <layerSizes itemCount="4">
-        <size>74</size>
-        <size>128</size>
-        <size>64</size>
-        <size>37</size>
+        <size>25</size>
+        <size>32</size>
+        <size>16</size>
+        <size>19</size>
     </layerSizes>
     <layerTypes itemCount="4">
         <type>4</type>
