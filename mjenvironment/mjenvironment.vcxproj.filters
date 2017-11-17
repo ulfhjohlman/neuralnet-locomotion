@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\mjenvironment.cpp">
@@ -12,13 +12,5 @@
     <Filter Include="Source Files">
       <UniqueIdentifier>{F53B53F7-4996-3B2D-BE71-AAA1AC7F0588}</UniqueIdentifier>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="AgentScheduler.h" />
-    <ClInclude Include="glfwWrapper.h" />
-    <ClInclude Include="mjAgent.h" />
-    <ClInclude Include="mjEnvironment.h" />
-    <ClInclude Include="oldMujocoBasic.h" />
-    <ClInclude Include="ModelSetup.h" />
   </ItemGroup>
 </Project>

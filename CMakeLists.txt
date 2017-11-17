@@ -19,6 +19,7 @@ ENDIF()
 
 #look for include files in
 include_directories("${PROJECT_SOURCE_DIR}/lib/Eigen"
+ "${PROJECT_SOURCE_DIR}/bullet"
  "${PROJECT_SOURCE_DIR}/neuralnet"
  "${PROJECT_SOURCE_DIR}/evolutionaryalgorithm"
  "${PROJECT_SOURCE_DIR}/utility"
@@ -30,6 +31,7 @@ include_directories("${PROJECT_SOURCE_DIR}/lib/Eigen"
  "${PROJECT_SOURCE_DIR}/mjenvironment")
 
 #add library subdirectories -> executes subs CMakeLists.txt
+add_subdirectory("${PROJECT_SOURCE_DIR}/bullet")
 add_subdirectory("${PROJECT_SOURCE_DIR}/neuralnet")
 add_subdirectory("${PROJECT_SOURCE_DIR}/evolutionaryalgorithm")
 add_subdirectory("${PROJECT_SOURCE_DIR}/lib/tinyxml2")
@@ -39,7 +41,7 @@ add_subdirectory("${PROJECT_SOURCE_DIR}/rl")
 
 
 #add libraries LIBS macro
-set(LIBS ${LIBS} neuralnet evo_alg tinyxml utility testframework rl)
+set(LIBS ${LIBS} ${BULLET_LIBRARIES} neuralnet evo_alg tinyxml utility testframework rl)
 
 #Turn on options by invoking $cmake -D<option_name>=ON <src path>
 #aka $cmake -D_DEBUG=ON ..
