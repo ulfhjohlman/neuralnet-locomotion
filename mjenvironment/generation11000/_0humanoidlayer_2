@@ -1,0 +1,5 @@
+<layer_2 layer_type="0" rows_output_size="64" cols_input_size="64">
+    <weights>generation11000/_0humanoidlayer_2_weights.bin</weights>
+    <bias>generation11000/_0humanoidlayer_2_bias.bin</bias>
+    <output>generation11000/_0humanoidlayer_2_outputs.bin</output>
+</layer_2>

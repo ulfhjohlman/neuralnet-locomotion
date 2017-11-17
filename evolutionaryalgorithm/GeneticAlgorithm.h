@@ -109,7 +109,7 @@ public:
 			m_niche_set.sort();
 
 			if (m_generation % 1000 == 0) {
-				m_population.save(m_generation, "ant1");
+				m_population.save(m_generation, "humanoid");
 			}
 
 			for (size_t i = 0; i < 5; i++) {
@@ -153,17 +153,18 @@ public:
 
 		m_niche_set.clearEmptyNiches();
 
+		if (m_population.size() > 200) {
+			const double start_kill_index = g_survivor_fraction*double(g_population_size);
+			Death::extinction(m_niche_set, g_start_survival_percentage);
+			Death::linearDeath(m_population, m_niche_set, m_object_pool, start_kill_index, g_start_survival_percentage);
+		}
+
 		for (size_t i = 0; i < m_population.size(); i++) {
 			if (m_population[i].use_count() == 1) {
 				m_object_pool.push(std::move(m_population[i]));
 				m_population.erase(i);
 				i--;
 			}
-		}
-
-		if (m_population.size() > 200) {
-			const double start_kill_index = g_survivor_fraction*double(g_population_size);
-			Death::linearDeath(m_population, m_niche_set, m_object_pool, start_kill_index, g_start_survival_percentage);
 		}
 	}
 
@@ -231,8 +232,8 @@ public:
 
 	void applyMutation()
 	{
-		const ScalarType T = 1000;
-		pmut = 0.01;
+		const ScalarType T = 10;
+		pmut = 0.1;
 		pmut *= std::exp(-ScalarType(m_generation) / T);
 		if (pmut < 0.0005)
 			pmut = 0.0005;

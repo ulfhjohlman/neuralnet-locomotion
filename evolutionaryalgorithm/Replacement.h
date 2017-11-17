@@ -49,8 +49,26 @@ public:
 	}
 
 	template<typename T>
-	static void extinction(Population<T>& population, int start_index, ScalarType start_survival_rate) {
-		
+	static void extinction( 
+		NicheSet<T>& niches, 
+		ScalarType start_survival_rate) {
+
+		niches.sortNiches();
+
+		size_t start_index = niches.size() * 2 / 3;
+		ScalarType k = start_survival_rate / ScalarType(niches.size() - start_index); //dy/dx
+		Generator g;
+		int deathcounter = 0;
+		for (int i = start_index; i < niches.size(); i++) {
+			ScalarType r = g.generate_uniform<ScalarType>(0.0f, 1.0f);
+			ScalarType threshold = -k*ScalarType(i + deathcounter - start_index) + start_survival_rate;
+			if (r > threshold) {
+				niches.removeNiche(i);
+				deathcounter++;
+				i--;
+			}
+		}
+
 	}
 	
 private:

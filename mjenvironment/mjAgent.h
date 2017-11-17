@@ -14,7 +14,7 @@
 
 int g_simulation_steps = 10;
 float g_minimum_kill_height = 0.6f;
-float g_max_simulation_time = 2.0f;
+float g_max_simulation_time = 10.0f;
 
 
 class mjAgent 
@@ -127,7 +127,7 @@ public:
 
 				if (m_objective) {
 					m_reward += simstep * m_objective(m_model, m_data);
-					m_reward += - 0.000001 * m_controller->output().squaredNorm();
+					m_reward += - 0.0000001 * m_controller->output().squaredNorm();
 				}
 				
 			}
@@ -172,7 +172,7 @@ protected:
 			//Setup states
 			const int number_of_inputs  = m_model->nsensordata;
 			const int number_of_outputs = m_model->nu;
-			const int recurrent_inputs  = 16;
+			const int recurrent_inputs  = 32;
 			MatrixType input(number_of_inputs + recurrent_inputs, 1);
 
 			//Copy input data
@@ -195,7 +195,7 @@ protected:
 
 			//Copy output data
 			for (int i = 0; i < number_of_outputs; i++)
-				m_data->ctrl[i] = m_controller->output()(i) + g.generate_normal<ScalarType>(0, 0.000005);
+				m_data->ctrl[i] = m_controller->output()(i) + g.generate_normal<ScalarType>(0, 0.001);
 		}
 	}
 	

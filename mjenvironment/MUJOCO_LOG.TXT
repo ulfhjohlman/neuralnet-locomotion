@@ -55,3 +55,804 @@ ERROR: Could not allocate memory
 Thu Nov 16 17:24:21 2017
 ERROR: Could not allocate memory
 
+Fri Nov 17 00:26:18 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 0.6350.
+
+Fri Nov 17 00:26:20 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 2. The simulation is unstable. Time = 0.8250.
+
+Fri Nov 17 00:26:21 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 0.6850.
+
+Fri Nov 17 00:26:21 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 0. The simulation is unstable. Time = 0.6800.
+
+Fri Nov 17 00:26:21 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 0. The simulation is unstable. Time = 0.9150.
+
+Fri Nov 17 00:26:32 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 0. The simulation is unstable. Time = 0.6800.
+
+Fri Nov 17 00:26:34 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 0.5100.
+
+Fri Nov 17 00:26:48 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 1.2600.
+
+Fri Nov 17 00:26:49 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 1.6650.
+
+Fri Nov 17 00:26:56 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 1.6500.
+
+Fri Nov 17 00:26:58 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 1.7300.
+
+Fri Nov 17 00:27:02 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 2.0000.
+
+Fri Nov 17 00:27:02 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 1.5250.
+
+Fri Nov 17 00:27:14 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 2.6800.
+
+Fri Nov 17 00:27:14 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 1.9700.
+
+Fri Nov 17 00:27:18 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 2.7100.
+
+Fri Nov 17 00:27:18 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 2. The simulation is unstable. Time = 2.6250.
+
+Fri Nov 17 00:27:27 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 4. The simulation is unstable. Time = 1.7000.
+
+Fri Nov 17 00:27:55 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 0. The simulation is unstable. Time = 1.9150.
+
+Fri Nov 17 00:28:06 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 1.9100.
+
+Fri Nov 17 00:28:10 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 2.5700.
+
+Fri Nov 17 00:28:10 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 1.7650.
+
+Fri Nov 17 00:28:17 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 2.0050.
+
+Fri Nov 17 00:28:18 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 4. The simulation is unstable. Time = 1.7950.
+
+Fri Nov 17 00:28:39 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 2.2650.
+
+Fri Nov 17 00:28:40 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 0. The simulation is unstable. Time = 1.7750.
+
+Fri Nov 17 00:28:42 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 2.6000.
+
+Fri Nov 17 00:29:00 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 2.3850.
+
+Fri Nov 17 00:29:14 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 3.1750.
+
+Fri Nov 17 00:29:16 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 2.3750.
+
+Fri Nov 17 00:29:22 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 2.2150.
+
+Fri Nov 17 00:29:41 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 0. The simulation is unstable. Time = 2.3050.
+
+Fri Nov 17 00:29:46 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 2.1500.
+
+Fri Nov 17 00:29:48 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 3. The simulation is unstable. Time = 2.0550.
+
+Fri Nov 17 00:30:53 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 0. The simulation is unstable. Time = 1.7650.
+
+Fri Nov 17 00:31:04 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 2. The simulation is unstable. Time = 3.0300.
+
+Fri Nov 17 00:31:05 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 2.1150.
+
+Fri Nov 17 00:31:05 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 2. The simulation is unstable. Time = 3.1650.
+
+Fri Nov 17 00:31:06 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 2.3900.
+
+Fri Nov 17 00:31:39 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 3.0350.
+
+Fri Nov 17 00:31:42 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 2. The simulation is unstable. Time = 2.3050.
+
+Fri Nov 17 00:31:45 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 2.4450.
+
+Fri Nov 17 00:32:26 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 2.7250.
+
+Fri Nov 17 00:32:51 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 2.9000.
+
+Fri Nov 17 00:33:26 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 2. The simulation is unstable. Time = 0.6000.
+
+Fri Nov 17 00:33:58 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 2.4400.
+
+Fri Nov 17 00:34:04 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 2.9800.
+
+Fri Nov 17 00:34:06 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 0. The simulation is unstable. Time = 2.1450.
+
+Fri Nov 17 00:34:19 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 0. The simulation is unstable. Time = 3.0300.
+
+Fri Nov 17 00:35:43 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 2.3100.
+
+Fri Nov 17 00:39:53 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 0. The simulation is unstable. Time = 4.1400.
+
+Fri Nov 17 02:36:31 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 1.8250.
+
+Fri Nov 17 02:36:31 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 2. The simulation is unstable. Time = 1.8750.
+
+Fri Nov 17 02:37:45 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 0. The simulation is unstable. Time = 2.0650.
+
+Fri Nov 17 02:40:18 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 2.3500.
+
+Fri Nov 17 02:40:18 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 2.3800.
+
+Fri Nov 17 02:40:18 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 2. The simulation is unstable. Time = 2.3500.
+
+Fri Nov 17 02:40:19 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 2.3500.
+
+Fri Nov 17 02:40:20 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 3.6150.
+
+Fri Nov 17 02:40:20 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 0. The simulation is unstable. Time = 2.3850.
+
+Fri Nov 17 02:40:20 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 2. The simulation is unstable. Time = 2.3550.
+
+Fri Nov 17 02:40:20 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 0. The simulation is unstable. Time = 2.3850.
+
+Fri Nov 17 02:40:27 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 5.8800.
+
+Fri Nov 17 02:40:29 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 5.6250.
+
+Fri Nov 17 02:40:33 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 2. The simulation is unstable. Time = 5.9600.
+
+Fri Nov 17 02:40:34 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 5.9100.
+
+Fri Nov 17 02:40:38 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 2.5900.
+
+Fri Nov 17 02:40:38 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 2. The simulation is unstable. Time = 2.5050.
+
+Fri Nov 17 02:40:38 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 2.5500.
+
+Fri Nov 17 02:40:38 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 2. The simulation is unstable. Time = 2.5050.
+
+Fri Nov 17 02:40:38 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 0. The simulation is unstable. Time = 2.5100.
+
+Fri Nov 17 02:40:38 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 4. The simulation is unstable. Time = 2.5050.
+
+Fri Nov 17 02:40:38 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 0. The simulation is unstable. Time = 2.5100.
+
+Fri Nov 17 02:40:39 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 2.5100.
+
+Fri Nov 17 02:40:39 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 1. The simulation is unstable. Time = 2.5100.
+
+Fri Nov 17 02:40:39 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 2.5600.
+
+Fri Nov 17 02:40:39 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 0. The simulation is unstable. Time = 2.5100.
+
+Fri Nov 17 02:40:39 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 4. The simulation is unstable. Time = 2.5050.
+
+Fri Nov 17 02:40:39 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 0. The simulation is unstable. Time = 2.5100.
+
+Fri Nov 17 02:40:39 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 2. The simulation is unstable. Time = 2.5050.
+
+Fri Nov 17 02:41:35 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 3.6250.
+
+Fri Nov 17 02:41:35 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 2. The simulation is unstable. Time = 4.5150.
+
+Fri Nov 17 02:41:36 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 0. The simulation is unstable. Time = 3.6300.
+
+Fri Nov 17 02:41:36 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 3.6300.
+
+Fri Nov 17 02:41:36 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 0. The simulation is unstable. Time = 3.6300.
+
+Fri Nov 17 02:41:36 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 3.6250.
+
+Fri Nov 17 02:41:38 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 3.0900.
+
+Fri Nov 17 02:41:38 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 0. The simulation is unstable. Time = 3.0950.
+
+Fri Nov 17 02:41:38 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 3.0900.
+
+Fri Nov 17 02:41:38 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 0. The simulation is unstable. Time = 3.0950.
+
+Fri Nov 17 02:41:38 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 3.0950.
+
+Fri Nov 17 02:41:39 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 4. The simulation is unstable. Time = 3.0900.
+
+Fri Nov 17 02:41:39 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 2. The simulation is unstable. Time = 3.0950.
+
+Fri Nov 17 02:41:39 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 3.0900.
+
+Fri Nov 17 02:41:39 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 2. The simulation is unstable. Time = 3.0950.
+
+Fri Nov 17 02:41:39 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 3.0950.
+
+Fri Nov 17 02:41:39 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 2. The simulation is unstable. Time = 3.0900.
+
+Fri Nov 17 02:41:41 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 2. The simulation is unstable. Time = 3.8900.
+
+Fri Nov 17 02:41:41 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 0. The simulation is unstable. Time = 3.8950.
+
+Fri Nov 17 02:41:41 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 3.9350.
+
+Fri Nov 17 02:41:41 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 0. The simulation is unstable. Time = 3.8950.
+
+Fri Nov 17 02:42:03 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 3. The simulation is unstable. Time = 2.9150.
+
+Fri Nov 17 02:42:59 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 4.6750.
+
+Fri Nov 17 02:42:59 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 4.6400.
+
+Fri Nov 17 02:43:04 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:04 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 2. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:04 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:05 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 4. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:05 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:06 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 4. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:06 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:07 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 4. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:07 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:09 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:09 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 2. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:09 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:09 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 4. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:10 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:11 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:12 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 4. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:12 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:12 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 5. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:12 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:12 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 4. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:12 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:14 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:15 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 4. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:15 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:15 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 4. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:15 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:15 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 4. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:15 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:17 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:18 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 4. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:18 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:18 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 4. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:18 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:20 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 4. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:20 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:21 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 4. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:21 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:21 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 4. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:21 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:23 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:23 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 4. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:24 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:26 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:27 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 4. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:27 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:27 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 4. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:27 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:29 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:29 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 4. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:29 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:29 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 4. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:29 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:29 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 4. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:30 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 4.3100.
+
+Fri Nov 17 02:43:31 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 3.8950.
+
+Fri Nov 17 02:43:32 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 3. The simulation is unstable. Time = 3.8950.
+
+Fri Nov 17 02:43:32 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 3.8950.
+
+Fri Nov 17 02:43:32 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 5. The simulation is unstable. Time = 3.8950.
+
+Fri Nov 17 02:43:32 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 3.8950.
+
+Fri Nov 17 02:43:32 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 2. The simulation is unstable. Time = 3.8950.
+
+Fri Nov 17 02:43:32 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 3.8950.
+
+Fri Nov 17 02:43:34 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 3.8950.
+
+Fri Nov 17 02:43:34 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 2. The simulation is unstable. Time = 3.8950.
+
+Fri Nov 17 02:43:35 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 3.8950.
+
+Fri Nov 17 02:43:35 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 3.8950.
+
+Fri Nov 17 02:43:35 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 3.8950.
+
+Fri Nov 17 02:43:35 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 2. The simulation is unstable. Time = 3.8950.
+
+Fri Nov 17 02:43:37 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 4. The simulation is unstable. Time = 3.8950.
+
+Fri Nov 17 02:43:37 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 2. The simulation is unstable. Time = 3.8950.
+
+Fri Nov 17 02:43:38 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 1. The simulation is unstable. Time = 3.8950.
+
+Fri Nov 17 02:43:38 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 1. The simulation is unstable. Time = 3.8950.
+
+Fri Nov 17 02:43:39 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 3.8950.
+
+Fri Nov 17 02:43:39 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 4. The simulation is unstable. Time = 3.8950.
+
+Fri Nov 17 02:43:40 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 3.8950.
+
+Fri Nov 17 02:43:40 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 4. The simulation is unstable. Time = 3.8950.
+
+Fri Nov 17 02:43:40 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 1. The simulation is unstable. Time = 3.9000.
+
+Fri Nov 17 02:43:40 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 3.8950.
+
+Fri Nov 17 02:43:40 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 2. The simulation is unstable. Time = 3.8950.
+
+Fri Nov 17 02:43:40 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 3.8950.
+
+Fri Nov 17 02:43:40 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 2. The simulation is unstable. Time = 3.8950.
+
+Fri Nov 17 02:43:41 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 3.8950.
+
+Fri Nov 17 02:43:42 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 3. The simulation is unstable. Time = 3.8950.
+
+Fri Nov 17 02:43:42 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 0. The simulation is unstable. Time = 3.9000.
+
+Fri Nov 17 02:43:42 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 3.8950.
+
+Fri Nov 17 02:43:42 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 4. The simulation is unstable. Time = 3.8950.
+
+Fri Nov 17 02:43:43 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 3.8950.
+
+Fri Nov 17 02:43:49 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 5.9300.
+
+Fri Nov 17 02:43:49 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 4. The simulation is unstable. Time = 5.9250.
+
+Fri Nov 17 02:43:50 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 6.0900.
+
+Fri Nov 17 02:43:50 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 3. The simulation is unstable. Time = 5.9250.
+
+Fri Nov 17 02:43:50 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 3. The simulation is unstable. Time = 5.9250.
+
+Fri Nov 17 02:43:50 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 5.9250.
+
+Fri Nov 17 02:43:52 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 2. The simulation is unstable. Time = 5.9450.
+
+Fri Nov 17 02:43:52 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 2. The simulation is unstable. Time = 5.9250.
+
+Fri Nov 17 02:43:52 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 5.9250.
+
+Fri Nov 17 02:43:52 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 5.9550.
+
+Fri Nov 17 02:43:53 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 6.0350.
+
+Fri Nov 17 02:43:54 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 2. The simulation is unstable. Time = 5.9250.
+
+Fri Nov 17 02:43:55 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 3. The simulation is unstable. Time = 5.9300.
+
+Fri Nov 17 02:43:55 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 5.9450.
+
+Fri Nov 17 02:43:55 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 0. The simulation is unstable. Time = 6.0800.
+
+Fri Nov 17 02:43:55 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 5.9300.
+
+Fri Nov 17 02:43:55 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 5.9350.
+
+Fri Nov 17 02:45:02 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 2. The simulation is unstable. Time = 4.5700.
+
+Fri Nov 17 02:45:03 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 3.7350.
+
+Fri Nov 17 02:45:43 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 2. The simulation is unstable. Time = 5.3100.
+
+Fri Nov 17 02:45:43 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 5.2900.
+
+Fri Nov 17 02:45:51 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 5.5500.
+
+Fri Nov 17 02:45:53 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 0. The simulation is unstable. Time = 5.9200.
+
+Fri Nov 17 02:46:01 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 2. The simulation is unstable. Time = 4.6750.
+
+Fri Nov 17 02:46:02 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 4.8350.
+
+Fri Nov 17 02:46:04 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 4.6600.
+
+Fri Nov 17 02:46:49 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 2. The simulation is unstable. Time = 5.4200.
+
+Fri Nov 17 02:47:02 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 5.4300.
+
+Fri Nov 17 02:47:10 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 5.2800.
+
+Fri Nov 17 02:47:10 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 5.2450.
+
+Fri Nov 17 02:47:11 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 4. The simulation is unstable. Time = 5.2650.
+
+Fri Nov 17 02:47:18 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 5.8750.
+
+Fri Nov 17 02:47:31 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 1. The simulation is unstable. Time = 7.1750.
+
+Fri Nov 17 02:47:58 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 2. The simulation is unstable. Time = 6.2000.
+
+Fri Nov 17 02:48:09 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 2. The simulation is unstable. Time = 6.1250.
+
+Fri Nov 17 02:49:47 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 2. The simulation is unstable. Time = 5.7250.
+
+Fri Nov 17 02:50:01 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 1. The simulation is unstable. Time = 5.9350.
+
+Fri Nov 17 02:50:01 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 6.0200.
+
+Fri Nov 17 02:50:46 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 5.5000.
+
+Fri Nov 17 02:50:58 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 2. The simulation is unstable. Time = 5.7500.
+
+Fri Nov 17 02:50:58 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 2. The simulation is unstable. Time = 5.7050.
+
+Fri Nov 17 02:51:01 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 4. The simulation is unstable. Time = 5.9650.
+
+Fri Nov 17 02:53:26 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 4. The simulation is unstable. Time = 4.7400.
+
+Fri Nov 17 02:53:27 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 5.9900.
+
+Fri Nov 17 02:55:13 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 4. The simulation is unstable. Time = 6.4450.
+
+Fri Nov 17 02:55:15 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 6.1900.
+
+Fri Nov 17 02:57:49 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 5.6600.
+
+Fri Nov 17 03:01:21 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 4.9350.
+
+Fri Nov 17 03:01:22 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 4.9350.
+
+Fri Nov 17 03:01:24 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 1. The simulation is unstable. Time = 5.8700.
+
+Fri Nov 17 03:05:46 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 0.5950.
+
+Fri Nov 17 03:06:03 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 0.5950.
+
+Fri Nov 17 03:06:20 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 0.5950.
+
+Fri Nov 17 03:06:37 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 0.5950.
+
+Fri Nov 17 03:06:53 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 0.5950.
+
+Fri Nov 17 03:07:10 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 0.5950.
+
+Fri Nov 17 03:07:27 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 0.5950.
+
+Fri Nov 17 03:07:44 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 0.5950.
+
+Fri Nov 17 03:07:53 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 0.5950.
+
+Fri Nov 17 03:08:37 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 1.2250.
+
+Fri Nov 17 03:08:46 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 1.5750.
+
+Fri Nov 17 03:08:56 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 0. The simulation is unstable. Time = 3.2800.
+
+Fri Nov 17 03:09:20 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 2. The simulation is unstable. Time = 2.7300.
+
+Fri Nov 17 03:09:23 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 2.0950.
+
+Fri Nov 17 03:10:11 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 4. The simulation is unstable. Time = 1.5750.
+
+Fri Nov 17 03:11:59 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 0. The simulation is unstable. Time = 3.2000.
+
+Fri Nov 17 03:12:05 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 3.6000.
+
+Fri Nov 17 03:12:08 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 0. The simulation is unstable. Time = 3.3000.
+
+Fri Nov 17 03:13:07 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 2.4850.
+
+Fri Nov 17 03:14:43 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 4. The simulation is unstable. Time = 2.7450.
+
+Fri Nov 17 03:15:15 2017
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 5.6100.
+
+Fri Nov 17 03:15:53 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 2. The simulation is unstable. Time = 3.8600.
+
+Fri Nov 17 03:16:46 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 4. The simulation is unstable. Time = 4.9350.
+
+Fri Nov 17 03:16:59 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 2. The simulation is unstable. Time = 4.9550.
+
+Fri Nov 17 03:18:32 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 5.6450.
+
+Fri Nov 17 03:20:59 2017
+WARNING: Nan, Inf or huge value in QACC at DOF 2. The simulation is unstable. Time = 3.7150.
+
+Fri Nov 17 03:21:58 2017
+WARNING: Nan, Inf or huge value in QPOS at DOF 0. The simulation is unstable. Time = 7.6550.
+

@@ -6,9 +6,9 @@
 #include <vector>
 #include <numeric>
 
-ScalarType min_niche_radius = 3;
-ScalarType max_niche_radius = 10;
-ScalarType max_niche_size = 30;
+ScalarType min_niche_radius = 15;
+ScalarType max_niche_radius = 20;
+ScalarType max_niche_size = 64;
 
 template<typename T>
 class Niche 
@@ -273,6 +273,17 @@ public:
 
 	size_t size() {
 		return m_niches.size();
+	}
+
+	void removeNiche(size_t i) {
+		m_niches.erase(m_niches.begin() + i);
+	}
+
+	void sortNiches() {
+		auto cmp_by_fitness = [](Niche<T>& a, Niche<T>& b) {
+			return a.getPopulation()[0]->getFitness() > b.getPopulation()[0]->getFitness();
+		};
+		std::sort(m_niches.begin(), m_niches.end(), cmp_by_fitness);
 	}
 private:
 	std::vector<Niche<T>> m_niches;

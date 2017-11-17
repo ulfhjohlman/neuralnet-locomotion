@@ -141,10 +141,7 @@
 
 	<tendonpos name="left_hipknee" tendon="left_hipknee" />
 	<tendonpos name="right_hipknee" tendon="right_hipknee" />
-
-	<tendonvel name="left_hipkneeV" tendon="left_hipknee" />
-	<tendonvel name="right_hipkneeV" tendon="right_hipknee" />
-
+	
 	<jointpos name="abdomen_y"    		joint="abdomen_y" />
         <jointpos name="abdomen_z"    		joint="abdomen_z" />
         <jointpos name="abdomen_x"    		joint="abdomen_x" />
@@ -171,31 +168,7 @@
         <jointpos name="left_shoulder2"  	joint="left_shoulder2" />
         <jointpos name="left_elbow"      	joint="left_elbow" />
 
-	<jointvel name="vabdomen_y"    		joint="abdomen_y" />
-        <jointvel name="vabdomen_z"    		joint="abdomen_z" />
-        <jointvel name="vabdomen_x"    		joint="abdomen_x" />
 
-        <jointvel name="vright_hip_x"  		joint="right_hip_x" />
-        <jointvel name="vright_hip_z"  		joint="right_hip_z" />
-        <jointvel name="vright_hip_y"  		joint="right_hip_y" />
-        <jointvel name="vright_knee"   		joint="right_knee" />
-        <jointvel name="vright_ankle_x"		joint="right_ankle_x" />
-        <jointvel name="vright_ankle_y"  	joint="right_ankle_y" />
-
-        <jointvel name="vleft_hip_x"     	joint="left_hip_x" />
-        <jointvel name="vleft_hip_z"     	joint="left_hip_z" />
-        <jointvel name="vleft_hip_y"     	joint="left_hip_y" />
-        <jointvel name="vleft_knee"      	joint="left_knee" />
-        <jointvel name="vleft_ankle_x"   	joint="left_ankle_x" />
-        <jointvel name="vleft_ankle_y"   	joint="left_ankle_y" />
-
-        <jointvel name="vright_shoulder1"	joint="right_shoulder1" />
-        <jointvel name="vright_shoulder2"	joint="right_shoulder2" />
-        <jointvel name="vright_elbow"    	joint="right_elbow" />
-
-        <jointvel name="vleft_shoulder1"  	joint="left_shoulder1" />
-        <jointvel name="vleft_shoulder2"  	joint="left_shoulder2" />
-        <jointvel name="vleft_elbow"      	joint="left_elbow" />
     </sensor>
 
 
@@ -208,15 +181,15 @@
         <motor gear="100" joint="right_hip_z" name="right_hip_z"/>
         <motor gear="300" joint="right_hip_y" name="right_hip_y"/>
         <motor gear="200" joint="right_knee" name="right_knee"/>
-	<motor gear="150" name="right_ankle_x"   	joint="right_ankle_x" />
-        <motor gear="50"  name="right_ankle_y"   	joint="right_ankle_y" />
+	<motor gear="50" name="right_ankle_x"   	joint="right_ankle_x" />
+        <motor gear="10"  name="right_ankle_y"   	joint="right_ankle_y" />
 
         <motor gear="100" joint="left_hip_x" name="left_hip_x"/>
         <motor gear="100" joint="left_hip_z" name="left_hip_z"/>
         <motor gear="300" joint="left_hip_y" name="left_hip_y"/>
         <motor gear="200" joint="left_knee" name="left_knee"/>
-	<motor gear="150" name="left_ankle_x"   	joint="left_ankle_x" />
-        <motor gear="50"  name="left_ankle_y"   	joint="left_ankle_y" />
+	<motor gear="50" name="left_ankle_x"   	joint="left_ankle_x" />
+        <motor gear="10"  name="left_ankle_y"   	joint="left_ankle_y" />
 
         <motor gear="25" joint="right_shoulder1" name="right_shoulder1"/>
         <motor gear="25" joint="right_shoulder2" name="right_shoulder2"/>
@@ -228,3 +201,33 @@
     </actuator>
 
 </mujoco>
+
+	<!-- tendonvel name="left_hipkneeV" tendon="left_hipknee" --/>
+	<!-- tendonvel name="right_hipkneeV" tendon="right_hipknee" --/>
+
+	<!-- jointvel name="vabdomen_y"    		joint="abdomen_y" --/>
+        <!-- jointvel name="vabdomen_z"    		joint="abdomen_z" --/>
+        <!-- jointvel name="vabdomen_x"    		joint="abdomen_x" --/>
+
+        <!-- jointvel name="vright_hip_x"  		joint="right_hip_x" --/>
+        <!-- jointvel name="vright_hip_z"  		joint="right_hip_z" --/>
+        <!-- jointvel name="vright_hip_y"  		joint="right_hip_y" --/>
+        <!-- jointvel name="vright_knee"   		joint="right_knee" --/>
+        <!-- jointvel name="vright_ankle_x"		joint="right_ankle_x" --/>
+        <!-- jointvel name="vright_ankle_y"  	joint="right_ankle_y" --/>
+
+        <!-- jointvel name="vleft_hip_x"     	joint="left_hip_x" --/>
+        <!-- jointvel name="vleft_hip_z"     	joint="left_hip_z" --/>
+        <!-- jointvel name="vleft_hip_y"     	joint="left_hip_y" --/>
+        <!-- jointvel name="vleft_knee"      	joint="left_knee" --/>
+        <!-- jointvel name="vleft_ankle_x"   	joint="left_ankle_x" --/>
+        <!-- jointvel name="vleft_ankle_y"   	joint="left_ankle_y" --/>
+
+        <!-- jointvel name="vright_shoulder1"	joint="right_shoulder1" --/>
+        <!-- jointvel name="vright_shoulder2"	joint="right_shoulder2" --/>
+        <!-- jointvel name="vright_elbow"    	joint="right_elbow" --/>
+
+        <!-- jointvel name="vleft_shoulder1"  	joint="left_shoulder1" --/>
+        <!-- jointvel name="vleft_shoulder2"  	joint="left_shoulder2" --/>
+        <!-- jointvel name="vleft_elbow"      	joint="left_elbow" --/>
+
