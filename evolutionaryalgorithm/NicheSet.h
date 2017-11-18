@@ -6,8 +6,8 @@
 #include <vector>
 #include <numeric>
 
-ScalarType min_niche_radius = 15;
-ScalarType max_niche_radius = 20;
+ScalarType min_niche_radius = 8;
+ScalarType max_niche_radius = 10;
 ScalarType max_niche_size = 64;
 
 template<typename T>
@@ -131,10 +131,15 @@ public:
 		VectorType v;
 		member->getGenome()->getGeneSet(v);
 
+		ScalarType min_distance = max_niche_radius;
 		int k = 0;
 		for (auto & niche : m_niches) {
-			if (niche.distanceTo(v) < niche.max_radius) {
-				niche.addMember(member);
+			ScalarType distance = niche.distanceTo(v);
+			if (distance < min_distance)
+				min_distance = distance;
+
+			if (distance < niche.max_radius) {
+				niche.addMember(member); 
 				k++; //adds to k niches
 			}
 		}
@@ -143,6 +148,8 @@ public:
 			Niche<T> niche;
 			niche.addMember(member);
 			niche.center();
+			niche.merge_radius = min_distance * 0.65;
+			niche.max_radius = min_distance * 0.9;
 			m_niches.push_back(niche);
 		}
 	}

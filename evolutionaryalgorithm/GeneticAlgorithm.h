@@ -45,10 +45,10 @@
 
 const int g_population_size = 128;
 const double g_mutation_probability = 0.01;
-double g_crossover_probability = 0.15;
-double g_niche_crossover_probability = 0.4;
+double g_crossover_probability = 0.3;
+double g_niche_crossover_probability = 0.45;
 const double g_ptour = 0.75;
-const int g_tournamentSize = 10;
+const int g_tournamentSize = 6;
 
 const double g_start_survival_percentage = 4.0 / 7.0; //half dies if with 0.3 top survivors
 const double g_survivor_fraction = 0.3; //top x%
@@ -109,7 +109,7 @@ public:
 			m_niche_set.sort();
 
 			if (m_generation % 1000 == 0) {
-				m_population.save(m_generation, "humanoid");
+				m_population.save(m_generation, "walker2d");
 			}
 
 			for (size_t i = 0; i < 5; i++) {
@@ -232,8 +232,8 @@ public:
 
 	void applyMutation()
 	{
-		const ScalarType T = 10;
-		pmut = 0.1;
+		const ScalarType T = 100;
+		pmut = 0.01;
 		pmut *= std::exp(-ScalarType(m_generation) / T);
 		if (pmut < 0.0005)
 			pmut = 0.0005;

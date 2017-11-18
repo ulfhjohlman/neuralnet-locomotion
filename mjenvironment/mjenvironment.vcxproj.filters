@@ -14,11 +14,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AgentScheduler.h" />
-    <ClInclude Include="glfwWrapper.h" />
     <ClInclude Include="mjAgent.h" />
     <ClInclude Include="mjEnvironment.h" />
-    <ClInclude Include="oldMujocoBasic.h" />
     <ClInclude Include="ModelSetup.h" />
+    <ClInclude Include="oldMujocoBasic.h" />
   </ItemGroup>
 </Project>

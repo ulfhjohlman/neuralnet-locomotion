@@ -13,8 +13,8 @@
 #include "ScalingLayer.h"
 
 int g_simulation_steps = 10;
-float g_minimum_kill_height = 0.6f;
-float g_max_simulation_time = 10.0f;
+float g_minimum_kill_height = 0.67f;
+float g_max_simulation_time = 2.0f;
 
 
 class mjAgent 
@@ -127,7 +127,7 @@ public:
 
 				if (m_objective) {
 					m_reward += simstep * m_objective(m_model, m_data);
-					m_reward += - 0.0000001 * m_controller->output().squaredNorm();
+					m_reward += - 0.000001 * m_controller->output().block(0, 0, 6, 1).squaredNorm();
 				}
 				
 			}

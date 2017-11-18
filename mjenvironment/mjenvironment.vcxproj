@@ -97,8 +97,6 @@
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;_WINDOWS;CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
-      <FloatingPointModel>Precise</FloatingPointModel>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -162,7 +160,7 @@ exit /b %1
 if %errorlevel% neq 0 goto :VCEnd</Command>
     </PostBuildEvent>
     <Link>
-      <AdditionalDependencies>..\lib\mjpro150\bin\mujoco150.lib;..\lib\mjpro150\bin\glfw3.lib;..\neuralnet\Debug\neuralnet.lib;..\evolutionaryalgorithm\Debug\evo_alg.lib;..\lib\tinyxml2\Debug\tinyxml.lib;..\utility\Debug\utility.lib;..\testframework\Debug\testframework.lib;..\rl\Debug\rl.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>..\lib\mjpro150\bin\mujoco150.lib;..\lib\mjpro150\bin\glfw3.lib;..\lib\Debug\neuralnet_Debug.lib;..\lib\Debug\evo_alg_Debug.lib;..\lib\Debug\tinyxml_Debug.lib;..\lib\Debug\utility_Debug.lib;..\lib\Debug\testframework_Debug.lib;..\lib\Debug\rl_Debug.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -193,8 +191,6 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <DebugInformationFormat>
       </DebugInformationFormat>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
-      <FloatingPointModel>Precise</FloatingPointModel>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -258,7 +254,7 @@ exit /b %1
 if %errorlevel% neq 0 goto :VCEnd</Command>
     </PostBuildEvent>
     <Link>
-      <AdditionalDependencies>..\lib\mjpro150\bin\mujoco150.lib;..\lib\mjpro150\bin\glfw3.lib;..\neuralnet\Release\neuralnet.lib;..\evolutionaryalgorithm\Release\evo_alg.lib;..\lib\tinyxml2\Release\tinyxml.lib;..\utility\Release\utility.lib;..\testframework\Release\testframework.lib;..\rl\Release\rl.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>..\lib\mjpro150\bin\mujoco150.lib;..\lib\mjpro150\bin\glfw3.lib;..\lib\Release\neuralnet.lib;..\lib\Release\evo_alg.lib;..\lib\Release\tinyxml.lib;..\lib\Release\utility.lib;..\lib\Release\testframework.lib;..\lib\Release\rl.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -289,8 +285,6 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <DebugInformationFormat>
       </DebugInformationFormat>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
-      <FloatingPointModel>Precise</FloatingPointModel>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"MinSizeRel\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -354,7 +348,7 @@ exit /b %1
 if %errorlevel% neq 0 goto :VCEnd</Command>
     </PostBuildEvent>
     <Link>
-      <AdditionalDependencies>..\lib\mjpro150\bin\mujoco150.lib;..\lib\mjpro150\bin\glfw3.lib;..\neuralnet\MinSizeRel\neuralnet.lib;..\evolutionaryalgorithm\MinSizeRel\evo_alg.lib;..\lib\tinyxml2\MinSizeRel\tinyxml.lib;..\utility\MinSizeRel\utility.lib;..\testframework\MinSizeRel\testframework.lib;..\rl\MinSizeRel\rl.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>..\lib\mjpro150\bin\mujoco150.lib;..\lib\mjpro150\bin\glfw3.lib;..\lib\MinSizeRel\neuralnet_MinsizeRel.lib;..\lib\MinSizeRel\evo_alg_MinsizeRel.lib;..\lib\MinSizeRel\tinyxml_MinsizeRel.lib;..\lib\MinSizeRel\utility_MinsizeRel.lib;..\lib\MinSizeRel\testframework_MinsizeRel.lib;..\lib\MinSizeRel\rl_MinsizeRel.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -384,8 +378,6 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR="RelWithDebInfo";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
-      <FloatingPointModel>Precise</FloatingPointModel>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"RelWithDebInfo\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -449,7 +441,7 @@ exit /b %1
 if %errorlevel% neq 0 goto :VCEnd</Command>
     </PostBuildEvent>
     <Link>
-      <AdditionalDependencies>..\lib\mjpro150\bin\mujoco150.lib;..\lib\mjpro150\bin\glfw3.lib;..\neuralnet\RelWithDebInfo\neuralnet.lib;..\evolutionaryalgorithm\RelWithDebInfo\evo_alg.lib;..\lib\tinyxml2\RelWithDebInfo\tinyxml.lib;..\utility\RelWithDebInfo\utility.lib;..\testframework\RelWithDebInfo\testframework.lib;..\rl\RelWithDebInfo\rl.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>..\lib\mjpro150\bin\mujoco150.lib;..\lib\mjpro150\bin\glfw3.lib;..\lib\RelWithDebInfo\neuralnet_RelWithDebugInfo.lib;..\lib\RelWithDebInfo\evo_alg_RelWithDebugInfo.lib;..\lib\RelWithDebInfo\tinyxml_RelWithDebugInfo.lib;..\lib\RelWithDebInfo\utility_RelWithDebugInfo.lib;..\lib\RelWithDebInfo\testframework_RelWithDebugInfo.lib;..\lib\RelWithDebInfo\rl_RelWithDebugInfo.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -554,8 +546,6 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AgentScheduler.h" />
-    <ClInclude Include="glfwWrapper.h" />
     <ClInclude Include="mjAgent.h" />
     <ClInclude Include="mjEnvironment.h" />
     <ClInclude Include="ModelSetup.h" />

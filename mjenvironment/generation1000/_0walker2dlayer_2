@@ -1,0 +1,5 @@
+<layer_2 layer_type="0" rows_output_size="32" cols_input_size="48">
+    <weights>generation1000/_0walker2dlayer_2_weights.bin</weights>
+    <bias>generation1000/_0walker2dlayer_2_bias.bin</bias>
+    <output>generation1000/_0walker2dlayer_2_outputs.bin</output>
+</layer_2>
