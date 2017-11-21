@@ -21,19 +21,14 @@ public:
             sample.reserve(new_out_size);
 			localSigmaObjectiveGradient.reserve(new_out_size);
 			localMuObjectiveGradient.reserve(new_out_size);
-			log_sigma.reserve(new_out_size);
+			log_sigma.resize(new_out_size);
 			non_log_sigma.resize(new_out_size);
 			mu.reserve(new_out_size);
 			log_sigma_matrix.resize(out_size,1);
 			log_sigma_gradients_cache.resize(out_size, 1);
 			non_log_sigma_matrix.resize(out_size, 1);
 			log_sigma_gradients_cache.setZero();
-			for (int i = 0; i < out_size; i++) {
-				log_sigma.push_back(0);
-				log_sigma_matrix(i) = log_sigma[i];
-				non_log_sigma[i] = exp(log_sigma[i]);
-				non_log_sigma_matrix(i) = non_log_sigma[i];
-			}
+			setSigma(0);
 			m_nn->m_parameter_updater->addParam(&log_sigma_matrix,&log_sigma_gradients_cache);
 #ifdef _DEBUG
 			int lastLayerIndex = new_nn->getTopology()->getNumberOfLayers() - 1;
@@ -116,10 +111,31 @@ public:
 			Eigen::Map<MatrixType> x(err_gradients.data(),out_size,1);
             m_nn->backprop(x);
 
-			//Sigma graidents handled here
-			Eigen::Map<MatrixType> y(err_gradients.data() + out_size, out_size, 1);
-			log_sigma_gradients_cache.array() += y.array() * non_log_sigma_matrix.array();
+			if (!static_sigma) {
+				//Sigma graidents handled here
+				Eigen::Map<MatrixType> y(err_gradients.data() + out_size, out_size, 1);
+				log_sigma_gradients_cache.array() += y.array() * non_log_sigma_matrix.array();
+			}
         }
+
+		//sets all sigma vectors/matrixes to correspond to x
+		void setSigma(double x) {
+			for (int i = 0; i < out_size; i++) {
+				log_sigma[i] = log(x);
+				log_sigma_matrix(i) = log_sigma[i];
+				non_log_sigma[i] = x;
+				non_log_sigma_matrix(i) = non_log_sigma[i];
+			}
+		}
+		//sets all sigma vectors/matrixes corresponing to e^x
+		void setLogSigma(double x) {
+			for (int i = 0; i < out_size; i++) {
+				log_sigma[i] = x;
+				log_sigma_matrix(i) = log_sigma[i];
+				non_log_sigma[i] = exp(x);
+				non_log_sigma_matrix(i) = non_log_sigma[i];
+			}
+		}
 
         void cacheLayerParams()
         {
@@ -133,17 +149,19 @@ public:
 		void updateParams()
 		{
 			m_nn->updateParameters();
-			//log_sigma_matrix += -1e-4 * log_sigma_gradients_cache;
-			log_sigma = std::vector<ScalarType>(log_sigma_matrix.data(), log_sigma_matrix.data() + log_sigma_matrix.size());
-			for (int i = 0; i < out_size; i++) {
-				non_log_sigma[i] = exp(log_sigma[i]);
-				if (non_log_sigma[i] < MIN_SIGMA)
-				{
-					non_log_sigma[i] = MIN_SIGMA;
-					log_sigma[i] = log(non_log_sigma[i]);
+			
+			if (!static_sigma) {
+				log_sigma = std::vector<ScalarType>(log_sigma_matrix.data(), log_sigma_matrix.data() + log_sigma_matrix.size());
+				for (int i = 0; i < out_size; i++) {
+					non_log_sigma[i] = exp(log_sigma[i]);
+					if (non_log_sigma[i] < MIN_SIGMA)
+					{
+						non_log_sigma[i] = MIN_SIGMA;
+						log_sigma[i] = log(non_log_sigma[i]);
+					}
 				}
+				log_sigma_gradients_cache.setZero();
 			}
-			log_sigma_gradients_cache.setZero();
 		}
 
         /*void copyParams(const PolicyWrapper& otherPW) //not needed anymore?
@@ -151,7 +169,7 @@ public:
             m_nn->copyParams(*otherPW.m_nn);
         }*/
 
-
+		bool static_sigma = true;
 private:
         void calcLocalObjectiveGradients()
         {

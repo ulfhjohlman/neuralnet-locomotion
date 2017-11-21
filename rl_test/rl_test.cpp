@@ -66,21 +66,27 @@ int ppo_mj_test()
 
 	//initalize environment
 	//InvDoublePendEnv env;
-	HumanoidEnv env;
+	//HumanoidEnv env;
+	Walker2dEnv env;
+	//HopperEnv env;
 	int action_space_dim = env.getActionSpaceDimensions();
 	int state_space_dim = env.getStateSpaceDimensions();
 
 	//constructing networks
-	std::vector<int> layerSizesPolicy{ state_space_dim,128,96,64,action_space_dim };
-	std::vector<int> layerSizesValueFunc{ state_space_dim,128,96,64,1 };
+	int layer1size = 10 * state_space_dim;
+	int layer3size = 10 * action_space_dim;
+	int geo_mean1 = static_cast<int>(sqrt(layer1size*layer1size + layer3size*layer3size)); //geometric mean of layer 1 and 3 for layer 2
+	int geo_mean2 = static_cast<int>(sqrt(layer1size*layer1size + 5*5)); 
+	std::vector<int> layerSizesPolicy{ state_space_dim,state_space_dim*10,geo_mean1,action_space_dim*10,action_space_dim };
+	std::vector<int> layerSizesValueFunc{ state_space_dim,state_space_dim*10,geo_mean2,5,1 };
 	const int relu = Layer::LayerType::relu;
 	const int inputLayer = Layer::LayerType::inputLayer;
 	const int noactiv = Layer::noActivation;
 	const int softmax = Layer::LayerType::softmax;
 	const int sigmoid = Layer::LayerType::sigmoid;
 	const int tanh = Layer::LayerType::tanh;
-	std::vector<int> layerTypesPolicy{ inputLayer, relu,relu,relu,noactiv};
-	std::vector<int> layerTypesValueFunc{ inputLayer, relu,relu,relu,noactiv };
+	std::vector<int> layerTypesPolicy{ inputLayer, tanh,tanh,tanh,noactiv};
+	std::vector<int> layerTypesValueFunc{ inputLayer, tanh,tanh,tanh,noactiv };
 
 
 	//networks gain ownership/claening responsibilities for these topologies
@@ -109,7 +115,7 @@ int ppo_mj_test()
 	int frameskip = 3;
 
 	env.set_frameskip(frameskip);
-	trainer.trainPPO(1e7 , 64, 4096/frameskip, 64, 10);
+	trainer.trainPPO(1e5 , 64, 4096/frameskip, 64, 10);
 
 
 

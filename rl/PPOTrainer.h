@@ -22,6 +22,7 @@ public:
 		m_timesteps_per_episode = timesteps_per_episode;
         for(int iteration = 0; iteration < max_iterations; iteration++)
         {
+			policy.setLogSigma(-0.7 - 0.9*(iteration / static_cast<double>(max_iterations)));
 			std::cout << "---- Iteration: " << iteration << " ----\n";
             double mean_return_batch = 0;
             //updateOldPolicy();
@@ -33,9 +34,9 @@ public:
                 generateTrajectory(timesteps_per_episode);
 				//standardizeVector(rew_list); 
 				makeValuePredictions();
-                //GAE();
+                GAE();
 				//simpleAdvEstimates();
-				simpleAdvEstimates2();
+				//simpleAdvEstimates2();
 
 				TrainValueFunc();
 
@@ -70,7 +71,11 @@ public:
 			std::cout << "Ratio of Zero/non-zero derivatives: " << static_cast<double>(zero_derivatives) / static_cast<double>(non_zero_derivatives) << "\n";
 			zero_derivatives = 0;
 			non_zero_derivatives = 0;
-			std::cout << "non_log_sigma: " << batch_sigma_list[0][0][0] << ", " << batch_sigma_list[0][0][1] << ", " << batch_sigma_list[0][0][2] << " \n";
+			double avgsigma = 0;
+			for (int i = 0; i < batch_sigma_list[0][0].size(); i++) {
+				avgsigma += (batch_sigma_list[0][0][i] / batch_sigma_list[0][0].size());
+			}
+			std::cout << "average non_log_sigma: " << avgsigma << " \n";
             //clearLists();
             clearBatchLists();
 
@@ -162,7 +167,7 @@ protected:
 		{
 			valueTargTD1[i] = rew_list[i] + m_gamma*valueTargTD1[i + 1];
 		}
-		// same thing!
+		
 		for (int i = traj_length - 1; i >= 0; i--)
 		{
 			adv_list[i] = valueTargTD1[i] - valuePred_list[i];
@@ -173,15 +178,15 @@ protected:
     //produce generalized advantage estimates using value network and state list
     void GAE(){
         // dont forget to first makeValuePredictions();
-        double delta = rew_list.back() - valuePred_list.back();
-        adv_list.back() = delta;
+        double delta = rew_list[traj_length-1] - valuePred_list[traj_length-1];
+        adv_list[traj_length-1] = delta;
 
-        for(int i=adv_list.size()-2;i>=0;i--)
+        for(int i=traj_length-2;i>=0;i--)
         {
             delta = rew_list[i] + m_gamma * valuePred_list[i+1] - valuePred_list[i];
             adv_list[i] = delta + m_lambda*m_gamma*adv_list[i+1];
         }
-		for (int i = 0; i < adv_list.size(); i++)
+		for (int i = 0; i < traj_length; i++)
 		{
 			valueTarg_list[i] = valuePred_list[i] + adv_list[i]; //TD_lambda residual error
 
@@ -384,7 +389,7 @@ protected:
 	int non_zero_derivatives = 0;
 
     int m_timesteps_per_episode=0;
-    double m_lambda = 0.95;
+    double m_lambda = 0.98;
     double eps = 0.2;
 
     // lists of data over the full batch

@@ -124,6 +124,7 @@ class RL_MJ_Environment: public Environment {
 			mj_step2(model, data);
 			render();
 		}
+		extForceSqrSum = calcExtForceSqrSum();
 		double pos_after = data->qpos[0, 0];
 		velocity = (pos_after - pos_before) / (simstep * frameskip);
         m_time_simulated += simstep*frameskip;
@@ -131,6 +132,15 @@ class RL_MJ_Environment: public Environment {
 
 
     }
+	double calcExtForceSqrSum() 
+	{
+		double x = 0;
+		for (int i = 0; i < 6 * model->nbody; i++)
+		{
+			x += data->cfrc_ext[i]* data->cfrc_ext[i];
+		}
+		return x;
+	}
 
 	virtual double getReward() = 0;
 
@@ -155,6 +165,12 @@ class RL_MJ_Environment: public Environment {
         mj_forward(model, data);
         m_time_simulated = 0;
 		step_nr = 0;
+		for (int i = 0; i < model->nq; i++) {
+			data->qpos[i] += generator.generate_uniform(-0.005, 0.005);
+		}
+		for (int i = 0; i < model->nv; i++) {
+			data->qvel[i] += generator.generate_uniform(-0.005, 0.005);;
+		}
     }
     virtual int getActionSpaceDimensions()
     {
@@ -200,10 +216,11 @@ protected:
     mjAgent agent;
 	mjModel* model;
     std::vector<ScalarType> state;
+	Generator generator;
 
     int nsensors;
     int nctrls;
-	double cntrlCostCoef = 1e-4;
+	
 	//double cntrlCostCoef = 100;
 	int frameskip = 10;
     bool button_left = false;
@@ -219,6 +236,7 @@ protected:
 	int step_nr = 0;
 	double rew_quotient = 0;
 	double actionSqrSum = 0;
+	double extForceSqrSum = 0;
 	double velocity = 0;
 
     GLFWwindow* window = nullptr;
@@ -279,7 +297,8 @@ public:
 
 		agent.setup(model);
 		data = agent.getData();
-		state.resize(model->nq + model->nv);
+
+		state.resize(getStateSpaceDimensions());
 		mj_forward(model, data);
 
 		global_environment = environment;
@@ -288,14 +307,43 @@ public:
 		glfwSetMouseButtonCallback(window, mouse_button);
 		glfwSetScrollCallback(window, scroll);
 
-		//mjv_moveCamera(model, mjMOUSE_ZOOM, -3, -3, &environment->scn, &environment->cam);
+		mjv_moveCamera(model, mjMOUSE_ZOOM, -3, -3, &environment->scn, &environment->cam);
 		//environment->cam.type = mjCAMERA_TRACKING;
 		//environment->cam.trackbodyid = 0;
 	}
 	virtual double getReward() {
-		return 0.25*velocity - 1e-3*actionSqrSum + 5;
+		extForceSqrSum = fmin(extForceSqrSum, 10.0);
+		return 0.25*velocity - 1e-1*actionSqrSum - 0.5*1e-6*extForceSqrSum + 5;
 	}
+	virtual const std::vector<ScalarType>& getState()
+	{
+		//messy concatenation :S
+		for (int i = 0; i < model->nq; i++) {
+			state[i] = data->qpos[i];
+		}
+		for (int i = 0; i < model->nv; i++) {
+			state[model->nq + i] = data->qvel[i];
+		}
+		for (int i = 0; i < model->nbody*10; i++) {
+			state[model->nq + model->nv + i] = data->cinert[i];
+		}
+		for (int i = 0; i < model->nbody * 6; i++) {
+			state[model->nq + model->nv + model->nbody * 10 + i] = data->cvel[i];
+		}
+		for (int i = 0; i < model->nv; i++) {
+			state[model->nq + model->nv + model->nbody * 16 + i] = data->qfrc_actuator[i];
+		}
+		for (int i = 0; i < model->nbody * 6; i++) {
+			state[model->nq + model->nv*2 + model->nbody * 16 + i] = data->cfrc_ext[i];
+		}
+		return state;
 
+	}
+	virtual int getStateSpaceDimensions()
+	{
+		// return nsensors;
+		return (model->nq + model->nv*2 + model->nbody*22);
+	}
 };
 class HopperEnv : public RL_MJ_Environment
 {
@@ -322,7 +370,6 @@ public:
 			loadEnv();
 			nsensors = model->nsensordata;
 			nctrls = model->nu;
-			//model = environment->loadMujocoModel("humanoid.xml");
 
 			agent.setup(model);
 			data = agent.getData();
@@ -345,7 +392,57 @@ public:
 	}
 
 };
+class Walker2dEnv : public RL_MJ_Environment
+{
+protected:
 
+	virtual void loadEnv() {
+		model = environment->loadMujocoModel("walker2d.xml");
+	}
+public:
+	virtual bool earlyAbort() {
+
+		double height = data->geom_xpos[5];
+		double ang = data->qpos[2];
+		/*
+		for (int i = 0; i < model->ngeom*3; i++)
+			std::cout << "geom_xpos[" << i << "]: " << data->geom_xpos[i] << "\n";
+		for (int i = 0; i < model->nq; i++)
+			std::cout << "qpos[" << i << "]: " << data->qpos[i] << "\n";
+		*/
+		//return false;
+		return !((height > 0.8 && height < 2) && (ang > -1 && ang < 1)) ;
+	}
+
+	Walker2dEnv() {
+		if (!init()) {
+			throw std::runtime_error("Unable to init() RL_MJ_environemnt!\n");
+		}
+		environment = new mjEnvironment(1, 1);
+		loadEnv();
+		nsensors = model->nsensordata;
+		nctrls = model->nu;
+
+		agent.setup(model);
+		data = agent.getData();
+		//state.resize(nsensors);
+		state.resize(model->nq + model->nv);
+		mj_forward(model, data);
+
+		global_environment = environment;
+		glfwSetKeyCallback(window, keyboard);
+		glfwSetCursorPosCallback(window, mouse_move);
+		glfwSetMouseButtonCallback(window, mouse_button);
+		glfwSetScrollCallback(window, scroll);
+
+		mjv_moveCamera(model, mjMOUSE_ZOOM, -1, -1, &environment->scn, &environment->cam);
+
+	}
+	virtual double getReward() {
+		return velocity - 1e-3*actionSqrSum + 1;
+	}
+
+};
 class AntEnv : public RL_MJ_Environment
 {
 protected:

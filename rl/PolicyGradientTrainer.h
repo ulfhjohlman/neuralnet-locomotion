@@ -10,6 +10,13 @@ public:
             : Trainer(new_env),action_space_dim(env->getActionSpaceDimensions()),
             state_space_dim(env->getStateSpaceDimensions()),
             policy(new_policy_net,state_space_dim,action_space_dim) {
+				if (normalize_obs) {
+					for (int i = 0; i < state_space_dim; i++) {
+						running_obs_mean.push_back(0);
+						running_obs_m2.push_back(0);
+						running_obs_var.push_back(1e-4);
+					}
+				}
             }
 
     void trainPG(int max_episodes, int timesteps_per_episode, int batch_size)
@@ -187,7 +194,35 @@ protected:
         for(int i=0; i< traj_max_length;i++)
         {
             ob = env->getState();
+			if (normalize_obs) { //normalization according to a running mean/var
+				count_obs++; 
+				for (int j = 0; j < ob.size(); j++)
+				{					
+					double delta = ob[j] - running_obs_mean[j];
+					running_obs_mean[j] += delta / count_obs;
+					double delta2 = ob[j] - running_obs_mean[j];
+					running_obs_m2[j] += delta*delta2;
+					if (count_obs != 1) {
+						running_obs_var[j] = running_obs_m2[j] / (count_obs - 1);
+					}
+					ob[j] = (ob[j] - running_obs_mean[j]) / sqrt(running_obs_var[j]);
+				}
+			}
+			/*
 
+
+    for x in data:
+
+        delta = x - mean
+        mean += delta/n
+        delta2 = x - mean
+        M2 += delta*delta2
+
+    if n < 2:
+        return float('nan')
+    else:
+        return M2 / (n - 1)
+		*/
             #ifdef _DEBUG
                 if(ob.size() != state_space_dim){
                     char* str = new char[100];
@@ -239,9 +274,13 @@ protected:
     }
 
 
+	std::vector<double> running_obs_var;
+	std::vector<double> running_obs_mean;
+	std::vector<double> running_obs_m2;
+	long long count_obs = 0;
 
-
-    ScalarType m_gamma = 0.99;
+	bool normalize_obs =	true;
+    ScalarType m_gamma = 0.995;
     int state_space_dim;
     int action_space_dim;
     PolicyWrapper policy;
