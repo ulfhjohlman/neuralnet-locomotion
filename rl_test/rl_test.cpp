@@ -115,6 +115,7 @@ int ppo_mj_test()
 	int frameskip = 3;
 
 	env.set_frameskip(frameskip);
+	trainer.setName("ppo_mj_test");
 	trainer.trainPPO(1e5 , 64, 4096/frameskip, 64, 10);
 
 

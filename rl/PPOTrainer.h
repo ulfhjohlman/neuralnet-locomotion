@@ -2,6 +2,7 @@
 #include "PolicyGradientTrainer.h"
 #include "ValueFuncWrapper.h"
 #include <math.h>
+#include <experimental/filesystem>
 
 class PPOTrainer : public PolicyGradientTrainer
 {
@@ -14,6 +15,15 @@ public:
         m_lambda = new_lambda;
     }
 
+	//saves the current NN. will overwrite previous save.
+	void save_NN() {
+		std::experimental::filesystem::create_directory("best_net");
+		policy.m_nn->save("best_net/");
+	}
+
+	void setName(const char* name) {
+		policy.m_nn->setName(name);
+	}
 
     void trainPPO(int max_iterations, int traj_batch_size , int timesteps_per_episode, int mini_batch_size,int num_epochs)
     {
@@ -51,7 +61,16 @@ public:
             mean_return_batch /= traj_batch_size;
             std::cout << "Batch of " << traj_batch_size <<
                 " trajectories generated. Mean return over batch: " << mean_return_batch << "\n";
-            std::cout << "Optimizing over trajectories\n";
+
+			if (mean_return_batch > best_return) {
+				std::cout << "New best_net saving...";
+				save_NN();
+				std::cout << " Save complete.\n";
+				best_return = mean_return_batch;
+				best_return_iteration = iteration;
+			}
+
+			std::cout << "Optimizing over trajectories\n";
         	//BatchTrainValueFunc();
 			standardizeBatchVector(batch_adv_list);
 			
@@ -80,6 +99,7 @@ public:
             clearBatchLists();
 
         }
+		std::cout << "Optimization done. Best iteration was iter " << best_return_iteration << " with return " << best_return <<"!\n The corresponding net has been saved in ./best_net\n";
     }
 
 protected:
@@ -391,6 +411,8 @@ protected:
     int m_timesteps_per_episode=0;
     double m_lambda = 0.98;
     double eps = 0.2;
+	double best_return = 0;
+	double best_return_iteration = 0;
 
     // lists of data over the full batch
     std::vector<std::vector<ScalarType>>                batch_adv_list;

@@ -106,7 +106,7 @@ class RL_MJ_Environment: public Environment {
                 throw std::runtime_error("Controler actions.size() != nctrls\n");
             }
         #endif
-        double simstep = 0.003;
+
 
         // agent.simulate(1);
 		double pos_before = data->qpos[0, 0]; 
@@ -217,6 +217,7 @@ protected:
 	mjModel* model;
     std::vector<ScalarType> state;
 	Generator generator;
+	double simstep= 0.003;
 
     int nsensors;
     int nctrls;
@@ -418,6 +419,7 @@ public:
 		if (!init()) {
 			throw std::runtime_error("Unable to init() RL_MJ_environemnt!\n");
 		}
+		simstep = 0.002;
 		environment = new mjEnvironment(1, 1);
 		loadEnv();
 		nsensors = model->nsensordata;

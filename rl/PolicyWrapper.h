@@ -208,6 +208,6 @@ protected:
         int out_size;
         Generator generator; //Thread safe generation
        
-
+	public:
         LayeredNeuralNet * m_nn;
 };
