@@ -171,7 +171,7 @@ protected:
 			//Setup states
 			const int number_of_inputs  = m_model->nsensordata;
 			const int number_of_outputs = m_model->nu;
-			const int recurrent_inputs  = 32;
+			const int recurrent_inputs  = 16;
 			MatrixType input(number_of_inputs + recurrent_inputs, 1);
 
 			//Copy input data

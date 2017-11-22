@@ -40,7 +40,7 @@ public:
 	virtual void setRandom() {
 		Generator generator; //Thread safe generation
 		generator.fill_vector_normal<ScalarType>(m_weights.data(), m_weights.size(), 0, 1);
-		generator.fill_vector_uniform<ScalarType>(m_bias.data(), m_bias.size(), -1.05, 1.05);
+		generator.fill_vector_uniform<ScalarType>(m_bias.data(), m_bias.size(), -0.15, 0.15);
 
 		m_outputs.setZero();
 		m_gradients_weights.setZero();
