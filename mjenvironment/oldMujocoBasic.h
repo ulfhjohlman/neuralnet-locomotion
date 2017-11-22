@@ -325,6 +325,31 @@ void test_controller(const mjModel* m, mjData* d)
 		d->ctrl[i] = output(i); //g.generate_normal<ScalarType>(0, 0.001);
 }
 
+void renderOffscreen(mjrRect viewport) {
+	// add time stamp in upper-left corner
+	char stamp[50];
+	sprintf(stamp, "Time = %.3f", d->time);
+	mjr_overlay(mjFONT_NORMAL, mjGRID_TOPLEFT, viewport, stamp, NULL, &con);
+
+	int W = viewport.width;
+	int H = viewport.height;
+
+	// allocate rgb and depth buffers
+	unsigned char* rgb = (unsigned char*)malloc(3 * W*H);
+	float* depth = (float*)malloc(sizeof(float)*W*H);
+	if (!rgb || !depth)
+		mju_error("Could not allocate buffers");
+
+	// create output rgb file
+	FILE* fp = fopen(argv[4], "wb");
+	if (!fp)
+		mju_error("Could not open rgbfile for writing");
+
+	// main loop
+	double frametime = 0;
+	int framecount = 0;
+}
+
 
 // main function
 void main2()

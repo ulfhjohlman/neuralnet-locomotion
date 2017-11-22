@@ -44,9 +44,9 @@
 //check for stop condition(s)
 
 const int g_population_size = 128;
-const double g_mutation_probability = 0.01;
-double g_crossover_probability = 0.3;
-double g_niche_crossover_probability = 0.45;
+const double g_mutation_probability = 0.15;
+double g_crossover_probability = 0.12;
+double g_niche_crossover_probability = 0.4;
 const double g_ptour = 0.75;
 const int g_tournamentSize = 6;
 
@@ -55,7 +55,7 @@ const double g_survivor_fraction = 0.3; //top x%
 
 const int g_elitism_count = 1;
  
-double pmut = 0.01;
+double pmut = 0.1;
 
 class GeneticAlgorithm {
 public:
@@ -156,7 +156,7 @@ public:
 		if (m_population.size() > 200) {
 			const double start_kill_index = g_survivor_fraction*double(g_population_size);
 			Death::extinction(m_niche_set, g_start_survival_percentage);
-			Death::linearDeath(m_population, m_niche_set, m_object_pool, start_kill_index, g_start_survival_percentage);
+			Death::disease(m_niche_set, g_elitism_count, 0.5);
 		}
 
 		for (size_t i = 0; i < m_population.size(); i++) {
@@ -183,7 +183,7 @@ public:
 		
 		for (size_t i = 0; i < m_niche_set.size(); i++) {
 			auto & population = m_niche_set[i];
-			if (population.size() < 2) {
+			if (population.size() < 4) {
 				Duplicate::asexualReproduction(population, m_object_pool, container, 2, m_ninputs, m_nouputs);
 				continue;
 			}
@@ -233,7 +233,7 @@ public:
 	void applyMutation()
 	{
 		const ScalarType T = 100;
-		pmut = 0.01;
+		pmut = g_mutation_probability;
 		pmut *= std::exp(-ScalarType(m_generation) / T);
 		if (pmut < 0.0005)
 			pmut = 0.0005;

@@ -6,8 +6,8 @@
 #include <vector>
 #include <numeric>
 
-ScalarType min_niche_radius = 8;
-ScalarType max_niche_radius = 10;
+ScalarType min_niche_radius = 20;
+ScalarType max_niche_radius = 24;
 ScalarType max_niche_size = 64;
 
 template<typename T>

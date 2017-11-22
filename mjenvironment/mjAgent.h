@@ -13,9 +13,8 @@
 #include "ScalingLayer.h"
 
 int g_simulation_steps = 10;
-float g_minimum_kill_height = 0.67f;
+float g_minimum_kill_height = 0.8f;
 float g_max_simulation_time = 2.0f;
-
 
 class mjAgent 
 {

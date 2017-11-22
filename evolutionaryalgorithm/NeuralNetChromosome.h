@@ -53,7 +53,7 @@ private:
 		top->addLayerConnection(5, { 4 });
 		top->addLayerConnection(6, { 5 });*/
 
-		const int recurrent_inputs = 32;
+		const int recurrent_inputs = 16;
 		std::vector<int> layerSizes = { m_number_of_inputs + recurrent_inputs, 48, 32, m_number_of_outputs + recurrent_inputs };
 		std::vector<int> layerTypes = { Layer::inputLayer, 1, 1, 1 };
 		LayeredTopology* top = new LayeredTopology(layerSizes, layerTypes);

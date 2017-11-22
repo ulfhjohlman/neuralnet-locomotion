@@ -1,4 +1,4 @@
-<layer_1 layer_type="0" rows_output_size="48" cols_input_size="47">
+<layer_1 layer_type="0" rows_output_size="48" cols_input_size="31">
     <weights>generation1000/_0walker2dlayer_1_weights.bin</weights>
     <bias>generation1000/_0walker2dlayer_1_bias.bin</bias>
     <output>generation1000/_0walker2dlayer_1_outputs.bin</output>

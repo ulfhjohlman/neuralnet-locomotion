@@ -46,19 +46,19 @@
   </worldbody>
   <actuator>
     <!-- <motor joint="torso_joint" ctrlrange="-100.0 100.0" isctrllimited="true"/>-->
-    <motor ctrllimited="true" ctrlrange="-1.0 1.0" gear="100" joint="thigh_joint"/>
-    <motor ctrllimited="true" ctrlrange="-1.0 1.0" gear="100" joint="leg_joint"/>
-    <motor ctrllimited="true" ctrlrange="-1.0 1.0" gear="100" joint="foot_joint"/>
-    <motor ctrllimited="true" ctrlrange="-1.0 1.0" gear="100" joint="thigh_left_joint"/>
-    <motor ctrllimited="true" ctrlrange="-1.0 1.0" gear="100" joint="leg_left_joint"/>
-    <motor ctrllimited="true" ctrlrange="-1.0 1.0" gear="100" joint="foot_left_joint"/>
+    <motor ctrllimited="true" ctrlrange="-1.0 1.0" gear="80" joint="thigh_joint"/>
+    <motor ctrllimited="true" ctrlrange="-1.0 1.0" gear="50" joint="leg_joint"/>
+    <motor ctrllimited="true" ctrlrange="-1.0 1.0" gear="35" joint="foot_joint"/>
+    <motor ctrllimited="true" ctrlrange="-1.0 1.0" gear="80" joint="thigh_left_joint"/>
+    <motor ctrllimited="true" ctrlrange="-1.0 1.0" gear="50" joint="leg_left_joint"/>
+    <motor ctrllimited="true" ctrlrange="-1.0 1.0" gear="35" joint="foot_left_joint"/>
     <!-- <motor joint="finger2_rot" ctrlrange="-20.0 20.0" isctrllimited="true"/>-->
   </actuator>
   <sensor>
-	<touch name="rightfoottouch" cutoff="0.5" site="feet1" />
-	<touch name="leftfoottouch" cutoff="0.5" site="feet2" />
-	<touch name="rightfoottouch2" cutoff="0.5" site="feet3" />
-	<touch name="leftfoottouch2" cutoff="0.5" site="feet4" />
+   <touch name="rightfoottouch" site="feet1" />
+   <touch name="leftfoottouch" site="feet2" />
+   <touch name="rightfoottouch2" site="feet3" />
+   <touch name="leftfoottouch2" site="feet4" />
 
     <velocimeter name="v1"  site="center"/>
 

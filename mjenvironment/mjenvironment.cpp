@@ -148,10 +148,17 @@ void setup_walker2d() {
 	if (!ga)
 		throw std::runtime_error("Could not start make GA.");
 
-	auto objective = [](mjModel const* m, mjData* d) { return 1.0*d->site_xpos[0] + 0.1*d->site_xpos[2]; };
+	auto objective = [](mjModel const* m, mjData* d) { return 1.0*d->site_xpos[0] + 1.5 * d->qvel[0] + 0.1*d->site_xpos[2]; };
 	environment->setObjective(objective);
 
 	ScalingLayer input_scaling(nsensors + nrecurrent, 1);
+	input_scaling.getScaling().array() /= 3.14;
+	const ScalarType scale_touch = 1.0 / 1000.0;
+	input_scaling(0) = scale_touch;
+	input_scaling(1) = scale_touch;
+	input_scaling(2) = scale_touch;
+	input_scaling(3) = scale_touch;
+
 
 	environment->setScalingLayer(input_scaling);
 	ga->setEnvironment(environment);

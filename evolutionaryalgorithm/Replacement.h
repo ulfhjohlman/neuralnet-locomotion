@@ -48,6 +48,7 @@ public:
 		}
 	}
 
+	//Removes unfit niches
 	template<typename T>
 	static void extinction( 
 		NicheSet<T>& niches, 
@@ -55,7 +56,7 @@ public:
 
 		niches.sortNiches();
 
-		size_t start_index = niches.size() * 2 / 3;
+		size_t start_index = niches.size() / 2;
 		ScalarType k = start_survival_rate / ScalarType(niches.size() - start_index); //dy/dx
 		Generator g;
 		int deathcounter = 0;
@@ -68,8 +69,30 @@ public:
 				i--;
 			}
 		}
-
 	}
+
+	//portion of subpopulation is erased.
+	template<typename T>
+	static void disease(
+		NicheSet<T>& niches, size_t elitism_count,
+		ScalarType survival_rate) {
+
+		auto decimate_subpopulation = [&niches, elitism_count, survival_rate](int i) {
+			Generator g;
+			auto & population = niches[i];
+			for (size_t i = elitism_count; i < population.size(); i++) {
+				ScalarType r = g.generate_uniform<ScalarType>(0.0f, 1.0f);
+				if (r > survival_rate) {
+					population.erase(i);
+					i--;
+				}
+			}
+		};
+
+		parallel_for<size_t>(0, niches.size(), 8, decimate_subpopulation);
+	}
+
+
 	
 private:
 	

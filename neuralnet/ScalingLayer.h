@@ -26,6 +26,10 @@ public:
 		m_scale_vector = scale_vector;
 	}
 
+	MatrixType& getScaling() {
+		return m_scale_vector;
+	}
+
 	ScalarType& operator()(const Eigen::Index index) {
 		return m_scale_vector(index);
 	}

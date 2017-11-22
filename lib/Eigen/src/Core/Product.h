@@ -74,7 +74,6 @@ class Product : public ProductImpl<_Lhs,_Rhs,Option,
                                                                                    internal::product_type<_Lhs,_Rhs>::ret>::ret>
 {
   public:
-    
     typedef _Lhs Lhs;
     typedef _Rhs Rhs;
     
