@@ -6,11 +6,34 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\AgentScheduler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\ModelSetup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\glfwWrapper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\mjAgent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\mjEnvironment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\oldMujocoBasic.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
     <CustomBuild Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
       <UniqueIdentifier>{F53B53F7-4996-3B2D-BE71-AAA1AC7F0588}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{97E74E6C-7FA0-3D3E-BB37-3B1E1938E3C6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -67,10 +67,6 @@ ENDIF()
 
 option(GENERATE_GPU  "Make gpu library"  ON)
 IF(GENERATE_GPU)
-	IF(MSVC)
-		add_definitions(/arch:AVX)
-	ELSE()
-		add_definitions (-mavx)
-	ENDIF()
+	add_subdirectory("${PROJECT_SOURCE_DIR}/gpu")
 ENDIF()
 

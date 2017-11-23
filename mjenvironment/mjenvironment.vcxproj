@@ -88,6 +88,7 @@
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <CompileAs>CompileAsCpp</CompileAs>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <ExceptionHandling>Sync</ExceptionHandling>
       <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
       <Optimization>Disabled</Optimization>
@@ -178,6 +179,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <AdditionalIncludeDirectories>C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\Eigen;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\neuralnet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\evolutionaryalgorithm;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\utility;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\testframework;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\tinyxml2;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl_test;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\mjpro150\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>Release/</AssemblerListingLocation>
       <CompileAs>CompileAsCpp</CompileAs>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <ExceptionHandling>Sync</ExceptionHandling>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <Optimization>MaxSpeed</Optimization>
@@ -269,6 +271,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <AdditionalIncludeDirectories>C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\Eigen;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\neuralnet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\evolutionaryalgorithm;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\utility;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\testframework;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\tinyxml2;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl_test;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\mjpro150\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>MinSizeRel/</AssemblerListingLocation>
       <CompileAs>CompileAsCpp</CompileAs>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <ExceptionHandling>Sync</ExceptionHandling>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <Optimization>MinSpace</Optimization>
@@ -361,6 +364,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <AssemblerListingLocation>RelWithDebInfo/</AssemblerListingLocation>
       <CompileAs>CompileAsCpp</CompileAs>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <ExceptionHandling>Sync</ExceptionHandling>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <Optimization>MaxSpeed</Optimization>
@@ -504,6 +508,12 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\mjenvironment.cpp"  />
+    <ClInclude Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\AgentScheduler.h" />
+    <ClInclude Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\ModelSetup.h" />
+    <ClInclude Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\glfwWrapper.h" />
+    <ClInclude Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\mjAgent.h" />
+    <ClInclude Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\mjEnvironment.h" />
+    <ClInclude Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\oldMujocoBasic.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\ZERO_CHECK.vcxproj">
