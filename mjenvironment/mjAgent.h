@@ -111,7 +111,7 @@ public:
 		mj_forward(m_model, m_data);
 
 		m_reward = 0;
-		m_left_right.resize(6, 1);
+		m_left_right.resize(3, 1);
 		m_left_right.setZero();
 		m_done = false;
 		m_time_simulated = 0;
