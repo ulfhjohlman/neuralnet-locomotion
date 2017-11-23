@@ -13,7 +13,7 @@
 #include "ScalingLayer.h"
 
 int g_simulation_steps = 10;
-float g_minimum_kill_height = 0.8f;
+float g_minimum_kill_height = 0.95f;
 float g_max_simulation_time = 2.0f;
 
 class mjAgent 
@@ -111,6 +111,8 @@ public:
 		mj_forward(m_model, m_data);
 
 		m_reward = 0;
+		m_left_right.resize(6, 1);
+		m_left_right.setZero();
 		m_done = false;
 		m_time_simulated = 0;
 	}
@@ -126,13 +128,17 @@ public:
 
 				if (m_objective) {
 					m_reward += simstep * m_objective(m_model, m_data);
-					m_reward += - 0.000001 * m_controller->output().block(0, 0, 6, 1).squaredNorm();
+					m_reward += - 0.00004 * m_controller->output().block(0, 0, 6, 1).squaredNorm();
+					m_left_right.array() += 
+						(m_controller->output().block(0, 0, 3, 1) - 
+						m_controller->output().block(3, 0, 3, 1) ).array();
 				}
 				
 			}
 			m_time_simulated += simstep*steps;
 			if (m_time_simulated > g_max_simulation_time || m_data->site_xpos[2] < g_minimum_kill_height ) {
 				m_done = true;
+				m_reward -= 0.000025 * m_left_right.norm();
 			}
 			//|| m_data->site_xpos[5] < g_minimum_kill_height
 
@@ -171,7 +177,7 @@ protected:
 			//Setup states
 			const int number_of_inputs  = m_model->nsensordata;
 			const int number_of_outputs = m_model->nu;
-			const int recurrent_inputs  = 16;
+			const int recurrent_inputs  = 32;
 			MatrixType input(number_of_inputs + recurrent_inputs, 1);
 
 			//Copy input data
@@ -212,6 +218,8 @@ private:
 	bool m_has_scaling_layer;
 	double m_time_simulated;
 	double m_reward;
+
+	MatrixType m_left_right;
 
 	int m_col, m_cols;
 	int m_row, m_rows;

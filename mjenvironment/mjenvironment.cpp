@@ -143,16 +143,16 @@ void setup_walker2d() {
 		throw std::runtime_error("Could not make environment.");
 	int nsensors = environment->m_model->nsensordata;
 	int nctrls = environment->m_model->nu;
-	int nrecurrent = 16;
+	int nrecurrent = 32;
 	ga = new GeneticAlgorithm(g_population_size, nsensors, nctrls);
 	if (!ga)
 		throw std::runtime_error("Could not start make GA.");
 
-	auto objective = [](mjModel const* m, mjData* d) { return 1.0*d->site_xpos[0] + 1.5 * d->qvel[0] + 0.1*d->site_xpos[2]; };
+	auto objective = [](mjModel const* m, mjData* d) { return 1.0*d->site_xpos[0] + 0.1*d->site_xpos[2]; };
 	environment->setObjective(objective);
 
 	ScalingLayer input_scaling(nsensors + nrecurrent, 1);
-	input_scaling.getScaling().array() /= 2;
+	//input_scaling.getScaling().array();
 	const ScalarType scale_touch = 1.0 / 1000.0;
 	input_scaling(0) = scale_touch;
 	input_scaling(1) = scale_touch;

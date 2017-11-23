@@ -6,8 +6,8 @@
 #include <vector>
 #include <numeric>
 
-ScalarType min_niche_radius = 40;
-ScalarType max_niche_radius = 60;
+ScalarType min_niche_radius = 8;
+ScalarType max_niche_radius = 10;
 ScalarType max_niche_size = 64;
 
 template<typename T>
@@ -38,6 +38,9 @@ public:
 
 		m_population.merge(merge_this.m_population);
 
+		merge_radius = std::sqrt(merge_radius * merge_radius + merge_this.merge_radius * merge_this.merge_radius);
+		max_radius   = std::sqrt(max_radius * max_radius + merge_this.max_radius * merge_this.max_radius);
+
 		//normalize
 		m_mid_point /= static_cast<ScalarType>(m_population.totalFitness());
 	}
@@ -47,6 +50,7 @@ public:
 		const VectorType& x_mu = m_mid_point;
 		VectorType x_i, x_sum;
 		x_i.resizeLike(x_mu);
+		x_sum.resizeLike(x_mu);
 		x_i.setZero();
 		x_sum = x_i;
 

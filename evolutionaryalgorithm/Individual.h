@@ -31,8 +31,6 @@ public:
 	virtual bool operator<(const Individual& rhs) const { return this->m_fitness < rhs.m_fitness; }
 	virtual bool operator>(const Individual& rhs) const { return this->m_fitness > rhs.m_fitness; }
 
-	size_t niche_id;
-
 	std::shared_ptr<NeuralNetGenome> getGenome() const { return m_genome; }
 protected:
 	double m_fitness = 1;

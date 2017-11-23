@@ -7,7 +7,7 @@ project(neuralnet_locomotion)
 set(CMAKE_CXX_STANDARD 14)
 
 #Compiler flags
-option(USE_AVX_INSTRUCTIONS  "Compile your program with AVX instructions"  OFF)
+option(USE_AVX_INSTRUCTIONS  "Compile your program with AVX instructions"  ON)
 IF(USE_AVX_INSTRUCTIONS)
 	IF(MSVC)
 		add_definitions(/arch:AVX)
@@ -62,6 +62,15 @@ add_subdirectory("${PROJECT_SOURCE_DIR}/rl_test")
 #Make visual studio specific projects
 IF(MSVC)
 	#link_directories("${PROJECT_SOURCE_DIR}/lib/mjpro150/bin")
-
 	add_subdirectory("${PROJECT_SOURCE_DIR}/mjenvironment")
 ENDIF()
+
+option(GENERATE_GPU  "Make gpu library"  ON)
+IF(GENERATE_GPU)
+	IF(MSVC)
+		add_definitions(/arch:AVX)
+	ELSE()
+		add_definitions (-mavx)
+	ENDIF()
+ENDIF()
+

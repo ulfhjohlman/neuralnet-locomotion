@@ -44,16 +44,16 @@
 //check for stop condition(s)
 
 const int g_population_size = 128;
-const double g_mutation_probability = 0.15;
-double g_crossover_probability = 0.12;
-double g_niche_crossover_probability = 0.4;
+const double g_mutation_probability = 0.01;
+double g_crossover_probability = 0.2;
+double g_niche_crossover_probability = 0.65;
 const double g_ptour = 0.75;
-const int g_tournamentSize = 6;
+const int g_tournamentSize = 10;
 
 const double g_start_survival_percentage = 4.0 / 7.0; //half dies if with 0.3 top survivors
 const double g_survivor_fraction = 0.3; //top x%
 
-const int g_elitism_count = 1;
+const int g_elitism_count = 2;
  
 double pmut = 0.1;
 
@@ -106,17 +106,16 @@ public:
 
 		if (m_environment->all_done()) {
 			m_population.sort();
-			m_niche_set.sort();
 
 			if (m_generation % 1000 == 0) {
-				m_population.save(m_generation, "walker2d");
+				m_population.save(m_generation, "walker2dRewardEng");
 			}
 
 			for (size_t i = 0; i < 5; i++) {
 				std::cout << m_population[i]->getFitness() << std::endl;
 			}
 
-			m_niche_set.update();
+			
 
 			double mean = m_population.meanFitness();
 			std::cout << "Generation: " << m_generation << ", mean=" << mean << ", best=" << m_population.members[0]->getFitness() << " pmut=" << pmut << " ";
@@ -125,6 +124,8 @@ public:
 			m_generation++;
 
 			m_niche_set.printNicheSizes();
+			m_niche_set.update();
+			m_niche_set.sort(); // Sort after update!
 
 			applyReplacement();
 
@@ -145,7 +146,7 @@ public:
 
 		auto decimate_subpopulation = [this](int i) {
 			auto & population = m_niche_set[i];
-			const int start_kill_index = g_survivor_fraction*double(population.size() + g_elitism_count);
+			const int start_kill_index = g_elitism_count + int ( g_survivor_fraction*double(population.size()));
 			Death::linearDeath(population, start_kill_index, g_start_survival_percentage);
 		};
 
@@ -154,9 +155,8 @@ public:
 		m_niche_set.clearEmptyNiches();
 
 		if (m_population.size() > 200) {
-			const double start_kill_index = g_survivor_fraction*double(g_population_size);
 			Death::extinction(m_niche_set, g_start_survival_percentage);
-			Death::disease(m_niche_set, g_elitism_count, 0.5);
+			Death::disease(m_niche_set, g_elitism_count, 0.33);
 		}
 
 		for (size_t i = 0; i < m_population.size(); i++) {
@@ -183,7 +183,7 @@ public:
 		
 		for (size_t i = 0; i < m_niche_set.size(); i++) {
 			auto & population = m_niche_set[i];
-			if (population.size() < 4) {
+			if (population.size() < 40) {
 				Duplicate::asexualReproduction(population, m_object_pool, container, 2, m_ninputs, m_nouputs);
 				continue;
 			}
@@ -232,7 +232,7 @@ public:
 
 	void applyMutation()
 	{
-		const ScalarType T = 100;
+		const ScalarType T = 2000;
 		pmut = g_mutation_probability;
 		pmut *= std::exp(-ScalarType(m_generation) / T);
 		if (pmut < 0.0005)
@@ -266,8 +266,6 @@ private:
 	Mutation<LayeredNeuralNet> m_mutation;
 	Crossover m_crossover;
 	TournamentSelection m_selection;
-
-
 
 	ThreadsafeQueue<std::shared_ptr<Individual<LayeredNeuralNet>>> m_object_pool;
 
