@@ -101,21 +101,19 @@ public:
 
 		std::pair<size_t, double> fitness;
 		while (m_environment->tryGetResult(fitness)) {
-			m_population.members[fitness.first]->setFitness(fitness.second);
+			m_population[fitness.first]->setFitness(fitness.second);
 		}
 
 		if (m_environment->all_done()) {
 			m_population.sort();
 
 			if (m_generation % 1000 == 0) {
-				m_population.save(m_generation, "walker2dRewardEng3");
+				m_population.save(m_generation, "walker2dRewardEng4");
 			}
 
 			for (size_t i = 0; i < 5; i++) {
 				std::cout << m_population[i]->getFitness() << std::endl;
 			}
-
-			
 
 			double mean = m_population.meanFitness();
 			std::cout << "Generation: " << m_generation << ", mean=" << mean << ", best=" << m_population.members[0]->getFitness() << " pmut=" << pmut << " ";
@@ -176,10 +174,8 @@ public:
 
 	void applyCrossover()
 	{
-		//std::cout << "born: " << n_mated << std::endl;
 		ThreadsafeQueue< std::shared_ptr< Individual<LayeredNeuralNet> > > container;
 
-		
 		for (size_t i = 0; i < m_niche_set.size(); i++) {
 			auto & population = m_niche_set[i];
 			if (population.size() < 40) {

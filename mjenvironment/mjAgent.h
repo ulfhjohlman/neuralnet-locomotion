@@ -13,8 +13,10 @@
 #include "ScalingLayer.h"
 
 int g_simulation_steps = 10;
-float g_minimum_kill_height = 0.95f;
-float g_max_simulation_time = 0.6f;
+float g_minimum_kill_height = 0.8f;
+float g_max_simulation_time = 0.7f;
+float activation_penalty_factor = 0.000055;
+float symmetry_penalty_factor = 0.000055;
 
 class mjAgent 
 {
@@ -128,7 +130,7 @@ public:
 
 				if (m_objective) {
 					m_reward += simstep * m_objective(m_model, m_data);
-					m_reward += - 0.000055 * m_controller->output().block(0, 0, 6, 1).squaredNorm();
+					m_reward += - activation_penalty_factor * m_controller->output().block(0, 0, 6, 1).squaredNorm();
 					m_left_right.array() += 
 						(m_controller->output().block(0, 0, 3, 1) - 
 						m_controller->output().block(3, 0, 3, 1) ).array();
@@ -138,7 +140,7 @@ public:
 			m_time_simulated += simstep*steps;
 			if (m_time_simulated > g_max_simulation_time || m_data->site_xpos[2] < g_minimum_kill_height ) {
 				m_done = true;
-				m_reward -= 0.000055 * m_left_right.norm();
+				m_reward -= symmetry_penalty_factor * m_left_right.norm();
 			}
 			//|| m_data->site_xpos[5] < g_minimum_kill_height
 
