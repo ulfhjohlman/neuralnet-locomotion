@@ -8,7 +8,12 @@
 
 ScalarType min_niche_radius = 8;
 ScalarType max_niche_radius = 10;
-ScalarType max_niche_size = 64;
+
+ScalarType min_merge_radius = 0.8;
+ScalarType min_niche_radius2 = 1.0;
+
+ScalarType max_niche_size = 86;
+ScalarType nominal_number_of_niches = 15;
 
 template<typename T>
 class Niche 
@@ -32,12 +37,16 @@ public:
 	}
 
 	void merge(Niche<T>& merge_this) {
+		if (merge_this.size() == 0)
+			return;
+
 		//scale up and add centers
 		m_mid_point *= static_cast<ScalarType>(m_population.totalFitness());
 		m_mid_point += merge_this.m_mid_point * static_cast<ScalarType>(merge_this.m_population.totalFitness());
 
 		m_population.merge(merge_this.m_population);
 
+		//add areas of niches
 		merge_radius = std::sqrt(merge_radius * merge_radius + merge_this.merge_radius * merge_this.merge_radius);
 		max_radius   = std::sqrt(max_radius * max_radius + merge_this.max_radius * merge_this.max_radius);
 
@@ -139,21 +148,23 @@ public:
 		int k = 0;
 		for (auto & niche : m_niches) {
 			ScalarType distance = niche.distanceTo(v);
-			if (distance < min_distance)
-				min_distance = distance;
 
 			if (distance < niche.max_radius) {
 				niche.addMember(member); 
 				k++; //adds to k niches
 			}
+
+
+			if (distance < min_distance)
+				min_distance = distance;
 		}
 
 		if (k == 0) {
 			Niche<T> niche;
 			niche.addMember(member);
 			niche.center();
-			niche.merge_radius = min_distance * 0.65;
-			niche.max_radius = min_distance * 0.9;
+			niche.merge_radius = std::min<ScalarType>( min_distance * 0.65, min_niche_radius);
+			niche.max_radius = std::min<ScalarType>( min_distance * 0.9, max_niche_radius);
 			m_niches.push_back(niche);
 		}
 	}
@@ -176,6 +187,13 @@ public:
 	void update() {
 		for (auto& niche : m_niches)
 			niche.updateMidpoint();
+
+		if (m_niches.size() > nominal_number_of_niches) {
+			for (auto& niche : m_niches) {
+				niche.max_radius *= 1.01;
+				niche.merge_radius *= 1.01;
+			}
+		}
 
 		//make jagged array of inter niche distances
 		size_t size = m_niches.size() - 1;
@@ -202,31 +220,17 @@ public:
 		}
 		std::cout << "avg niche dist=" << sum / (size * size / 2.0) << std::endl;
 		
-		//sort distances
-		for (auto & v : niche_distances)
-			std::sort(v.begin(), v.end());
+		//sort distances BUGGG!!!!
+		/*for (auto & v : niche_distances)
+			std::sort(v.begin(), v.end());*/
 
 		//merge niches, -1 last niche has already been checked by others
-		for (size_t i = 0; i < m_niches.size()-1; i++) {
-			size_t pos = 0;
-			if (niche_distances[i].back() < m_niches[i].merge_radius)
-				pos = std::distance(niche_distances[i].begin(), niche_distances[i].end());
-			else {
-				auto it = std::lower_bound(
-					niche_distances[i].begin(),
-					niche_distances[i].end(),
-					m_niches[i].merge_radius);
-				
-				if (it != niche_distances[i].end())
-					pos = std::distance(niche_distances[i].begin(), it);
+		for (size_t i = 0; i < size; i++) {
+			for (size_t j = i; j < size; j++) {
+				//std::cout << "merged" << j << " -> " << i << std::endl;
+				if(niche_distances[i][j-i] < m_niches[i].merge_radius)
+					m_niches[i].merge(m_niches[j+1]);
 			}
-
-			for (size_t j = i + 1; j < i + pos + 1; j++) {
-				std::cout << "merged" << j << " -> " << i << std::endl;
-				m_niches[i].merge(m_niches[j]);
-			}
-
-			i += pos; //might be 1 to little
 		}
 
 		//Remove empty niches.
@@ -245,11 +249,16 @@ public:
 			if (niche.size() > max_niche_size) {
 				//try split
 				Niche<T> part1, part2;
-				part1.merge_radius = niche.merge_radius / 2.0;
-				part2.merge_radius = niche.merge_radius / 2.0;
+				part1.merge_radius = niche.merge_radius / 2.1;
+				part2.merge_radius = niche.merge_radius / 2.1;
 
 				part1.max_radius = niche.max_radius / 2.0;
 				part2.max_radius = niche.max_radius / 2.0;
+
+				part1.merge_radius = std::max(part1.merge_radius, min_merge_radius);
+				part2.merge_radius = std::max(part2.merge_radius, min_merge_radius);
+				part1.max_radius = std::max(part1.max_radius, min_niche_radius2);
+				part2.max_radius = std::max(part2.max_radius, min_niche_radius2);
 
 				Population<T>& population = niche.getPopulation();
 				size_t members_to_part1 = population.size() / 2;
@@ -269,12 +278,13 @@ public:
 			}
 		}
 
-		//not implemented yet
+		//Sort by fitness inside each niche.
+		this->sort();
 	}
 
 	void printNicheSizes() {
 		for (auto & niche : m_niches)
-			std::cout << niche.size() << " ";
+			std::cout << niche.size() << "(" << niche.merge_radius << ") ";
 		std::cout << std::endl;
 	}
 

@@ -56,7 +56,7 @@ public:
 
 		niches.sortNiches();
 
-		size_t start_index = niches.size() / 2;
+		size_t start_index = niches.size() / 1.33;
 		ScalarType k = start_survival_rate / ScalarType(niches.size() - start_index); //dy/dx
 		Generator g;
 		int deathcounter = 0;

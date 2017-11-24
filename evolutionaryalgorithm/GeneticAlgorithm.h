@@ -45,15 +45,15 @@
 
 const int g_population_size = 128;
 const double g_mutation_probability = 0.01;
-double g_crossover_probability = 0.2;
-double g_niche_crossover_probability = 0.65;
+double g_crossover_probability = 0.02;
+double g_niche_crossover_probability = 0.45;
 const double g_ptour = 0.75;
-const int g_tournamentSize = 10;
+const int g_tournamentSize = 8;
 
 const double g_start_survival_percentage = 4.0 / 7.0; //half dies if with 0.3 top survivors
 const double g_survivor_fraction = 0.3; //top x%
 
-const int g_elitism_count = 2;
+const int g_elitism_count = 1;
  
 double pmut = 0.1;
 
@@ -108,7 +108,7 @@ public:
 			m_population.sort();
 
 			if (m_generation % 1000 == 0) {
-				m_population.save(m_generation, "walker2dRewardEng");
+				m_population.save(m_generation, "walker2dRewardEng3");
 			}
 
 			for (size_t i = 0; i < 5; i++) {
@@ -125,7 +125,6 @@ public:
 
 			m_niche_set.printNicheSizes();
 			m_niche_set.update();
-			m_niche_set.sort(); // Sort after update!
 
 			applyReplacement();
 
@@ -146,7 +145,7 @@ public:
 
 		auto decimate_subpopulation = [this](int i) {
 			auto & population = m_niche_set[i];
-			const int start_kill_index = g_elitism_count + int ( g_survivor_fraction*double(population.size()));
+			const int start_kill_index = g_elitism_count + int ( g_survivor_fraction*double(128));
 			Death::linearDeath(population, start_kill_index, g_start_survival_percentage);
 		};
 
@@ -184,7 +183,7 @@ public:
 		for (size_t i = 0; i < m_niche_set.size(); i++) {
 			auto & population = m_niche_set[i];
 			if (population.size() < 40) {
-				Duplicate::asexualReproduction(population, m_object_pool, container, 2, m_ninputs, m_nouputs);
+				Duplicate::asexualReproduction(population, m_object_pool, container, 1, m_ninputs, m_nouputs);
 				continue;
 			}
 			int n_mated = Generator::generate_binomial_shared<int>(population.size(), g_niche_crossover_probability);
@@ -199,7 +198,7 @@ public:
 				Crossover::directionalCrossover<LayeredNeuralNet>(population, mates.first, mates.second, newIndividual);
 				container.push(std::move(newIndividual));
 			};
-			parallel_for(0, n_mated, 2, cross);
+			parallel_for(0, n_mated, 2, std::move(cross));
 		}
 
 		int n_mated_interspecies = Generator::generate_binomial_shared<int>(g_population_size, g_crossover_probability);
@@ -215,7 +214,7 @@ public:
 			container.push(std::move(newIndividual));
 		};
 		
-		parallel_for(0, n_mated_interspecies, 2, cross_interspecies);
+		parallel_for(0, n_mated_interspecies, 2, std::move(cross_interspecies));
 
 		//Move pointers to population
 		while (!container.empty()) {
@@ -232,11 +231,11 @@ public:
 
 	void applyMutation()
 	{
-		const ScalarType T = 2000;
+		const ScalarType T = 1000;
 		pmut = g_mutation_probability;
 		pmut *= std::exp(-ScalarType(m_generation) / T);
-		if (pmut < 0.0005)
-			pmut = 0.0005;
+		if (pmut < 0.0001)
+			pmut = 0.0001;
 		m_mutation.setMutationProbability(pmut);
 
 		auto mutate_subpopulation = [this](int i) {
