@@ -1,0 +1,16 @@
+<LayeredTopology>
+    <layerSizes itemCount="5">
+        <size>122</size>
+        <size>64</size>
+        <size>64</size>
+        <size>64</size>
+        <size>85</size>
+    </layerSizes>
+    <layerTypes itemCount="5">
+        <type>4</type>
+        <type>1</type>
+        <type>1</type>
+        <type>1</type>
+        <type>1</type>
+    </layerTypes>
+</LayeredTopology>

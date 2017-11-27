@@ -53,7 +53,7 @@ const int g_tournamentSize = 8;
 const double g_start_survival_percentage = 4.0 / 7.0; //half dies if with 0.3 top survivors
 const double g_survivor_fraction = 0.3; //top x%
 
-const int g_elitism_count = 1;
+const int g_elitism_count = 2;
  
 double pmut = 0.1;
 
@@ -108,7 +108,7 @@ public:
 			m_population.sort();
 
 			if (m_generation % 1000 == 0) {
-				m_population.save(m_generation, "walker2dRewardEng4");
+				m_population.save(m_generation, "walker2dRewardEng5");
 			}
 
 			for (size_t i = 0; i < 5; i++) {
@@ -126,11 +126,18 @@ public:
 
 			applyReplacement();
 
-			applyCrossover();
+			ThreadsafeQueue< std::shared_ptr< Individual<LayeredNeuralNet> > > new_generation;
+			applyCrossover(new_generation);
 
 			applyElitism();
 
 			applyMutation();
+
+			//Move pointers to population
+			while (!new_generation.empty()) {
+				m_population.members.push_back(std::move(new_generation.sequential_pop()));
+				m_niche_set.addMember(m_population.back());
+			}
 
 			evaluatePopulation();
 		}
@@ -143,7 +150,11 @@ public:
 
 		auto decimate_subpopulation = [this](int i) {
 			auto & population = m_niche_set[i];
-			const int start_kill_index = g_elitism_count + int ( g_survivor_fraction*double(128));
+			int start_kill_index = 0;
+			if (population.size() > 60)
+				start_kill_index = g_elitism_count + 10;
+			else
+				start_kill_index = g_elitism_count + int ( g_survivor_fraction*population.size()) + 10;
 			Death::linearDeath(population, start_kill_index, g_start_survival_percentage);
 		};
 
@@ -153,7 +164,7 @@ public:
 
 		if (m_population.size() > 200) {
 			Death::extinction(m_niche_set, g_start_survival_percentage);
-			Death::disease(m_niche_set, g_elitism_count, 0.33);
+			Death::disease(m_niche_set, g_elitism_count, 0.5);
 		}
 
 		for (size_t i = 0; i < m_population.size(); i++) {
@@ -172,10 +183,8 @@ public:
 		}
 	}
 
-	void applyCrossover()
+	void applyCrossover(ThreadsafeQueue< std::shared_ptr< Individual<LayeredNeuralNet> > >& container)
 	{
-		ThreadsafeQueue< std::shared_ptr< Individual<LayeredNeuralNet> > > container;
-
 		for (size_t i = 0; i < m_niche_set.size(); i++) {
 			auto & population = m_niche_set[i];
 			if (population.size() < 40) {
@@ -211,18 +220,14 @@ public:
 		};
 		
 		parallel_for(0, n_mated_interspecies, 2, std::move(cross_interspecies));
-
-		//Move pointers to population
-		while (!container.empty()) {
-			m_population.members.push_back(std::move(container.sequential_pop()));
-			m_niche_set.addMember(m_population.back());
-		}
 	}
 
 	void evaluatePopulation()
 	{
-		for (size_t i = 0; i < m_population.members.size(); i++)
+		for (size_t i = 0; i < m_population.members.size(); i++) {
+			//m_population.members[i]->decode()->clearInternalStates();
 			m_environment->evaluateController(m_population.members[i]->decode(), i);
+		}
 	}
 
 	void applyMutation()

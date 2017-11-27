@@ -4,28 +4,21 @@
 
 
 #include "mujoco.h"
-#include "glfw3.h"
-#include "stdio.h"
-#include "stdlib.h"
-#include "string.h"
 #include <iostream>
 #include <memory>
 
-#include <stdio.h>      /* printf, NULL */
-#include <stdlib.h>     /* srand, rand */
-#include <time.h>       /* time */
-#include <thread>
-#include <chrono>
-
-#include "glfwWrapper.h"
-#include "mjAgent.h"
+#include "Generator.h"
+#include "glfw_helper.h"
 
 
-const int n_inputs = 5;
-LayeredNeuralNet* ffnn = nullptr;
+int n_inputs = 0;
+int n_outputs = 0;
+LayeredNeuralNet* controller = nullptr;
 LayeredNeuralNet* feedbacknn = nullptr;
-MatrixType insignal(n_inputs, 1);
+MatrixType state;
 bool controller_on = false;
+
+const char* model_name = "invdoublependulum2D.xml";
 
 
 // MuJoCo data structures
@@ -49,17 +42,27 @@ double lasty = 0;
 int sign = 1;
 
 void createNeuralController() {
-	ffnn = new LayeredNeuralNet; //memory is managed by network
-	ffnn->load("generation100000/stand1");
+	if (!m)
+		throw std::runtime_error("init model first");
+
+	controller = new LayeredNeuralNet; //memory is managed by network
+	controller->load("generation4000/_0walker2dRewardEng3");
+	//controller->clearInternalStates();
+
+	int N_layers = controller->getTopology()->getNumberOfLayers();
+	n_inputs = controller->getTopology()->getLayerSize(0);
+	n_outputs = controller->getTopology()->getLayerSize(N_layers-1);
+
+	std::cout << n_inputs - m->nsensordata << std::endl;
+	std::cout << n_outputs - m->nu << std::endl;
+
+	state.resize(n_inputs, 1);
 }
 
 void destroyNeuralController() {
-	if (ffnn)
-		delete ffnn;
-	ffnn = nullptr;
-	if (feedbacknn)
-		delete feedbacknn;
-	feedbacknn = nullptr;
+	if (controller)
+		delete controller;
+	controller = nullptr;
 }
 
 // load mjb or xml model
@@ -86,6 +89,8 @@ void loadmodel(const char* filename)
 	mj_deleteData(d);
 	mj_deleteModel(m);
 	m = mnew;
+	m->qpos0[0] = -1; //Center rectangle
+	m->qpos0[1] = -1;
 	d = mj_makeData(m);
 	mj_forward(m, d);
 }
@@ -130,7 +135,7 @@ void sensorupdate(void)
 	int lineid = 0;
 
 	// loop over sensors
-	for (int n = 4; n < m->nsensor; n++)
+	for (int n = 0; n < m->nsensor; n++)
 	{
 		// go to next line if type is different
 		if (n > 0 && m->sensor_type[n] != m->sensor_type[n - 1])
@@ -157,7 +162,7 @@ void sensorupdate(void)
 
 			// y
 			figsensor.linedata[lineid][2 * p + 4 * i + 1] = 0;
-			figsensor.linedata[lineid][2 * p + 4 * i + 3] = (float)(d->sensordata[adr + i] / cutoff);
+			figsensor.linedata[lineid][2 * p + 4 * i + 3] = (float)(state(adr + i) / cutoff);
 		}
 
 		// update linepnt
@@ -191,42 +196,25 @@ void keyboard(GLFWwindow* window, int key, int scancode, int act, int mods)
 	}
 
 	if (act == GLFW_PRESS && key == GLFW_KEY_U) {
-		std::cout << "right foot: " << d->sensordata[0] << std::endl;
-		std::cout << "left foot: " << d->sensordata[1] << std::endl;
-		std::cout << "right hand: " << d->sensordata[2] << std::endl;
-		std::cout << "left hand: " << d->sensordata[3] << std::endl;
-
-		std::cout << m->nu << " " << m->na << " " << m->nsensordata << std::endl;
-
-		for (int i = 0; i < m->ngeom * 3; i += 3) {
-			std::cout << d->geom_xpos[i + 0] << " ";
-			std::cout << d->geom_xpos[i + 1] << " ";
-			std::cout << d->geom_xpos[i + 2] << std::endl;
-		}
-		std::cout << m->nsite;
 	}
 
 	if (act == GLFW_PRESS && key == GLFW_KEY_R)
 	{
 		// load and compile model
-		loadmodel("humanoid.xml");
+		loadmodel(model_name);
 	}
 
 	if (act == GLFW_PRESS && key == GLFW_KEY_W)
 	{
-		insignal(0, 0) = 1;
 	}
 	if (act == GLFW_PRESS && key == GLFW_KEY_S)
 	{
-		insignal(0, 0) = -1;
 	}
 	if (act == GLFW_PRESS && key == GLFW_KEY_A)
 	{
-		insignal(1, 0) = 1;
 	}
 	if (act == GLFW_PRESS && key == GLFW_KEY_D)
 	{
-		insignal(1, 0) = -1;
 	}
 
 
@@ -292,68 +280,46 @@ void scroll(GLFWwindow* window, double xoffset, double yoffset)
 // simple controller applying damping to each dof
 void test_controller(const mjModel* m, mjData* d)
 {
+	Generator g;
 	const int number_of_inputs = m->nsensordata;
 	const int number_of_outputs = m->nu;
-	MatrixType input(number_of_inputs, 1);
+	const int recurrent_inputs = n_outputs - number_of_outputs; //>=0
+	//state in (number_of_inputs + recurrent_inputs) x 1
 
-	d->sensordata[0] /= 500.0;
-	d->sensordata[1] /= 500.0;
-	d->sensordata[2] /= 500.0;
-	d->sensordata[3] /= 500.0;
-	d->sensordata[4] /= 500.0;
-	d->sensordata[5] /= 500.0;
-
-	//scale acc
-	d->sensordata[6] /= 10.0;
-	d->sensordata[7] /= 10.0;
-	d->sensordata[8] /= 10.0;
-
-	//Scale gyro
-	/*m_data->sensordata[9] /= 3.0;
-	m_data->sensordata[10] /= 3.0;
-	m_data->sensordata[11] /= 3.0;*/
+	ScalingLayer input_scaling(number_of_inputs + recurrent_inputs, 1);
+	//input_scaling.getScaling().array() /= 2.0;
+	const ScalarType scale_touch = 1.0 / 1000.0;
+	input_scaling(0) = scale_touch;
+	input_scaling(1) = scale_touch;
+	input_scaling(2) = scale_touch;
+	input_scaling(3) = scale_touch;
 
 	//Copy input data
 	for (int i = 0; i < number_of_inputs; i++)
-		input(i) = d->sensordata[i];
+		state(i) = d->sensordata[i];
 
-	ffnn->input(input);
-	const MatrixType& output = ffnn->output();
+	int k = number_of_outputs;
+	for (int i = number_of_inputs; i < (number_of_inputs + recurrent_inputs); i++) {
+		state(i) = controller->output()(k);
+		k++;
+	}
+
+	input_scaling.input(state);
+	state = input_scaling.output();
+
+	controller->input(state);
+	//controller->input(input_scaling.output());
+	const MatrixType& output = controller->output();
 
 	//Copy output data
 	for (int i = 0; i < number_of_outputs; i++)
-		d->ctrl[i] = output(i); //g.generate_normal<ScalarType>(0, 0.001);
+		d->ctrl[i] = output(i) + g.generate_normal<ScalarType>(0, 0.001);
 }
-
-void renderOffscreen(mjrRect viewport) {
-	// add time stamp in upper-left corner
-	char stamp[50];
-	sprintf(stamp, "Time = %.3f", d->time);
-	mjr_overlay(mjFONT_NORMAL, mjGRID_TOPLEFT, viewport, stamp, NULL, &con);
-
-	int W = viewport.width;
-	int H = viewport.height;
-
-	// allocate rgb and depth buffers
-	unsigned char* rgb = (unsigned char*)malloc(3 * W*H);
-	float* depth = (float*)malloc(sizeof(float)*W*H);
-	if (!rgb || !depth)
-		mju_error("Could not allocate buffers");
-
-	// create output rgb file
-	FILE* fp = fopen(argv[4], "wb");
-	if (!fp)
-		mju_error("Could not open rgbfile for writing");
-
-	// main loop
-	double frametime = 0;
-	int framecount = 0;
-}
-
 
 // main function
-void main2()
+void main()
 {
+	RandomEngineFactory::initialize();
 	// activate software
 	int activate_result = mj_activate("mjkey.txt");
 	if (activate_result == 0) {
@@ -363,19 +329,14 @@ void main2()
 	}
 
 	//load and compile model
-	loadmodel("humanoid.xml");
-
-	mjAgent mj_agent;
-	mj_agent.setup(m);
-	mj_agent.setController(ffnn);
-
+	loadmodel(model_name);
 
 	// init GLFW
 	if (!glfwInit())
 		mju_error("Could not initialize GLFW");
 
 	// create window, make OpenGL context current, request v-sync
-	GLFWwindow* window = glfwCreateWindow(1200, 900, "Demo", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(1920, 1080, "Demo", NULL, NULL);
 	glfwMakeContextCurrent(window);
 	glfwSwapInterval(1);
 
@@ -389,12 +350,12 @@ void main2()
 	mjv_defaultOption(&opt);
 	mjr_defaultContext(&con);
 
+
 	mjv_makeScene(&scn, 1000);                   // space for 1000 objects
 	mjr_makeContext(m, &con, mjFONTSCALE_100);   // model-specific context
 												 // install GLFW mouse and keyboard callbacks
 												 //Create controller and hook callback to mj_step.
 	createNeuralController();
-	mjcb_control = test_controller;
 
 	//sensors init
 	sensorinit();
@@ -409,30 +370,37 @@ void main2()
 		mjtNum simstart = d->time;
 		while (d->time - simstart < 1.0 / 60.0) {
 			mj_step(m, d);
+			test_controller(m, d);
 		}
-		mj_agent.simulate();
 
-		// get framebuffer viewport
-		mjrRect viewport = { 0, 0, 0, 0 };
-		glfwGetFramebufferSize(window, &viewport.width, &viewport.height);
+		// get size of active renderbuffer
+		// get current framebuffer rectangle
+		mjrRect rect = { 0, 0, 0, 0 };
+		mjrRect viewport = mjr_maxViewport(&con);
+		glfwGetFramebufferSize(window, &rect.width, &rect.height);
 
+		// center and scale view
+		cam.lookat[0] = d->qpos[0]+1;
+		cam.lookat[1] = 0;
+		cam.lookat[2] = d->qpos[1];
+		cam.distance = 1.0 * m->stat.extent;
 
 		//// update scene and render
 		//glfwMakeContextCurrent(window);
 
-
 		mjv_updateScene(m, d, &opt, NULL, &cam, mjCAT_ALL, &scn);
-		mjv_addGeoms(m, mj_agent.getData(), &opt, NULL, mjCAT_ALL, &scn);
-
 		mjr_render(viewport, &scn, &con);
 
-		// get current framebuffer rectangle
-		mjrRect rect = { 0, 0, 0, 0 };
 		glfwGetFramebufferSize(window, &rect.width, &rect.height);
 		mjrRect smallrect = rect;
 
 		sensorupdate();
 		sensorshow(smallrect);
+
+		// add time stamp in upper-left corner
+		char stamp[50];
+		sprintf(stamp, "Time = %.2f [s], Speed_x = %.2f [m/s]", d->time, d->qvel[0]);
+		mjr_overlay(mjFONT_NORMAL, mjGRID_TOPLEFT, viewport, stamp, NULL, &con);
 
 		// swap OpenGL buffers (blocking call due to v-sync)
 		glfwSwapBuffers(window);

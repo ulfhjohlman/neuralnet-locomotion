@@ -856,3 +856,6 @@ WARNING: Nan, Inf or huge value in QACC at DOF 2. The simulation is unstable. Ti
 Fri Nov 17 03:21:58 2017
 WARNING: Nan, Inf or huge value in QPOS at DOF 0. The simulation is unstable. Time = 7.6550.
 
+Sun Nov 26 00:57:31 2017
+ERROR: Could not allocate memory
+

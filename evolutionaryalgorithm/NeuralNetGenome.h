@@ -14,8 +14,11 @@ const ScalarType max_variance = 2.0f;
 const ScalarType min_moment = -0.5f;
 const ScalarType max_moment = 0.5f;
 
-const ScalarType variance_gain = 0.005f;
-const ScalarType variance_mutation = 0.02f;
+const ScalarType variance_gain = 0.005f; //0.005
+const ScalarType variance_mutation = 0.02f; //0.02
+
+const ScalarType start_variance_variance = 0.2f; //0.5
+const ScalarType start_variance_mean = 0.15; //0.5
 
 const ScalarType decay_factor = 0.9f; //momentum decay
 const ScalarType eta = 0.33f; //momentum gain.
@@ -56,8 +59,8 @@ public:
 			m_moment_weight.push_back(vWeight);
 			m_moment_bias.push_back(vBias);
 			
-			generator.fill_vector_normal<ScalarType>(vWeight.data(), vWeight.size(), 0.5f, 0.5f);
-			generator.fill_vector_normal<ScalarType>(vBias.data(), vBias.size(), 0.5f, 0.5f);
+			generator.fill_vector_normal<ScalarType>(vWeight.data(), vWeight.size(), start_variance_mean, start_variance_variance);
+			generator.fill_vector_normal<ScalarType>(vBias.data(), vBias.size(), start_variance_mean, start_variance_variance);
 			
 			m_mutation_variance_weights.push_back(vWeight);
 			m_mutation_variance_bias.push_back(vBias);
@@ -233,8 +236,6 @@ public:
 			n = m_bias_data[i]->size();
 			v.segment(it, n) = Eigen::Map<VectorType>((*m_bias_data[i]).data(), n);
 			it += n;
-
-			
 		}
 		/*std::cout << v.transpose() << std::endl;
 		std::cin.get();*/

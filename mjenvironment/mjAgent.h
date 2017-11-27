@@ -13,9 +13,9 @@
 #include "ScalingLayer.h"
 
 int g_simulation_steps = 10;
-float g_minimum_kill_height = 0.8f;
-float g_max_simulation_time = 0.7f;
-float activation_penalty_factor = 0.000055;
+float g_minimum_kill_height = 0.9f;
+float g_max_simulation_time = 0.95f;
+float activation_penalty_factor = 0.000575;
 float symmetry_penalty_factor = 0.000055;
 
 class mjAgent 

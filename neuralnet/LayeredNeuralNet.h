@@ -230,6 +230,11 @@ public:
 			layer->load(string_full_path.c_str());
 		}
 	}
+
+	virtual void clearInternalStates() {
+		for (auto & layer : m_layers)
+			layer->clearStates();
+	}
 protected: //members
 	std::vector<Layer*> m_layers;//replace with shared_ptr<Layer>
 

@@ -92,24 +92,38 @@ void setup_humanoid() {
 	if (!ga)
 		throw std::runtime_error("Could not start make GA.");
 
-	auto objective = [](mjModel const* m, mjData* d) { return 1.0*d->site_xpos[2] - 0.9*( d->site_xpos[2] < 0.9 ); };
+	auto objective = [](mjModel const* m, mjData* d) { return 1.0 - 0.93*( d->site_xpos[2] < 0.9 ); };
 	environment->setObjective(objective);
 
 	ScalingLayer input_scaling(nsensors + nrecurrent, 1);
-	const ScalarType scale_touch = 1.0 / 1000.0;
+	const ScalarType scale_touch = 1.0 / 500.0;
+	//foot1
 	input_scaling(0) = scale_touch;
 	input_scaling(1) = scale_touch;
 	input_scaling(2) = scale_touch;
 	input_scaling(3) = scale_touch;
+
+	//foot2
 	input_scaling(4) = scale_touch;
 	input_scaling(5) = scale_touch;
+	input_scaling(6) = scale_touch;
+	input_scaling(7) = scale_touch;
 
+	//hands
+	input_scaling(8) = scale_touch;
+	input_scaling(9) = scale_touch;
+
+	//acc
 	const ScalarType scale_acc = 1.0 / 10.0;
-	input_scaling(6) = scale_acc;
-	input_scaling(7) = scale_acc;
-	input_scaling(8) = scale_acc;
+	input_scaling(10) = scale_acc;
+	input_scaling(11) = scale_acc;
+	input_scaling(12) = scale_acc;
 
-	//gyro 9 10 11
+	//gyro 13 14 15
+	const ScalarType scale_gyro = 1.0 / 1.5;
+	input_scaling(13) = scale_gyro;
+	input_scaling(14) = scale_gyro;
+	input_scaling(15) = scale_gyro;
 
 	//rest joint pos/vel
 
@@ -148,7 +162,7 @@ void setup_walker2d() {
 	if (!ga)
 		throw std::runtime_error("Could not start make GA.");
 
-	auto objective = [](mjModel const* m, mjData* d) { return 1.0*d->qvel[0] + 0.005*d->site_xpos[2]; };
+	auto objective = [](mjModel const* m, mjData* d) { return 1.0*d->qvel[0] + 0.01; };
 	environment->setObjective(objective);
 
 	ScalingLayer input_scaling(nsensors + nrecurrent, 1);
@@ -158,7 +172,6 @@ void setup_walker2d() {
 	input_scaling(1) = scale_touch;
 	input_scaling(2) = scale_touch;
 	input_scaling(3) = scale_touch;
-
 
 	environment->setScalingLayer(input_scaling);
 	ga->setEnvironment(environment);
@@ -196,7 +209,7 @@ void setup_hopper() {
 	if (!ga)
 		throw std::runtime_error("Could not start make GA.");
 
-	auto objective = [](mjModel const* m, mjData* d) { return 1.0*d->site_xpos[0] + .3*d->site_xpos[2] + 0.01; };
+	auto objective = [](mjModel const* m, mjData* d) { return 1.0*d->site_xpos[0] + 0.01; };
 	environment->setObjective(objective);
 
 	ScalingLayer input_scaling(nsensors + nrecurrent, 1);

@@ -1,0 +1,5 @@
+<layer_2 layer_type="0" rows_output_size="64" cols_input_size="80">
+    <weights>generation16000/_0walker2dRewardEng5layer_2_weights.bin</weights>
+    <bias>generation16000/_0walker2dRewardEng5layer_2_bias.bin</bias>
+    <output>generation16000/_0walker2dRewardEng5layer_2_outputs.bin</output>
+</layer_2>

@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Population.h"
+#include "utilityfunctions.h"
+#include "ThreadsafeQueue.h"
 
 #include <algorithm>
 #include <vector>
@@ -12,7 +14,7 @@ ScalarType max_niche_radius = 10;
 ScalarType min_merge_radius = 0.8;
 ScalarType min_niche_radius2 = 1.0;
 
-ScalarType max_niche_size = 86;
+ScalarType max_niche_size = 100;
 ScalarType nominal_number_of_niches = 15;
 
 template<typename T>
@@ -36,6 +38,13 @@ public:
 		return dist.norm();
 	}
 
+	ScalarType distanceTo(std::shared_ptr< Individual<T> >& member) {
+		VectorType v;
+		member->getGenome()->getGeneSet(v);
+		auto dist = m_mid_point - v;
+		return dist.norm();
+	}
+
 	void merge(Niche<T>& merge_this) {
 		if (merge_this.size() == 0)
 			return;
@@ -47,8 +56,8 @@ public:
 		m_population.merge(merge_this.m_population);
 
 		//add areas of niches
-		merge_radius = std::sqrt(merge_radius * merge_radius + merge_this.merge_radius * merge_this.merge_radius);
-		max_radius   = std::sqrt(max_radius * max_radius + merge_this.max_radius * merge_this.max_radius);
+		//merge_radius = std::sqrt(merge_radius * merge_radius + merge_this.merge_radius * merge_this.merge_radius);
+		//max_radius   = std::sqrt(max_radius * max_radius + merge_this.max_radius * merge_this.max_radius);
 
 		//normalize
 		m_mid_point /= static_cast<ScalarType>(m_population.totalFitness());
@@ -154,7 +163,6 @@ public:
 				k++; //adds to k niches
 			}
 
-
 			if (distance < min_distance)
 				min_distance = distance;
 		}
@@ -185,13 +193,32 @@ public:
 	}
 
 	void update() {
+		ThreadsafeQueue<std::shared_ptr<Individual<T>>> move_list;
+		auto dislocate = [this, &move_list](int i) {
+			auto niche = m_niches[i];
+			for (int j = 0; j < niche.size(); j++) {
+				if (niche.distanceTo(niche.getPopulation()[j]) < niche.max_radius) {
+					if (niche.getPopulation()[j].use_count() == 2) {
+						move_list.push(std::move(niche.getPopulation()[j]));
+					} //else already in another niche
+					niche.getPopulation().erase(j);
+					j--;
+				}
+			}
+		};
+		parallel_for<size_t>(0, m_niches.size(), 1, dislocate);
+
+		while (!move_list.empty()) {
+			this->addMember(move_list.sequential_pop());
+		}
+
 		for (auto& niche : m_niches)
 			niche.updateMidpoint();
 
 		if (m_niches.size() > nominal_number_of_niches) {
 			for (auto& niche : m_niches) {
-				niche.max_radius *= 1.01;
-				niche.merge_radius *= 1.01;
+				niche.max_radius *= 1.006;
+				niche.merge_radius *= 1.001;
 			}
 		}
 

@@ -20,6 +20,7 @@ ENDIF()
 #look for include files in
 include_directories("${PROJECT_SOURCE_DIR}/lib/Eigen"
  "${PROJECT_SOURCE_DIR}/bullet"
+ "${PROJECT_SOURCE_DIR}/gpu"
  "${PROJECT_SOURCE_DIR}/neuralnet"
  "${PROJECT_SOURCE_DIR}/evolutionaryalgorithm"
  "${PROJECT_SOURCE_DIR}/utility"
@@ -28,6 +29,7 @@ include_directories("${PROJECT_SOURCE_DIR}/lib/Eigen"
  "${PROJECT_SOURCE_DIR}/rl"
  "${PROJECT_SOURCE_DIR}/rl_test"
  "${PROJECT_SOURCE_DIR}"
+ "${PROJECT_SOURCE_DIR}/mj_render"
  "${PROJECT_SOURCE_DIR}/mjenvironment")
 
 #add library subdirectories -> executes subs CMakeLists.txt
@@ -65,6 +67,7 @@ add_subdirectory("${PROJECT_SOURCE_DIR}/rl_test")
 IF(MSVC)
 	#link_directories("${PROJECT_SOURCE_DIR}/lib/mjpro150/bin")
 	add_subdirectory("${PROJECT_SOURCE_DIR}/mjenvironment")
+	add_subdirectory("${PROJECT_SOURCE_DIR}/mj_render")
 ENDIF()
 
 option(GENERATE_GPU  "Make gpu library"  ON)

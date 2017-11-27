@@ -174,6 +174,10 @@ public:
 		loadMatrix(buffer, m_outputs, rows, 1); //Potential error, argument of 1.
 	}
 
+	virtual void clearStates() {
+		m_outputs.setZero();
+	}
+
 	enum LayerType
 	{
 		noActivation = 0,

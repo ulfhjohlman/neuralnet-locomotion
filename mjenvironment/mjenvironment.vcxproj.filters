@@ -21,9 +21,6 @@
     <ClInclude Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\mjEnvironment.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\oldMujocoBasic.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\CMakeLists.txt" />
