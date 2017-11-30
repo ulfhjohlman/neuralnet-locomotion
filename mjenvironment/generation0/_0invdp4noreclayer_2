@@ -1,0 +1,5 @@
+<layer_2 layer_type="0" rows_output_size="64" cols_input_size="64">
+    <weights>generation0/_0invdp4noreclayer_2_weights.bin</weights>
+    <bias>generation0/_0invdp4noreclayer_2_bias.bin</bias>
+    <output>generation0/_0invdp4noreclayer_2_outputs.bin</output>
+</layer_2>

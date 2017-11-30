@@ -1,0 +1,5 @@
+<layer_2 layer_type="0" rows_output_size="16" cols_input_size="32">
+    <weights>generation85000/_0invdp2dlayer_2_weights.bin</weights>
+    <bias>generation85000/_0invdp2dlayer_2_bias.bin</bias>
+    <output>generation85000/_0invdp2dlayer_2_outputs.bin</output>
+</layer_2>

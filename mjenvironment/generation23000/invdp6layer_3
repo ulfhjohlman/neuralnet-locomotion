@@ -1,0 +1,17 @@
+<layer_3 layer_type="0" rows_output_size="1" cols_input_size="32">
+    <weights>generation20000/invdp6layer_3_weights.bin</weights>
+    <bias>generation20000/invdp6layer_3_bias.bin</bias>
+    <output>generation20000/invdp6layer_3_output.bin</output>
+    <layer_3/>
+    <weights>generation21000/invdp6layer_3_weights.bin</weights>
+    <bias>generation21000/invdp6layer_3_bias.bin</bias>
+    <output>generation21000/invdp6layer_3_output.bin</output>
+    <layer_3/>
+    <weights>generation22000/invdp6layer_3_weights.bin</weights>
+    <bias>generation22000/invdp6layer_3_bias.bin</bias>
+    <output>generation22000/invdp6layer_3_output.bin</output>
+    <layer_3/>
+    <weights>generation23000/invdp6layer_3_weights.bin</weights>
+    <bias>generation23000/invdp6layer_3_bias.bin</bias>
+    <output>generation23000/invdp6layer_3_output.bin</output>
+</layer_3>

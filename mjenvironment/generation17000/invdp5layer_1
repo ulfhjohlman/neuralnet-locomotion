@@ -1,0 +1,13 @@
+<layer_1 layer_type="0" rows_output_size="64" cols_input_size="8">
+    <weights>generation15000/invdp5layer_1_weights.bin</weights>
+    <bias>generation15000/invdp5layer_1_bias.bin</bias>
+    <output>generation15000/invdp5layer_1_output.bin</output>
+    <layer_1/>
+    <weights>generation16000/invdp5layer_1_weights.bin</weights>
+    <bias>generation16000/invdp5layer_1_bias.bin</bias>
+    <output>generation16000/invdp5layer_1_output.bin</output>
+    <layer_1/>
+    <weights>generation17000/invdp5layer_1_weights.bin</weights>
+    <bias>generation17000/invdp5layer_1_bias.bin</bias>
+    <output>generation17000/invdp5layer_1_output.bin</output>
+</layer_1>

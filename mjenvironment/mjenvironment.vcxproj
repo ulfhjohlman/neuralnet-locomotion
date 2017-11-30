@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -83,11 +83,12 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\Eigen;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\neuralnet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\evolutionaryalgorithm;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\utility;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\testframework;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\tinyxml2;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl_test;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\mjpro150\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\Eigen;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\bullet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\gpu;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\neuralnet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\evolutionaryalgorithm;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\utility;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\testframework;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\tinyxml2;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl_test;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mj_render;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\mjpro150\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>Debug/</AssemblerListingLocation>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <CompileAs>CompileAsCpp</CompileAs>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <ExceptionHandling>Sync</ExceptionHandling>
       <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
       <Optimization>Disabled</Optimization>
@@ -97,14 +98,13 @@
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;_WINDOWS;CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\Eigen;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\neuralnet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\evolutionaryalgorithm;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\utility;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\testframework;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\tinyxml2;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl_test;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\mjpro150\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\Eigen;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\bullet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\gpu;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\neuralnet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\evolutionaryalgorithm;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\utility;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\testframework;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\tinyxml2;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl_test;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mj_render;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\mjpro150\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\Eigen;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\neuralnet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\evolutionaryalgorithm;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\utility;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\testframework;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\tinyxml2;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl_test;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\mjpro150\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\Eigen;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\bullet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\gpu;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\neuralnet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\evolutionaryalgorithm;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\utility;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\testframework;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\tinyxml2;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl_test;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mj_render;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\mjpro150\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -112,8 +112,7 @@
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <PostBuildEvent>
-      <Message>
-      </Message>
+      <Message>				</Message>
       <Command>setlocal
 "C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different "C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/lib/mjpro150/bin/mujoco150.dll" "C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/mjenvironment/Debug"
 if %errorlevel% neq 0 goto :cmEnd
@@ -161,7 +160,7 @@ exit /b %1
 if %errorlevel% neq 0 goto :VCEnd</Command>
     </PostBuildEvent>
     <Link>
-      <AdditionalDependencies>..\lib\mjpro150\bin\mujoco150.lib;..\lib\mjpro150\bin\glfw3.lib;..\neuralnet\Debug\neuralnet.lib;..\evolutionaryalgorithm\Debug\evo_alg.lib;..\lib\tinyxml2\Debug\tinyxml.lib;..\utility\Debug\utility.lib;..\testframework\Debug\testframework.lib;..\rl\Debug\rl.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>..\lib\mjpro150\bin\mujoco150.lib;..\lib\mjpro150\bin\glfw3.lib;..\lib\Debug\neuralnet_Debug.lib;..\lib\Debug\evo_alg_Debug.lib;..\lib\Debug\tinyxml_Debug.lib;..\lib\Debug\utility_Debug.lib;..\lib\Debug\testframework_Debug.lib;..\lib\Debug\rl_Debug.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -169,8 +168,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <ImportLibrary>C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/mjenvironment/Debug/mjenvironment.lib</ImportLibrary>
       <ProgramDataBaseFile>C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/mjenvironment/Debug/mjenvironment.pdb</ProgramDataBaseFile>
       <SubSystem>Console</SubSystem>
-      <Version>
-      </Version>
+      <Version></Version>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>false</LinkLibraryDependencies>
@@ -178,9 +176,10 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\Eigen;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\neuralnet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\evolutionaryalgorithm;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\utility;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\testframework;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\tinyxml2;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl_test;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\mjpro150\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\Eigen;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\bullet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\gpu;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\neuralnet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\evolutionaryalgorithm;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\utility;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\testframework;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\tinyxml2;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl_test;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mj_render;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\mjpro150\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>Release/</AssemblerListingLocation>
       <CompileAs>CompileAsCpp</CompileAs>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <ExceptionHandling>Sync</ExceptionHandling>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <Optimization>MaxSpeed</Optimization>
@@ -190,16 +189,14 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
-      <DebugInformationFormat>
-      </DebugInformationFormat>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <DebugInformationFormat></DebugInformationFormat>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\Eigen;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\neuralnet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\evolutionaryalgorithm;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\utility;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\testframework;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\tinyxml2;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl_test;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\mjpro150\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\Eigen;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\bullet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\gpu;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\neuralnet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\evolutionaryalgorithm;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\utility;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\testframework;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\tinyxml2;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl_test;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mj_render;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\mjpro150\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\Eigen;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\neuralnet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\evolutionaryalgorithm;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\utility;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\testframework;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\tinyxml2;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl_test;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\mjpro150\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\Eigen;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\bullet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\gpu;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\neuralnet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\evolutionaryalgorithm;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\utility;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\testframework;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\tinyxml2;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl_test;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mj_render;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\mjpro150\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -207,8 +204,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <PostBuildEvent>
-      <Message>
-      </Message>
+      <Message>				</Message>
       <Command>setlocal
 "C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different "C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/lib/mjpro150/bin/mujoco150.dll" "C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/mjenvironment/Release"
 if %errorlevel% neq 0 goto :cmEnd
@@ -256,7 +252,7 @@ exit /b %1
 if %errorlevel% neq 0 goto :VCEnd</Command>
     </PostBuildEvent>
     <Link>
-      <AdditionalDependencies>..\lib\mjpro150\bin\mujoco150.lib;..\lib\mjpro150\bin\glfw3.lib;..\neuralnet\Release\neuralnet.lib;..\evolutionaryalgorithm\Release\evo_alg.lib;..\lib\tinyxml2\Release\tinyxml.lib;..\utility\Release\utility.lib;..\testframework\Release\testframework.lib;..\rl\Release\rl.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>..\lib\mjpro150\bin\mujoco150.lib;..\lib\mjpro150\bin\glfw3.lib;..\lib\Release\neuralnet.lib;..\lib\Release\evo_alg.lib;..\lib\Release\tinyxml.lib;..\lib\Release\utility.lib;..\lib\Release\testframework.lib;..\lib\Release\rl.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -264,8 +260,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <ImportLibrary>C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/mjenvironment/Release/mjenvironment.lib</ImportLibrary>
       <ProgramDataBaseFile>C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/mjenvironment/Release/mjenvironment.pdb</ProgramDataBaseFile>
       <SubSystem>Console</SubSystem>
-      <Version>
-      </Version>
+      <Version></Version>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>false</LinkLibraryDependencies>
@@ -273,9 +268,10 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\Eigen;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\neuralnet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\evolutionaryalgorithm;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\utility;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\testframework;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\tinyxml2;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl_test;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\mjpro150\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\Eigen;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\bullet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\gpu;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\neuralnet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\evolutionaryalgorithm;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\utility;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\testframework;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\tinyxml2;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl_test;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mj_render;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\mjpro150\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>MinSizeRel/</AssemblerListingLocation>
       <CompileAs>CompileAsCpp</CompileAs>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <ExceptionHandling>Sync</ExceptionHandling>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <Optimization>MinSpace</Optimization>
@@ -285,16 +281,14 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR="MinSizeRel";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
-      <DebugInformationFormat>
-      </DebugInformationFormat>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <DebugInformationFormat></DebugInformationFormat>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"MinSizeRel\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\Eigen;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\neuralnet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\evolutionaryalgorithm;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\utility;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\testframework;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\tinyxml2;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl_test;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\mjpro150\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\Eigen;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\bullet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\gpu;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\neuralnet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\evolutionaryalgorithm;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\utility;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\testframework;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\tinyxml2;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl_test;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mj_render;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\mjpro150\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\Eigen;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\neuralnet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\evolutionaryalgorithm;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\utility;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\testframework;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\tinyxml2;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl_test;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\mjpro150\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\Eigen;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\bullet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\gpu;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\neuralnet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\evolutionaryalgorithm;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\utility;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\testframework;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\tinyxml2;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl_test;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mj_render;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\mjpro150\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -302,8 +296,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <PostBuildEvent>
-      <Message>
-      </Message>
+      <Message>				</Message>
       <Command>setlocal
 "C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different "C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/lib/mjpro150/bin/mujoco150.dll" "C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/mjenvironment/MinSizeRel"
 if %errorlevel% neq 0 goto :cmEnd
@@ -351,7 +344,7 @@ exit /b %1
 if %errorlevel% neq 0 goto :VCEnd</Command>
     </PostBuildEvent>
     <Link>
-      <AdditionalDependencies>..\lib\mjpro150\bin\mujoco150.lib;..\lib\mjpro150\bin\glfw3.lib;..\neuralnet\MinSizeRel\neuralnet.lib;..\evolutionaryalgorithm\MinSizeRel\evo_alg.lib;..\lib\tinyxml2\MinSizeRel\tinyxml.lib;..\utility\MinSizeRel\utility.lib;..\testframework\MinSizeRel\testframework.lib;..\rl\MinSizeRel\rl.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>..\lib\mjpro150\bin\mujoco150.lib;..\lib\mjpro150\bin\glfw3.lib;..\lib\MinSizeRel\neuralnet_MinsizeRel.lib;..\lib\MinSizeRel\evo_alg_MinsizeRel.lib;..\lib\MinSizeRel\tinyxml_MinsizeRel.lib;..\lib\MinSizeRel\utility_MinsizeRel.lib;..\lib\MinSizeRel\testframework_MinsizeRel.lib;..\lib\MinSizeRel\rl_MinsizeRel.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -359,8 +352,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <ImportLibrary>C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/mjenvironment/MinSizeRel/mjenvironment.lib</ImportLibrary>
       <ProgramDataBaseFile>C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/mjenvironment/MinSizeRel/mjenvironment.pdb</ProgramDataBaseFile>
       <SubSystem>Console</SubSystem>
-      <Version>
-      </Version>
+      <Version></Version>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>false</LinkLibraryDependencies>
@@ -368,10 +360,11 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\Eigen;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\neuralnet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\evolutionaryalgorithm;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\utility;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\testframework;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\tinyxml2;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl_test;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\mjpro150\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\Eigen;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\bullet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\gpu;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\neuralnet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\evolutionaryalgorithm;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\utility;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\testframework;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\tinyxml2;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl_test;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mj_render;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\mjpro150\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>RelWithDebInfo/</AssemblerListingLocation>
       <CompileAs>CompileAsCpp</CompileAs>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <ExceptionHandling>Sync</ExceptionHandling>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <Optimization>MaxSpeed</Optimization>
@@ -381,14 +374,13 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR="RelWithDebInfo";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"RelWithDebInfo\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\Eigen;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\neuralnet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\evolutionaryalgorithm;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\utility;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\testframework;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\tinyxml2;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl_test;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\mjpro150\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\Eigen;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\bullet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\gpu;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\neuralnet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\evolutionaryalgorithm;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\utility;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\testframework;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\tinyxml2;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl_test;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mj_render;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\mjpro150\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\Eigen;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\neuralnet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\evolutionaryalgorithm;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\utility;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\testframework;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\tinyxml2;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl_test;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\mjpro150\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\Eigen;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\bullet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\gpu;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\neuralnet;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\evolutionaryalgorithm;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\utility;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\testframework;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\tinyxml2;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\rl_test;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mj_render;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment;C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\lib\mjpro150\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -396,8 +388,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <PostBuildEvent>
-      <Message>
-      </Message>
+      <Message>				</Message>
       <Command>setlocal
 "C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different "C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/lib/mjpro150/bin/mujoco150.dll" "C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/mjenvironment/RelWithDebInfo"
 if %errorlevel% neq 0 goto :cmEnd
@@ -445,7 +436,7 @@ exit /b %1
 if %errorlevel% neq 0 goto :VCEnd</Command>
     </PostBuildEvent>
     <Link>
-      <AdditionalDependencies>..\lib\mjpro150\bin\mujoco150.lib;..\lib\mjpro150\bin\glfw3.lib;..\neuralnet\RelWithDebInfo\neuralnet.lib;..\evolutionaryalgorithm\RelWithDebInfo\evo_alg.lib;..\lib\tinyxml2\RelWithDebInfo\tinyxml.lib;..\utility\RelWithDebInfo\utility.lib;..\testframework\RelWithDebInfo\testframework.lib;..\rl\RelWithDebInfo\rl.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>..\lib\mjpro150\bin\mujoco150.lib;..\lib\mjpro150\bin\glfw3.lib;..\lib\RelWithDebInfo\neuralnet_RelWithDebugInfo.lib;..\lib\RelWithDebInfo\evo_alg_RelWithDebugInfo.lib;..\lib\RelWithDebInfo\tinyxml_RelWithDebugInfo.lib;..\lib\RelWithDebInfo\utility_RelWithDebugInfo.lib;..\lib\RelWithDebInfo\testframework_RelWithDebugInfo.lib;..\lib\RelWithDebInfo\rl_RelWithDebugInfo.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -453,8 +444,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <ImportLibrary>C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/mjenvironment/RelWithDebInfo/mjenvironment.lib</ImportLibrary>
       <ProgramDataBaseFile>C:/Users/Jonathan/Documents/Visual Studio 2017/Projects/tmpexjobb/masterdemo/mjenvironment/RelWithDebInfo/mjenvironment.pdb</ProgramDataBaseFile>
       <SubSystem>Console</SubSystem>
-      <Version>
-      </Version>
+      <Version></Version>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>false</LinkLibraryDependencies>
@@ -517,7 +507,12 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\mjenvironment.cpp" />
+    <ClCompile Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\mjenvironment.cpp"  />
+    <ClInclude Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\AgentScheduler.h" />
+    <ClInclude Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\ModelSetup.h" />
+    <ClInclude Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\glfwWrapper.h" />
+    <ClInclude Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\mjAgent.h" />
+    <ClInclude Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\mjenvironment\mjEnvironment.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\tmpexjobb\masterdemo\ZERO_CHECK.vcxproj">
@@ -548,14 +543,6 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <Project>{0BEB3724-A879-3E87-A420-C1B3D7BBF2B2}</Project>
       <Name>utility</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="AgentScheduler.h" />
-    <ClInclude Include="glfwWrapper.h" />
-    <ClInclude Include="mjAgent.h" />
-    <ClInclude Include="mjEnvironment.h" />
-    <ClInclude Include="ModelSetup.h" />
-    <ClInclude Include="oldMujocoBasic.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

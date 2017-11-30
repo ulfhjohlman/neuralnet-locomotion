@@ -1,0 +1,5 @@
+<layer_3 layer_type="0" rows_output_size="64" cols_input_size="64">
+    <weights>generation11000/_0humanoidlayer_3_weights.bin</weights>
+    <bias>generation11000/_0humanoidlayer_3_bias.bin</bias>
+    <output>generation11000/_0humanoidlayer_3_outputs.bin</output>
+</layer_3>

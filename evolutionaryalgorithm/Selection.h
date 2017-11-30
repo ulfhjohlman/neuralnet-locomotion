@@ -15,7 +15,11 @@ class Selection {
 
 class TournamentSelection {
 public:
-	TournamentSelection(ScalarType ptour, ScalarType tournament_size) : m_ptour(ptour), m_tournament_size(tournament_size){ }
+	TournamentSelection(ScalarType ptour, ScalarType tournament_size) : m_ptour(ptour), m_tournament_size(tournament_size){ 
+		std::cout << "Tournament Selection operator:" << std::endl;
+		std::cout << "ptour=" << ptour << std::endl;
+		std::cout << "tournament size=" <<tournament_size << std::endl;
+	}
 	~TournamentSelection() = default;
 
 	void setTournamentSelectionProbability(ScalarType ptour) {

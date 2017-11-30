@@ -38,12 +38,12 @@ protected:
 
 void NeuralNet::save(const char* toFile) {
 	m_document.save(toFile);
-	m_document.print();
+	//m_document.print();
 }
 
 void NeuralNet::load(const char* fromFile) {
 	m_document.load(fromFile);
-	m_document.print();
+	//m_document.print();
 }
 
 void NeuralNet::setName(const char* name) {

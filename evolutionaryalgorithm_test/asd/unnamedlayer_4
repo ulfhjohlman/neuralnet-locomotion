@@ -1,0 +1,5 @@
+<layer_4 layer_type="0" rows_output_size="15" cols_input_size="128">
+    <weights>asd/unnamedlayer_4_weights.bin</weights>
+    <bias>asd/unnamedlayer_4_bias.bin</bias>
+    <output>asd/unnamedlayer_4_outputs.bin</output>
+</layer_4>

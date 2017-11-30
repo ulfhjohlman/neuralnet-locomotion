@@ -87,29 +87,43 @@ void setup_humanoid() {
 		throw std::runtime_error("Could not make environment.");
 	int nsensors = environment->m_model->nsensordata;
 	int nctrls = environment->m_model->nu;
-	int nrecurrent = 16;
+	int nrecurrent = 32;
 	ga = new GeneticAlgorithm(g_population_size, nsensors, nctrls);
 	if (!ga)
 		throw std::runtime_error("Could not start make GA.");
 
-	auto objective = [](mjModel const* m, mjData* d) { return 1.0*d->site_xpos[2] * d->site_xpos[2]; };
+	auto objective = [](mjModel const* m, mjData* d) { return 1.0 - 0.93*( d->site_xpos[2] < 0.9 ); };
 	environment->setObjective(objective);
 
 	ScalingLayer input_scaling(nsensors + nrecurrent, 1);
 	const ScalarType scale_touch = 1.0 / 500.0;
+	//foot1
 	input_scaling(0) = scale_touch;
 	input_scaling(1) = scale_touch;
 	input_scaling(2) = scale_touch;
 	input_scaling(3) = scale_touch;
+
+	//foot2
 	input_scaling(4) = scale_touch;
 	input_scaling(5) = scale_touch;
+	input_scaling(6) = scale_touch;
+	input_scaling(7) = scale_touch;
 
+	//hands
+	input_scaling(8) = scale_touch;
+	input_scaling(9) = scale_touch;
+
+	//acc
 	const ScalarType scale_acc = 1.0 / 10.0;
-	input_scaling(6) = scale_acc;
-	input_scaling(7) = scale_acc;
-	input_scaling(8) = scale_acc;
+	input_scaling(10) = scale_acc;
+	input_scaling(11) = scale_acc;
+	input_scaling(12) = scale_acc;
 
-	//gyro 9 10 11
+	//gyro 13 14 15
+	const ScalarType scale_gyro = 1.0 / 1.5;
+	input_scaling(13) = scale_gyro;
+	input_scaling(14) = scale_gyro;
+	input_scaling(15) = scale_gyro;
 
 	//rest joint pos/vel
 
@@ -137,19 +151,45 @@ void setup_swimmer() {
 	ga->setEnvironment(environment);
 }
 
-
-void setup_invdoublepole() {
-	environment = new mjEnvironment(g_population_size, 128, "invdoublependulum.xml", "environment.xml");
+void setup_walker2d() {
+	environment = new mjEnvironment(g_population_size, 128, "walker2d.xml", "environment.xml");
 	if (!environment)
 		throw std::runtime_error("Could not make environment.");
 	int nsensors = environment->m_model->nsensordata;
 	int nctrls = environment->m_model->nu;
-	int nrecurrent = 16;
+	int nrecurrent = 32;
 	ga = new GeneticAlgorithm(g_population_size, nsensors, nctrls);
 	if (!ga)
 		throw std::runtime_error("Could not start make GA.");
 
-	auto objective = [](mjModel const* m, mjData* d) { return 1.0*d->site_xpos[5] - 0.1*std::abs(d->site_xpos[3]); };
+	auto objective = [](mjModel const* m, mjData* d) { return 1.0*d->qvel[0] + 0.01; };
+	environment->setObjective(objective);
+
+	ScalingLayer input_scaling(nsensors + nrecurrent, 1);
+	//input_scaling.getScaling().array();
+	const ScalarType scale_touch = 1.0 / 1000.0;
+	input_scaling(0) = scale_touch;
+	input_scaling(1) = scale_touch;
+	input_scaling(2) = scale_touch;
+	input_scaling(3) = scale_touch;
+
+	environment->setScalingLayer(input_scaling);
+	ga->setEnvironment(environment);
+}
+
+
+void setup_invdoublepole() {
+	environment = new mjEnvironment(g_population_size, 100, "invdoublependulum2D.xml", "environment.xml");
+	if (!environment)
+		throw std::runtime_error("Could not make environment.");
+	int nsensors = environment->m_model->nsensordata;
+	int nctrls = environment->m_model->nu;
+	int nrecurrent = 4;
+	ga = new GeneticAlgorithm(g_population_size, nsensors, nctrls);
+	if (!ga)
+		throw std::runtime_error("Could not start make GA.");
+
+	auto objective = [](mjModel const* m, mjData* d) { return 1.0*d->site_xpos[5] - 0.03*std::abs(d->site_xpos[3]) - 0.03*std::abs(d->site_xpos[4]); };
 	environment->setObjective(objective);
 
 	ScalingLayer input_scaling(nsensors + nrecurrent, 1);
@@ -157,6 +197,30 @@ void setup_invdoublepole() {
 	environment->setScalingLayer(input_scaling);
 	ga->setEnvironment(environment);
 }
+
+void setup_hopper() {
+	environment = new mjEnvironment(g_population_size, 128, "hopper.xml", "environment.xml");
+	if (!environment)
+		throw std::runtime_error("Could not make environment.");
+	int nsensors = environment->m_model->nsensordata;
+	int nctrls = environment->m_model->nu;
+	int nrecurrent = 0;
+	ga = new GeneticAlgorithm(g_population_size, nsensors, nctrls);
+	if (!ga)
+		throw std::runtime_error("Could not start make GA.");
+
+	auto objective = [](mjModel const* m, mjData* d) { return 1.0*d->site_xpos[0] + 0.01; };
+	environment->setObjective(objective);
+
+	ScalingLayer input_scaling(nsensors + nrecurrent, 1);
+	const ScalarType scale_touch = 1.0 / 1000.0;
+	input_scaling(0) = scale_touch;
+	input_scaling(1) = scale_touch;
+
+	environment->setScalingLayer(input_scaling);
+	ga->setEnvironment(environment);
+}
+
 
 int main() {
 	RandomEngineFactory::initialize();
@@ -216,10 +280,12 @@ bool init() {
 
 	try {
 		//setup();
-		//setup_ant();
+		setup_ant();
 		//setup_humanoid();
 		//setup_invdoublepole();
-		setup_swimmer();
+		//setup_swimmer();
+		//setup_walker2d();
+		//setup_hopper();
 	}
 	catch (NeuralNetException e) {
 		std::cerr << e.what() << std::endl;

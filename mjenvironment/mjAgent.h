@@ -14,8 +14,10 @@
 
 int g_simulation_steps = 10;
 float g_minimum_kill_height = 0.26f;
-float g_max_simulation_time = 1.0f;
-
+float g_max_simulation_time = 2.0f;
+float activation_penalty_factor = 0.00001;
+float symmetry_penalty_factor = 0.000055;
+float noise_level = 0.001;
 
 class mjAgent 
 {
@@ -112,6 +114,8 @@ public:
 		mj_forward(m_model, m_data);
 
 		m_reward = 0;
+		m_left_right.resize(3, 1);
+		m_left_right.setZero();
 		m_done = false;
 		m_time_simulated = 0;
 	}
@@ -127,13 +131,17 @@ public:
 
 				if (m_objective) {
 					m_reward += simstep * m_objective(m_model, m_data);
-					m_reward += - 0.000001 * m_controller->output().squaredNorm();
+					m_reward += - activation_penalty_factor * m_controller->output().norm();
+					//m_left_right.array() += 
+					//	(m_controller->output().block(0, 0, 3, 1) - 
+					//	m_controller->output().block(3, 0, 3, 1) ).array();
 				}
 				
 			}
 			m_time_simulated += simstep*steps;
-			if (m_time_simulated > g_max_simulation_time || m_data->site_xpos[5] < g_minimum_kill_height) {
+			if (m_time_simulated > g_max_simulation_time || m_data->site_xpos[2] < g_minimum_kill_height ) {
 				m_done = true;
+				//m_reward -= symmetry_penalty_factor * m_left_right.norm();
 			}
 			//|| m_data->site_xpos[5] < g_minimum_kill_height
 
@@ -172,7 +180,7 @@ protected:
 			//Setup states
 			const int number_of_inputs  = m_model->nsensordata;
 			const int number_of_outputs = m_model->nu;
-			const int recurrent_inputs  = 16;
+			const int recurrent_inputs  = 4;
 			MatrixType input(number_of_inputs + recurrent_inputs, 1);
 
 			//Copy input data
@@ -195,7 +203,7 @@ protected:
 
 			//Copy output data
 			for (int i = 0; i < number_of_outputs; i++)
-				m_data->ctrl[i] = -1;
+				m_data->ctrl[i] = m_controller->output()(i) + g.generate_normal<ScalarType>(0, noise_level);
 		}
 	}
 	
@@ -213,6 +221,8 @@ private:
 	bool m_has_scaling_layer;
 	double m_time_simulated;
 	double m_reward;
+
+	MatrixType m_left_right;
 
 	int m_col, m_cols;
 	int m_row, m_rows;
