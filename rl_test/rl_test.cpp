@@ -65,20 +65,25 @@ int ppo_mj_test()
 	std::cout << "Starting ppo_mj_test\n";
 
 	//initalize environment
-	//InvDoublePendEnv env;
+	InvDoublePendEnv env;
 	//HumanoidEnv env;
-	Walker2dEnv env;
+	//HumanoidEnv2 env;
+	//Walker2dEnv env;
 	//HopperEnv env;
 	int action_space_dim = env.getActionSpaceDimensions();
 	int state_space_dim = env.getStateSpaceDimensions();
 
 	//constructing networks
+	/*
 	int layer1size = 10 * state_space_dim;
 	int layer3size = 10 * action_space_dim;
 	int geo_mean1 = static_cast<int>(sqrt(layer1size*layer1size + layer3size*layer3size)); //geometric mean of layer 1 and 3 for layer 2
 	int geo_mean2 = static_cast<int>(sqrt(layer1size*layer1size + 5*5)); 
 	std::vector<int> layerSizesPolicy{ state_space_dim,state_space_dim*10,geo_mean1,action_space_dim*10,action_space_dim };
 	std::vector<int> layerSizesValueFunc{ state_space_dim,state_space_dim*10,geo_mean2,5,1 };
+	*/
+	std::vector<int> layerSizesPolicy{ state_space_dim,300,200,100,action_space_dim };
+	std::vector<int> layerSizesValueFunc{ state_space_dim,300,100,20,1 };
 	const int relu = Layer::LayerType::relu;
 	const int inputLayer = Layer::LayerType::inputLayer;
 	const int noactiv = Layer::noActivation;
@@ -112,7 +117,7 @@ int ppo_mj_test()
 	// PolicyGradientTrainer trainer(&env,&policy);
 	PPOTrainer trainer(&env, &policy, &valueFunc);
 	//arguments: iterations,  batchsize, timesteps_episode, minibatch_size, epochs
-	int frameskip = 3;
+	int frameskip = 1;
 
 	env.set_frameskip(frameskip);
 	trainer.setName("ppo_mj_test");

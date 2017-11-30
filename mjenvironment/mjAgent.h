@@ -87,7 +87,7 @@ public:
 		m_row = index / m_rows;
 	}
 
-	void setup(const mjModel const* model, int index = 0, int rows = 8, int cols = 8) {
+	void setup(const mjModel const* model, int index = 0, int rows = 1, int cols = 1) {
 		if (!model)
 			throw std::runtime_error("Null model ptr.");
 		m_model = model;
@@ -132,7 +132,7 @@ public:
 				
 			}
 			m_time_simulated += simstep*steps;
-			if (m_time_simulated > g_max_simulation_time ) {
+			if (m_time_simulated > g_max_simulation_time || m_data->site_xpos[5] < g_minimum_kill_height) {
 				m_done = true;
 			}
 			//|| m_data->site_xpos[5] < g_minimum_kill_height
@@ -195,7 +195,7 @@ protected:
 
 			//Copy output data
 			for (int i = 0; i < number_of_outputs; i++)
-				m_data->ctrl[i] = m_controller->output()(i) + g.generate_normal<ScalarType>(0, 0.005);
+				m_data->ctrl[i] = -1;
 		}
 	}
 	
