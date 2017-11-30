@@ -13,10 +13,11 @@
 #include "ScalingLayer.h"
 
 int g_simulation_steps = 10;
-float g_minimum_kill_height = 0.9f;
-float g_max_simulation_time = 0.95f;
-float activation_penalty_factor = 0.000575;
+float g_minimum_kill_height = 0.26f;
+float g_max_simulation_time = 2.0f;
+float activation_penalty_factor = 0.00001;
 float symmetry_penalty_factor = 0.000055;
+float noise_level = 0.001;
 
 class mjAgent 
 {
@@ -130,17 +131,17 @@ public:
 
 				if (m_objective) {
 					m_reward += simstep * m_objective(m_model, m_data);
-					m_reward += - activation_penalty_factor * m_controller->output().block(0, 0, 6, 1).squaredNorm();
-					m_left_right.array() += 
-						(m_controller->output().block(0, 0, 3, 1) - 
-						m_controller->output().block(3, 0, 3, 1) ).array();
+					m_reward += - activation_penalty_factor * m_controller->output().norm();
+					//m_left_right.array() += 
+					//	(m_controller->output().block(0, 0, 3, 1) - 
+					//	m_controller->output().block(3, 0, 3, 1) ).array();
 				}
 				
 			}
 			m_time_simulated += simstep*steps;
 			if (m_time_simulated > g_max_simulation_time || m_data->site_xpos[2] < g_minimum_kill_height ) {
 				m_done = true;
-				m_reward -= symmetry_penalty_factor * m_left_right.norm();
+				//m_reward -= symmetry_penalty_factor * m_left_right.norm();
 			}
 			//|| m_data->site_xpos[5] < g_minimum_kill_height
 
@@ -179,7 +180,7 @@ protected:
 			//Setup states
 			const int number_of_inputs  = m_model->nsensordata;
 			const int number_of_outputs = m_model->nu;
-			const int recurrent_inputs  = 32;
+			const int recurrent_inputs  = 4;
 			MatrixType input(number_of_inputs + recurrent_inputs, 1);
 
 			//Copy input data
@@ -202,7 +203,7 @@ protected:
 
 			//Copy output data
 			for (int i = 0; i < number_of_outputs; i++)
-				m_data->ctrl[i] = m_controller->output()(i) + g.generate_normal<ScalarType>(0, 0.001);
+				m_data->ctrl[i] = m_controller->output()(i) + g.generate_normal<ScalarType>(0, noise_level);
 		}
 	}
 	

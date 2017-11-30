@@ -46,8 +46,8 @@ void createNeuralController() {
 		throw std::runtime_error("init model first");
 
 	controller = new LayeredNeuralNet; //memory is managed by network
-	controller->load("generation4000/_0walker2dRewardEng3");
-	//controller->clearInternalStates();
+	controller->load("generation5000/_0invdp2d");
+	controller->clearInternalStates();
 
 	int N_layers = controller->getTopology()->getNumberOfLayers();
 	n_inputs = controller->getTopology()->getLayerSize(0);
@@ -288,11 +288,11 @@ void test_controller(const mjModel* m, mjData* d)
 
 	ScalingLayer input_scaling(number_of_inputs + recurrent_inputs, 1);
 	//input_scaling.getScaling().array() /= 2.0;
-	const ScalarType scale_touch = 1.0 / 1000.0;
-	input_scaling(0) = scale_touch;
-	input_scaling(1) = scale_touch;
-	input_scaling(2) = scale_touch;
-	input_scaling(3) = scale_touch;
+	//const ScalarType scale_touch = 1.0 / 1000.0;
+	//input_scaling(0) = scale_touch;
+	//input_scaling(1) = scale_touch;
+	//input_scaling(2) = scale_touch;
+	//input_scaling(3) = scale_touch;
 
 	//Copy input data
 	for (int i = 0; i < number_of_inputs; i++)
@@ -313,7 +313,7 @@ void test_controller(const mjModel* m, mjData* d)
 
 	//Copy output data
 	for (int i = 0; i < number_of_outputs; i++)
-		d->ctrl[i] = output(i) + g.generate_normal<ScalarType>(0, 0.001);
+		d->ctrl[i] = output(i) +g.generate_normal<ScalarType>(0, 0.001);
 }
 
 // main function
@@ -380,9 +380,9 @@ void main()
 		glfwGetFramebufferSize(window, &rect.width, &rect.height);
 
 		// center and scale view
-		cam.lookat[0] = d->qpos[0]+1;
+		cam.lookat[0] = 0;
 		cam.lookat[1] = 0;
-		cam.lookat[2] = d->qpos[1];
+		cam.lookat[2] = 0.9;
 		cam.distance = 1.0 * m->stat.extent;
 
 		//// update scene and render
@@ -399,7 +399,7 @@ void main()
 
 		// add time stamp in upper-left corner
 		char stamp[50];
-		sprintf(stamp, "Time = %.2f [s], Speed_x = %.2f [m/s]", d->time, d->qvel[0]);
+		sprintf(stamp, "Time = %.2f [s], Speed_x = %.1f [m/s], Speed_y = %.1f", d->time, d->qvel[0], d->qvel[1]);
 		mjr_overlay(mjFONT_NORMAL, mjGRID_TOPLEFT, viewport, stamp, NULL, &con);
 
 		// swap OpenGL buffers (blocking call due to v-sync)

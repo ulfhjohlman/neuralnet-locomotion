@@ -43,7 +43,7 @@ private:
 
 private:
 	void createNeuralController() {
-		/*std::vector<int> layerSizes = { m_number_of_inputs, 64, 64, 64, 64, 64, m_number_of_outputs };
+		/* std::vector<int> layerSizes = { m_number_of_inputs, 64, 64, 64, 64, 64, m_number_of_outputs };
 		std::vector<int> layerTypes = { Layer::inputLayer, 1, 1, 1, 1, 1, 1 };
 		CascadeTopology* top = new CascadeTopology(layerSizes, layerTypes);
 		top->addLayerConnection(1, { 0 });
@@ -51,11 +51,11 @@ private:
 		top->addLayerConnection(3, { 1, 2 });
 		top->addLayerConnection(4, { 2, 3 });
 		top->addLayerConnection(5, { 4 });
-		top->addLayerConnection(6, { 5 });*/
+		top->addLayerConnection(6, { 5 }); */
 
-		const int recurrent_inputs = 32;
-		std::vector<int> layerSizes = { m_number_of_inputs + recurrent_inputs, 64, 32, 64, m_number_of_outputs + recurrent_inputs };
-		std::vector<int> layerTypes = { Layer::inputLayer, 1, 1, 1, 1 };
+		const int recurrent_inputs = 4;
+		std::vector<int> layerSizes = { m_number_of_inputs + recurrent_inputs, 48, 24, m_number_of_outputs + recurrent_inputs };
+		std::vector<int> layerTypes = { Layer::inputLayer, 1, 1, 1 };
 		LayeredTopology* top = new LayeredTopology(layerSizes, layerTypes);
 
 

@@ -4,7 +4,7 @@ message("${CMAKE_ROOT} + modules jesus christ")
 file(GLOB local_headers ./*.h)
 set(gpu gpu.cpp ${local_headers})
 
-add_executable(gpu gpu.cpp ${HEADER_FILES})
+add_executable(gpu gpu.cpp ${local_headers})
 
 include_directories("${CUDA_TOOLKIT_INCLUDE}/")
 target_link_libraries(gpu "${CUDA_CUDA_LIBRARY}")

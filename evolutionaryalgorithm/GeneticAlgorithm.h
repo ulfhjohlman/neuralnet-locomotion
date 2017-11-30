@@ -44,18 +44,21 @@
 //check for stop condition(s)
 
 const int g_population_size = 128;
-const double g_mutation_probability = 0.01;
-double g_crossover_probability = 0.02;
-double g_niche_crossover_probability = 0.45;
-const double g_ptour = 0.75;
-const int g_tournamentSize = 8;
+const double g_mutation_probability = 0.05;
+double g_crossover_probability = 0.12;
+double g_niche_crossover_probability = 0.25;
+const double g_ptour = 0.7;
+const int g_tournamentSize = 10;
+const int g_elitism_count = 1;
 
 const double g_start_survival_percentage = 4.0 / 7.0; //half dies if with 0.3 top survivors
+const double g_start_extinction_survival_percentage = 0.5;
+const double g_disease_percent = 0.2;
 const double g_survivor_fraction = 0.3; //top x%
 
-const int g_elitism_count = 2;
+ScalarType recurrent_initial_noise_sigma = 0.05;
  
-double pmut = 0.1;
+double pmut = g_mutation_probability;
 
 class GeneticAlgorithm {
 public:
@@ -108,7 +111,7 @@ public:
 			m_population.sort();
 
 			if (m_generation % 1000 == 0) {
-				m_population.save(m_generation, "walker2dRewardEng5");
+				m_population.save(m_generation, "invdp2d");
 			}
 
 			for (size_t i = 0; i < 5; i++) {
@@ -151,21 +154,23 @@ public:
 		auto decimate_subpopulation = [this](int i) {
 			auto & population = m_niche_set[i];
 			int start_kill_index = 0;
-			if (population.size() > 60)
-				start_kill_index = g_elitism_count + 10;
+			if (population.size() > 120)
+				start_kill_index = g_elitism_count + 30;
 			else
-				start_kill_index = g_elitism_count + int ( g_survivor_fraction*population.size()) + 10;
+				start_kill_index = g_elitism_count + 50;
 			Death::linearDeath(population, start_kill_index, g_start_survival_percentage);
 		};
 
-		parallel_for<int>(0, m_niche_set.size(), 8, decimate_subpopulation);
+		parallel_for<int>(0, m_niche_set.size(), 2, decimate_subpopulation);
 
 		m_niche_set.clearEmptyNiches();
 
-		if (m_population.size() > 200) {
-			Death::extinction(m_niche_set, g_start_survival_percentage);
-			Death::disease(m_niche_set, g_elitism_count, 0.5);
-		}
+		if(m_population.size() > 300)
+			Death::extinction(m_niche_set, g_start_extinction_survival_percentage);
+		if (m_population.size() > 600)
+			Death::disease(m_niche_set, g_elitism_count, g_disease_percent);
+		if (m_population.size() > 800)
+			Death::linearDeath(m_population, m_niche_set, m_object_pool, 10, 0.5);
 
 		for (size_t i = 0; i < m_population.size(); i++) {
 			if (m_population[i].use_count() == 1) {
@@ -187,10 +192,10 @@ public:
 	{
 		for (size_t i = 0; i < m_niche_set.size(); i++) {
 			auto & population = m_niche_set[i];
-			if (population.size() < 40) {
-				Duplicate::asexualReproduction(population, m_object_pool, container, 1, m_ninputs, m_nouputs);
+			Duplicate::asexualReproduction(population, m_object_pool, container, 2, m_ninputs, m_nouputs);
+			if(population.size() < 2)
 				continue;
-			}
+
 			int n_mated = Generator::generate_binomial_shared<int>(population.size(), g_niche_crossover_probability);
 			auto cross = [this, &population, &container](int i) {
 				std::pair<int, int> mates = m_selection.selectPair(population);
@@ -215,7 +220,7 @@ public:
 			if (!has_stored_individual)
 				newIndividual = std::shared_ptr<Individual<LayeredNeuralNet>>(new NeuralNetChromosome(m_ninputs, m_nouputs));
 
-			Crossover::uniformCrossover<LayeredNeuralNet>(m_population, mates.first, mates.second, newIndividual);
+			Crossover::directionalCrossover<LayeredNeuralNet>(m_population, mates.first, mates.second, newIndividual);
 			container.push(std::move(newIndividual));
 		};
 		
@@ -225,18 +230,18 @@ public:
 	void evaluatePopulation()
 	{
 		for (size_t i = 0; i < m_population.members.size(); i++) {
-			//m_population.members[i]->decode()->clearInternalStates();
+			m_population.members[i]->decode()->clearInternalStates(recurrent_initial_noise_sigma);
 			m_environment->evaluateController(m_population.members[i]->decode(), i);
 		}
 	}
 
 	void applyMutation()
 	{
-		const ScalarType T = 1000;
+		const ScalarType T = 4000;
 		pmut = g_mutation_probability;
 		pmut *= std::exp(-ScalarType(m_generation) / T);
-		if (pmut < 0.0001)
-			pmut = 0.0001;
+		if (pmut < 0.0005)
+			pmut = 0.0005;
 		m_mutation.setMutationProbability(pmut);
 
 		auto mutate_subpopulation = [this](int i) {

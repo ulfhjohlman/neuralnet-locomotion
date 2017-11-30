@@ -1,0 +1,5 @@
+<layer_3 layer_type="0" rows_output_size="18" cols_input_size="16">
+    <weights>generation103000/_0invdp2dlayer_3_weights.bin</weights>
+    <bias>generation103000/_0invdp2dlayer_3_bias.bin</bias>
+    <output>generation103000/_0invdp2dlayer_3_outputs.bin</output>
+</layer_3>

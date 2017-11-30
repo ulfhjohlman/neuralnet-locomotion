@@ -231,9 +231,9 @@ public:
 		}
 	}
 
-	virtual void clearInternalStates() {
+	virtual void clearInternalStates(ScalarType noise = 0) {
 		for (auto & layer : m_layers)
-			layer->clearStates();
+			layer->clearStates(noise);
 	}
 protected: //members
 	std::vector<Layer*> m_layers;//replace with shared_ptr<Layer>

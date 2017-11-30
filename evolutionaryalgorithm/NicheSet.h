@@ -8,14 +8,14 @@
 #include <vector>
 #include <numeric>
 
-ScalarType min_niche_radius = 8;
-ScalarType max_niche_radius = 10;
+ScalarType start_niche_merge_radius = 10.0;
+ScalarType start_niche_max_radius = 15.0;
 
-ScalarType min_merge_radius = 0.8;
-ScalarType min_niche_radius2 = 1.0;
+ScalarType min_merge_radius = 1.0;
+ScalarType min_max_radius = 2.0;
 
-ScalarType max_niche_size = 100;
-ScalarType nominal_number_of_niches = 15;
+ScalarType max_niche_size = 200;
+ScalarType nominal_number_of_niches = 5;
 
 template<typename T>
 class Niche 
@@ -29,19 +29,19 @@ public:
 	}
 	
 	ScalarType distanceTo(const Niche<T>& rhs) {
-		auto dist = m_mid_point - rhs.m_mid_point;
+		VectorType dist = m_mid_point - rhs.m_mid_point;
 		return dist.norm();
 	}
 
 	ScalarType distanceTo(const VectorType& v) {
-		auto dist = m_mid_point - v;
+		VectorType dist = m_mid_point - v;
 		return dist.norm();
 	}
 
 	ScalarType distanceTo(std::shared_ptr< Individual<T> >& member) {
 		VectorType v;
 		member->getGenome()->getGeneSet(v);
-		auto dist = m_mid_point - v;
+		VectorType dist = m_mid_point - v;
 		return dist.norm();
 	}
 
@@ -116,8 +116,8 @@ public:
 	}
 
 	size_t id;
-	ScalarType merge_radius = min_niche_radius;
-	ScalarType max_radius = max_niche_radius;
+	ScalarType merge_radius = start_niche_merge_radius;
+	ScalarType max_radius = start_niche_max_radius;
 private:
 	Population<T> m_population;
 	VectorType m_mid_point;
@@ -153,7 +153,7 @@ public:
 		VectorType v;
 		member->getGenome()->getGeneSet(v);
 
-		ScalarType min_distance = max_niche_radius;
+		ScalarType min_distance = start_niche_max_radius;
 		int k = 0;
 		for (auto & niche : m_niches) {
 			ScalarType distance = niche.distanceTo(v);
@@ -171,8 +171,8 @@ public:
 			Niche<T> niche;
 			niche.addMember(member);
 			niche.center();
-			niche.merge_radius = std::min<ScalarType>( min_distance * 0.65, min_niche_radius);
-			niche.max_radius = std::min<ScalarType>( min_distance * 0.9, max_niche_radius);
+			niche.merge_radius = std::min<ScalarType>( min_distance * 0.65, start_niche_merge_radius);
+			niche.max_radius = std::min<ScalarType>( min_distance * 0.9, start_niche_max_radius);
 			m_niches.push_back(niche);
 		}
 	}
@@ -195,9 +195,9 @@ public:
 	void update() {
 		ThreadsafeQueue<std::shared_ptr<Individual<T>>> move_list;
 		auto dislocate = [this, &move_list](int i) {
-			auto niche = m_niches[i];
-			for (int j = 0; j < niche.size(); j++) {
-				if (niche.distanceTo(niche.getPopulation()[j]) < niche.max_radius) {
+			auto& niche = m_niches[i];
+			for (int j = 0; j < niche.getPopulation().size(); j++) {
+				if (niche.distanceTo(niche.getPopulation()[j]) > niche.max_radius) {
 					if (niche.getPopulation()[j].use_count() == 2) {
 						move_list.push(std::move(niche.getPopulation()[j]));
 					} //else already in another niche
@@ -212,6 +212,9 @@ public:
 			this->addMember(move_list.sequential_pop());
 		}
 
+		//Possible empty niche after last operation.
+		removeEmptyNiches();
+
 		for (auto& niche : m_niches)
 			niche.updateMidpoint();
 
@@ -219,6 +222,11 @@ public:
 			for (auto& niche : m_niches) {
 				niche.max_radius *= 1.006;
 				niche.merge_radius *= 1.001;
+			}
+		}
+		else if(m_niches.size() > nominal_number_of_niches / 2) {
+			for (auto& niche : m_niches) {
+				niche.max_radius *= 1.0005;
 			}
 		}
 
@@ -246,6 +254,10 @@ public:
 			//std::cout << std::endl;
 		}
 		std::cout << "avg niche dist=" << sum / (size * size / 2.0) << std::endl;
+		//if (sum != sum) {
+		//	std::cout << "FUUCK?...";
+		//	std::cin.get();
+		//}
 		
 		//sort distances BUGGG!!!!
 		/*for (auto & v : niche_distances)
@@ -257,24 +269,26 @@ public:
 				//std::cout << "merged" << j << " -> " << i << std::endl;
 				if(niche_distances[i][j-i] < m_niches[i].merge_radius)
 					m_niches[i].merge(m_niches[j+1]);
+				//add check for overlapping max radius and graduall merge
 			}
 		}
 
-		//Remove empty niches.
-		for (size_t i = 0; i < m_niches.size(); i++) {
-			//std::cout << m_niches[i].size() << std::endl;
-			if (m_niches[i].size() == 0) {
-				m_niches.erase(m_niches.begin() + i);
-				i--;
-			}
-		}
+		//Empty merged niches need to delete
+		removeEmptyNiches();
 
 		//check overfull niches
+		splitHalfNiche();
+
+		//Sort by fitness inside each niche.
+		this->sort();
+	}
+
+	void splitHalfNiche()
+	{
 		for (size_t i = 0; i < m_niches.size(); i++)
 		{
 			auto& niche = m_niches[i];
 			if (niche.size() > max_niche_size) {
-				//try split
 				Niche<T> part1, part2;
 				part1.merge_radius = niche.merge_radius / 2.1;
 				part2.merge_radius = niche.merge_radius / 2.1;
@@ -284,16 +298,16 @@ public:
 
 				part1.merge_radius = std::max(part1.merge_radius, min_merge_radius);
 				part2.merge_radius = std::max(part2.merge_radius, min_merge_radius);
-				part1.max_radius = std::max(part1.max_radius, min_niche_radius2);
-				part2.max_radius = std::max(part2.max_radius, min_niche_radius2);
+				part1.max_radius = std::max(part1.max_radius, min_max_radius);
+				part2.max_radius = std::max(part2.max_radius, min_max_radius);
 
 				Population<T>& population = niche.getPopulation();
 				size_t members_to_part1 = population.size() / 2;
 				size_t members_to_part2 = population.size();
-				for (size_t i = 0; i < members_to_part1; i++)
-					part1.addMember(population[i]);
-				for (size_t i = members_to_part1; i < population.size(); i++)
-					part2.addMember(population[i]);
+				for (size_t j = 0; j < members_to_part1; j++)
+					part1.addMember(population[j]);
+				for (size_t j = members_to_part1; j < population.size(); j++)
+					part2.addMember(population[j]);
 				m_niches.erase(m_niches.begin() + i);
 				i--;
 
@@ -302,16 +316,26 @@ public:
 
 				m_niches.push_back(part1);
 				m_niches.push_back(part2);
+
 			}
 		}
+	}
 
-		//Sort by fitness inside each niche.
-		this->sort();
+	void removeEmptyNiches()
+	{
+		//Remove empty niches.
+		for (size_t i = 0; i < m_niches.size(); i++) {
+			//std::cout << m_niches[i].size() << std::endl;
+			if (m_niches[i].size() == 0) {
+				m_niches.erase(m_niches.begin() + i);
+				i--;
+			}
+		}
 	}
 
 	void printNicheSizes() {
 		for (auto & niche : m_niches)
-			std::cout << niche.size() << "(" << niche.merge_radius << ") ";
+			std::cout << niche.size() << "(" << std::setprecision(3) << niche.merge_radius << ") ";
 		std::cout << std::endl;
 	}
 
@@ -336,3 +360,12 @@ public:
 private:
 	std::vector<Niche<T>> m_niches;
 };
+
+/* split code
+niche.max_radius *= 0.97;
+niche.merge_radius *= 0.97;
+
+niche.merge_radius = std::max(niche.merge_radius, min_merge_radius);
+niche.max_radius = std::max(niche.max_radius, min_max_radius);
+
+*/

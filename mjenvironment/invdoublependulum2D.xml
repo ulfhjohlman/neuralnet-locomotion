@@ -18,12 +18,12 @@
     <joint damping="0.05"/>
     <geom contype="0" friction="1 0.1 0.1" rgba="0.7 0.7 0 1"/>
   </default>
-  <option gravity="0 0 -9.81" integrator="RK4" iterations="50" solver="Newton" timestep="0.005"/>
+  <option gravity="0 0 -9.81" integrator="RK4" iterations="50" solver="Newton" timestep="0.004"/>
   <size nstack="3000"/>
   <worldbody>
     <geom name="floor" pos="0 0 -3.0" rgba="0.0 0.0 0.0 0" size="40 40 40" type="plane"/>
     <geom name="rail" pos="0 0 0" quat="0.707 0 0.707 0" rgba="0.3 0.3 0.7 1" size="0.02 6" type="capsule"/>
-    <geom name="rail2" pos="0 0 0" quat="-0.707 0 0.707 0" rgba="0.3 0.3 0.7 1" size="0.02 6" type="capsule"/>
+    <geom name="rail2" pos="0 0 0" quat="0.707 0 -0.707 0" rgba="0.3 0.3 0.7 1" size="0.02 6" type="capsule"/>
     <body name="cart" pos="0 0 0">
       <site name="center" pos="0 0 0" size=".1" type="sphere" rgba="0.3 0.2 0.1 0.3"/>
       <joint axis="1 0 0" limited="true" margin="0.01" name="slider" pos="0 0 0" range="-6 6" type="slide"/>
@@ -55,13 +55,15 @@
 	<jointpos name="rot"  			joint="hinge" />
 	<jointpos name="rot2"  			joint="hinge2" />
 
-	<jointvel name="dotrot"  		joint="hinge" />
-	<jointvel name="dotrot2"  		joint="hinge2" />
 
 	<jointpos name="rotx"  			joint="hingex" />
 	<jointpos name="rot2x"  		joint="hinge2x" />
 
-	<jointvel name="dotrotx"  		joint="hingex" />
-	<jointvel name="dotrot2x"  		joint="hinge2x" />
+	<jointvel name="drot"  			joint="hinge" />
+	<jointvel name="drot2"  		joint="hinge2" />
+
+
+	<jointvel name="drotx"  		joint="hingex" />
+	<jointvel name="drot2x"  		joint="hinge2x" />
  </sensor>
 </mujoco>

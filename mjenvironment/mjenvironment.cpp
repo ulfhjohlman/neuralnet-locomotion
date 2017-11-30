@@ -179,17 +179,17 @@ void setup_walker2d() {
 
 
 void setup_invdoublepole() {
-	environment = new mjEnvironment(g_population_size, 128, "invdoublependulum2D.xml", "environment.xml");
+	environment = new mjEnvironment(g_population_size, 100, "invdoublependulum2D.xml", "environment.xml");
 	if (!environment)
 		throw std::runtime_error("Could not make environment.");
 	int nsensors = environment->m_model->nsensordata;
 	int nctrls = environment->m_model->nu;
-	int nrecurrent = 0;
+	int nrecurrent = 4;
 	ga = new GeneticAlgorithm(g_population_size, nsensors, nctrls);
 	if (!ga)
 		throw std::runtime_error("Could not start make GA.");
 
-	auto objective = [](mjModel const* m, mjData* d) { return 1.0*d->site_xpos[5] - 0.1*std::abs(d->site_xpos[3]) - 0.1*std::abs(d->site_xpos[4]); };
+	auto objective = [](mjModel const* m, mjData* d) { return 1.0*d->site_xpos[5] - 0.03*std::abs(d->site_xpos[3]) - 0.03*std::abs(d->site_xpos[4]); };
 	environment->setObjective(objective);
 
 	ScalingLayer input_scaling(nsensors + nrecurrent, 1);
@@ -204,7 +204,7 @@ void setup_hopper() {
 		throw std::runtime_error("Could not make environment.");
 	int nsensors = environment->m_model->nsensordata;
 	int nctrls = environment->m_model->nu;
-	int nrecurrent = 16;
+	int nrecurrent = 0;
 	ga = new GeneticAlgorithm(g_population_size, nsensors, nctrls);
 	if (!ga)
 		throw std::runtime_error("Could not start make GA.");
@@ -280,11 +280,11 @@ bool init() {
 
 	try {
 		//setup();
-		//setup_ant();
+		setup_ant();
 		//setup_humanoid();
 		//setup_invdoublepole();
 		//setup_swimmer();
-		setup_walker2d();
+		//setup_walker2d();
 		//setup_hopper();
 	}
 	catch (NeuralNetException e) {

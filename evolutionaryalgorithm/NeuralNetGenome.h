@@ -14,11 +14,11 @@ const ScalarType max_variance = 2.0f;
 const ScalarType min_moment = -0.5f;
 const ScalarType max_moment = 0.5f;
 
-const ScalarType variance_gain = 0.005f; //0.005
+const ScalarType variance_gain = 0.004f; //0.005
 const ScalarType variance_mutation = 0.02f; //0.02
 
-const ScalarType start_variance_variance = 0.2f; //0.5
-const ScalarType start_variance_mean = 0.15; //0.5
+const ScalarType start_variance_variance = 0.25f; //0.5
+const ScalarType start_variance_mean = 0.35; //0.5
 
 const ScalarType decay_factor = 0.9f; //momentum decay
 const ScalarType eta = 0.33f; //momentum gain.
@@ -239,7 +239,6 @@ public:
 		}
 		/*std::cout << v.transpose() << std::endl;
 		std::cin.get();*/
-
 	}
 
 	void clearMutationFlag() {

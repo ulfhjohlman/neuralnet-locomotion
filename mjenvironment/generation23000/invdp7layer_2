@@ -1,0 +1,37 @@
+<layer_2 layer_type="0" rows_output_size="32" cols_input_size="64">
+    <weights>generation9000/invdp7layer_2_weights.bin</weights>
+    <bias>generation9000/invdp7layer_2_bias.bin</bias>
+    <output>generation9000/invdp7layer_2_output.bin</output>
+    <layer_2/>
+    <weights>generation12000/invdp7layer_2_weights.bin</weights>
+    <bias>generation12000/invdp7layer_2_bias.bin</bias>
+    <output>generation12000/invdp7layer_2_output.bin</output>
+    <layer_2/>
+    <weights>generation13000/invdp7layer_2_weights.bin</weights>
+    <bias>generation13000/invdp7layer_2_bias.bin</bias>
+    <output>generation13000/invdp7layer_2_output.bin</output>
+    <layer_2/>
+    <weights>generation15000/invdp7layer_2_weights.bin</weights>
+    <bias>generation15000/invdp7layer_2_bias.bin</bias>
+    <output>generation15000/invdp7layer_2_output.bin</output>
+    <layer_2/>
+    <weights>generation16000/invdp7layer_2_weights.bin</weights>
+    <bias>generation16000/invdp7layer_2_bias.bin</bias>
+    <output>generation16000/invdp7layer_2_output.bin</output>
+    <layer_2/>
+    <weights>generation19000/invdp7layer_2_weights.bin</weights>
+    <bias>generation19000/invdp7layer_2_bias.bin</bias>
+    <output>generation19000/invdp7layer_2_output.bin</output>
+    <layer_2/>
+    <weights>generation20000/invdp7layer_2_weights.bin</weights>
+    <bias>generation20000/invdp7layer_2_bias.bin</bias>
+    <output>generation20000/invdp7layer_2_output.bin</output>
+    <layer_2/>
+    <weights>generation21000/invdp7layer_2_weights.bin</weights>
+    <bias>generation21000/invdp7layer_2_bias.bin</bias>
+    <output>generation21000/invdp7layer_2_output.bin</output>
+    <layer_2/>
+    <weights>generation23000/invdp7layer_2_weights.bin</weights>
+    <bias>generation23000/invdp7layer_2_bias.bin</bias>
+    <output>generation23000/invdp7layer_2_output.bin</output>
+</layer_2>

@@ -56,7 +56,8 @@ public:
 
 		niches.sortNiches();
 
-		size_t start_index = niches.size() / 2 + nominal_number_of_niches;
+		size_t start_index = niches.size() / 4;
+		start_index = std::max<size_t>(nominal_number_of_niches, start_index);
 		ScalarType k = start_survival_rate / ScalarType(niches.size() - start_index); //dy/dx
 		Generator g;
 		int deathcounter = 0;
@@ -75,11 +76,13 @@ public:
 	template<typename T>
 	static void disease(
 		NicheSet<T>& niches, size_t elitism_count,
-		ScalarType survival_rate) {
+		ScalarType survival_rate, size_t min_population_size = 60) {
 
-		auto decimate_subpopulation = [&niches, elitism_count, survival_rate](int i) {
+		auto decimate_subpopulation = [&niches, elitism_count, survival_rate, min_population_size](int i) {
 			Generator g;
 			auto & population = niches[i];
+			if (population.size() < min_population_size)
+				return;
 			for (size_t i = elitism_count; i < population.size(); i++) {
 				ScalarType r = g.generate_uniform<ScalarType>(0.0f, 1.0f);
 				if (r > survival_rate) {
@@ -89,7 +92,7 @@ public:
 			}
 		};
 
-		parallel_for<size_t>(0, niches.size(), 8, decimate_subpopulation);
+		parallel_for<size_t>(0, niches.size(), 4, decimate_subpopulation);
 	}
 
 

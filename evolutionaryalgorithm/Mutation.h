@@ -30,7 +30,7 @@ public:
 			population.members[i]->getGenome()->mutate(m_mutation_probability);
 		};
 
-		parallel_for<size_t>(start_index, population.members.size(), 16, f);
+		parallel_for<size_t>(start_index, population.size(), 16, f);
 		//for(size_t i = m_elitism_count; i < population.members.size(); i++)
 		//	population.members[i]->getGenome()->mutate(m_mutation_probability);
 	}

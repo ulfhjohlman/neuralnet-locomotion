@@ -1,0 +1,21 @@
+<layer_3 layer_type="0" rows_output_size="1" cols_input_size="16">
+    <weights>generation10000/invdplayer_3_weights.bin</weights>
+    <bias>generation10000/invdplayer_3_bias.bin</bias>
+    <output>generation10000/invdplayer_3_output.bin</output>
+    <layer_3/>
+    <weights>generation13000/invdplayer_3_weights.bin</weights>
+    <bias>generation13000/invdplayer_3_bias.bin</bias>
+    <output>generation13000/invdplayer_3_output.bin</output>
+    <layer_3/>
+    <weights>generation14000/invdplayer_3_weights.bin</weights>
+    <bias>generation14000/invdplayer_3_bias.bin</bias>
+    <output>generation14000/invdplayer_3_output.bin</output>
+    <layer_3/>
+    <weights>generation15000/invdplayer_3_weights.bin</weights>
+    <bias>generation15000/invdplayer_3_bias.bin</bias>
+    <output>generation15000/invdplayer_3_output.bin</output>
+    <layer_3/>
+    <weights>generation17000/invdplayer_3_weights.bin</weights>
+    <bias>generation17000/invdplayer_3_bias.bin</bias>
+    <output>generation17000/invdplayer_3_output.bin</output>
+</layer_3>

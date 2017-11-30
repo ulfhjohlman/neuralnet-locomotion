@@ -40,7 +40,7 @@ public:
 	virtual void setRandom() {
 		Generator generator; //Thread safe generation
 		generator.fill_vector_normal<ScalarType>(m_weights.data(), m_weights.size(), 0, 1);
-		generator.fill_vector_uniform<ScalarType>(m_bias.data(), m_bias.size(), -0.15, 0.15);
+		generator.fill_vector_uniform<ScalarType>(m_bias.data(), m_bias.size(), -0.05, 0.05);
 
 		m_outputs.setZero();
 		m_gradients_weights.setZero();
@@ -174,8 +174,13 @@ public:
 		loadMatrix(buffer, m_outputs, rows, 1); //Potential error, argument of 1.
 	}
 
-	virtual void clearStates() {
-		m_outputs.setZero();
+	virtual void clearStates(ScalarType noise = 0) {
+		if(noise == 0) 
+			m_outputs.setZero();
+		else {
+			Generator generator;
+			generator.fill_vector_normal<ScalarType>(m_outputs.data(), m_outputs.size(), static_cast<ScalarType>(0.0), noise);
+		}	
 	}
 
 	enum LayerType
