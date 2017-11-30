@@ -92,6 +92,13 @@ public: //Global class methods.
 		std::normal_distribution<T> distribution(mu, sigma);
 		return distribution(c_engine_g);
 	}
+
+	template<typename T>
+	static T generate_binomial_shared(const int n, const double p) {
+		std::lock_guard<std::mutex> lk(c_mutex_g);
+		std::binomial_distribution<int> distribution(n, p);
+		return distribution(c_engine_g);
+	}
 	
 private: //global class variables
 	static RandomEngine c_engine_g;

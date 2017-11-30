@@ -39,7 +39,7 @@ public:
 
 	virtual void setRandom() {
 		Generator generator; //Thread safe generation
-		generator.fill_vector_normal<ScalarType>(m_weights.data(), m_weights.size(), 0, 2.0 / double( m_weights.rows() + m_weights.cols() ));
+		generator.fill_vector_normal<ScalarType>(m_weights.data(), m_weights.size(), 0, 1);
 		generator.fill_vector_uniform<ScalarType>(m_bias.data(), m_bias.size(), -0.05, 0.05);
 
 		m_outputs.setZero();
@@ -53,7 +53,7 @@ public:
 	}
 	virtual void setRandomXavier() {
 		setRandom();
-		m_weights.array() *= static_cast<ScalarType>(sqrt( 1.0 / m_weights.rows()));
+		m_weights.array() *= static_cast<ScalarType>(sqrt( 1.0 / m_weights.cols()));
 	}
 
 	void setLayerIndex(int i) {
@@ -172,6 +172,15 @@ public:
 
 		m_document.getElement("output", buffer);
 		loadMatrix(buffer, m_outputs, rows, 1); //Potential error, argument of 1.
+	}
+
+	virtual void clearStates(ScalarType noise = 0) {
+		if(noise == 0) 
+			m_outputs.setZero();
+		else {
+			Generator generator;
+			generator.fill_vector_normal<ScalarType>(m_outputs.data(), m_outputs.size(), static_cast<ScalarType>(0.0), noise);
+		}	
 	}
 
 	enum LayerType

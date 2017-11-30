@@ -1,6 +1,8 @@
 include_directories("${PROJECT_SOURCE_DIR}/lib/mjpro150/include")
 
-add_executable(mjenvironment mjenvironment.cpp)
+file(GLOB local_headers ./*.h)
+set(mjenvironment mjenvironment.cpp ${local_headers})
+add_executable(mjenvironment mjenvironment.cpp ${local_headers})
 
 find_library(MUJOCO mujoco150 "${PROJECT_SOURCE_DIR}/lib/mjpro150/bin")
 find_library(GLFW3 glfw3 "${PROJECT_SOURCE_DIR}/lib/mjpro150/bin")

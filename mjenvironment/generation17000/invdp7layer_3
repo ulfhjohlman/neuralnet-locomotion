@@ -1,0 +1,25 @@
+<layer_3 layer_type="0" rows_output_size="16" cols_input_size="32">
+    <weights>generation5000/invdp7layer_3_weights.bin</weights>
+    <bias>generation5000/invdp7layer_3_bias.bin</bias>
+    <output>generation5000/invdp7layer_3_output.bin</output>
+    <layer_3/>
+    <weights>generation6000/invdp7layer_3_weights.bin</weights>
+    <bias>generation6000/invdp7layer_3_bias.bin</bias>
+    <output>generation6000/invdp7layer_3_output.bin</output>
+    <layer_3/>
+    <weights>generation10000/invdp7layer_3_weights.bin</weights>
+    <bias>generation10000/invdp7layer_3_bias.bin</bias>
+    <output>generation10000/invdp7layer_3_output.bin</output>
+    <layer_3/>
+    <weights>generation11000/invdp7layer_3_weights.bin</weights>
+    <bias>generation11000/invdp7layer_3_bias.bin</bias>
+    <output>generation11000/invdp7layer_3_output.bin</output>
+    <layer_3/>
+    <weights>generation14000/invdp7layer_3_weights.bin</weights>
+    <bias>generation14000/invdp7layer_3_bias.bin</bias>
+    <output>generation14000/invdp7layer_3_output.bin</output>
+    <layer_3/>
+    <weights>generation17000/invdp7layer_3_weights.bin</weights>
+    <bias>generation17000/invdp7layer_3_bias.bin</bias>
+    <output>generation17000/invdp7layer_3_output.bin</output>
+</layer_3>

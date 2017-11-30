@@ -33,7 +33,7 @@ public:
 
 	std::shared_ptr<NeuralNetGenome> getGenome() const { return m_genome; }
 protected:
-	double m_fitness;
+	double m_fitness = 1;
 	int m_id;
 	std::shared_ptr<NeuralNetGenome> m_genome;
 private:

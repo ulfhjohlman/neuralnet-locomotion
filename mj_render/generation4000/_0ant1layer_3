@@ -1,0 +1,5 @@
+<layer_3 layer_type="0" rows_output_size="19" cols_input_size="16">
+    <weights>generation4000/_0ant1layer_3_weights.bin</weights>
+    <bias>generation4000/_0ant1layer_3_bias.bin</bias>
+    <output>generation4000/_0ant1layer_3_outputs.bin</output>
+</layer_3>

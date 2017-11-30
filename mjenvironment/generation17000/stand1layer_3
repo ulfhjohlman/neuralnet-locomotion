@@ -1,0 +1,5 @@
+<layer_3 layer_type="0" rows_output_size="21" cols_input_size="128">
+    <weights>generation17000/stand1layer_3_weights.bin</weights>
+    <bias>generation17000/stand1layer_3_bias.bin</bias>
+    <output>generation17000/stand1layer_3_output.bin</output>
+</layer_3>

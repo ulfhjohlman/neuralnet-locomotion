@@ -15,21 +15,21 @@ public:
 
 
 	template<typename T>
-	static void uniformCrossover( Population<T>& population, int mate1, int mate2, std::unique_ptr<Individual<T>>& child) {
+	static void uniformCrossover( Population<T>& population, int mate1, int mate2, std::shared_ptr<Individual<T>>& child) {
 		*child = *population[mate1];
 
 		child->getGenome()->uniformCrossover(*population[mate2]->getGenome());
 	}
 
 	template<typename T>
-	static void directionalCrossover(Population<T>& population, int mate1, int mate2, std::unique_ptr<Individual<T>>& child) {
+	static void directionalCrossover(Population<T>& population, int mate1, int mate2, std::shared_ptr<Individual<T>>& child) {
 		*child = *population[mate1];
 
 		child->getGenome()->directionalCrossover(*population[mate2]->getGenome());
 	}
 
 	template<typename T>
-	static void nParentWeightedCrossover(Population<T>& population, ScalarType step_size, std::unique_ptr<Individual<T>>& child) {
+	static void nParentWeightedCrossover(Population<T>& population, ScalarType step_size, std::shared_ptr<Individual<T>>& child) {
 		//*child = the individual to change
 
 		throw std::runtime_error("not yet implemented");
