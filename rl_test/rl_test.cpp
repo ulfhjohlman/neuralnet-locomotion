@@ -65,10 +65,10 @@ int ppo_mj_test()
 	std::cout << "Starting ppo_mj_test\n";
 
 	//initalize environment
-	InvDoublePendEnv env;
+	//InvDoublePendEnv env;
 	//HumanoidEnv env;
 	//HumanoidEnv2 env;
-	//Walker2dEnv env;
+	Walker2dEnv env;
 	//HopperEnv env;
 	int action_space_dim = env.getActionSpaceDimensions();
 	int state_space_dim = env.getStateSpaceDimensions();
@@ -107,8 +107,8 @@ int ppo_mj_test()
 	
 
 	//ParameterUpdater
-	AdamUpdater policyUpdater(3*1e-4);
-	AdamUpdater valueFuncUpdater(3*1e-4);
+	AdamUpdater policyUpdater(1e-4);
+	AdamUpdater valueFuncUpdater(1e-4);
 
 	policy.setParameterUpdater(policyUpdater);
 	valueFunc.setParameterUpdater(valueFuncUpdater);
@@ -121,7 +121,7 @@ int ppo_mj_test()
 
 	env.set_frameskip(frameskip);
 	trainer.setName("ppo_mj_test");
-	trainer.trainPPO(1e5 , 64, 4096/frameskip, 64, 10);
+	trainer.trainPPO(1e5 , 16, 4096/frameskip, 64, 1);
 
 
 

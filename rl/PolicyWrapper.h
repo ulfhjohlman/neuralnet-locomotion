@@ -50,11 +50,22 @@ public:
             total_prob = 1;
             for(int i=0;i<mu.size();i++)
             {
-
-                x = generator.generate_normal<ScalarType>(mu[i],non_log_sigma[i]);
+				ScalarType this_mu = mu[i];
+				if (this_mu > 1) {
+					this_mu = 1;
+				}
+				else {
+					if (this_mu < -1) {
+						this_mu = -1;
+					}
+				}
+				x = generator.generate_normal<ScalarType>(this_mu, non_log_sigma[i]);
                 sample.push_back(x);
+				if (x != x) {
+					std::cout << "WARNING: x in PolicyWrapper == NaN  with mu = " << mu[i] << "  sigma = " << non_log_sigma[i] << "this mu = " << this_mu << "\n";
+				}
                 //store probability of the sample in 'prob'
-                total_prob *= norm_pdf(x,mu[i],non_log_sigma[i]);
+                total_prob *= norm_pdf(x,this_mu,non_log_sigma[i]);
 
 
             }

@@ -42,13 +42,7 @@ public:
 		generator.fill_vector_normal<ScalarType>(m_weights.data(), m_weights.size(), 0, 1);
 		generator.fill_vector_uniform<ScalarType>(m_bias.data(), m_bias.size(), -0.05, 0.05);
 
-		m_outputs.setZero();
-		m_gradients_weights.setZero();
-		m_gradients_inputs.setZero();
-		m_gradients_bias.setZero();
 
-		m_gradients_weights_cache.setZero();
-		m_gradients_bias_cache.setZero();
 		//m_outputs_pre_activation.setZero();
 	}
 	virtual void setRandomXavier() {
@@ -75,6 +69,13 @@ public:
 
 		m_gradients_weights_cache.resizeLike(m_weights);
 		m_gradients_bias_cache.resizeLike(m_bias);
+
+		m_outputs.setZero();
+		m_gradients_weights.setZero();
+		m_gradients_inputs.setZero();
+		m_gradients_bias.setZero();
+		m_gradients_weights_cache.setZero();
+		m_gradients_bias_cache.setZero();
 	}
 
 	virtual void input(const MatrixType& x) {

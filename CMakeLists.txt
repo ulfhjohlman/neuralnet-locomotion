@@ -19,8 +19,6 @@ ENDIF()
 
 #look for include files in
 include_directories("${PROJECT_SOURCE_DIR}/lib/Eigen"
- "${PROJECT_SOURCE_DIR}/bullet"
- "${PROJECT_SOURCE_DIR}/gpu"
  "${PROJECT_SOURCE_DIR}/neuralnet"
  "${PROJECT_SOURCE_DIR}/evolutionaryalgorithm"
  "${PROJECT_SOURCE_DIR}/utility"
@@ -33,7 +31,6 @@ include_directories("${PROJECT_SOURCE_DIR}/lib/Eigen"
  "${PROJECT_SOURCE_DIR}/mjenvironment")
 
 #add library subdirectories -> executes subs CMakeLists.txt
-add_subdirectory("${PROJECT_SOURCE_DIR}/bullet")
 add_subdirectory("${PROJECT_SOURCE_DIR}/neuralnet")
 add_subdirectory("${PROJECT_SOURCE_DIR}/evolutionaryalgorithm")
 add_subdirectory("${PROJECT_SOURCE_DIR}/lib/tinyxml2")

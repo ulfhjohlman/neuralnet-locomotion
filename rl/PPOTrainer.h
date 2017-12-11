@@ -3,6 +3,7 @@
 #include "ValueFuncWrapper.h"
 #include <math.h>
 #include <experimental/filesystem>
+#include <algorithm>
 
 class PPOTrainer : public PolicyGradientTrainer
 {
@@ -19,6 +20,8 @@ public:
 	void save_NN() {
 		std::experimental::filesystem::create_directory("best_net");
 		policy.m_nn->save("best_net/");
+		std::experimental::filesystem::create_directory("best_net/valuenet");
+		valueFunc.m_nn->save("best_net/valuenet/");
 	}
 
 	void setName(const char* name) {
@@ -27,6 +30,7 @@ public:
 
     void trainPPO(int max_iterations, int traj_batch_size , int timesteps_per_episode, int mini_batch_size,int num_epochs)
     {
+		shuffle_order.reserve(traj_batch_size * timesteps_per_episode);
 		value_batch_size = mini_batch_size;
 		update_batch_size = mini_batch_size;
 		m_timesteps_per_episode = timesteps_per_episode;
@@ -44,11 +48,11 @@ public:
                 generateTrajectory(timesteps_per_episode);
 				//standardizeVector(rew_list); 
 				makeValuePredictions();
-                GAE();
+                //GAE();
 				//simpleAdvEstimates();
-				//simpleAdvEstimates2();
+				simpleAdvEstimates2();
 
-				TrainValueFunc();
+				//TrainValueFunc();
 
                 mean_return_batch += episode_return;
 				//std::cout << "ValueFuncPred[0]:\t" << valuePred_list[0] << " TD1[0]:\t " << valueTargTD1[0] << " TD1[400]:\t " << valueTargTD1[400] << " Return: " << episode_return << "\n";
@@ -71,22 +75,25 @@ public:
 			}
 
 			std::cout << "Optimizing over trajectories\n";
-        	//BatchTrainValueFunc();
+			BatchTrainValueFunc(timesteps_per_episode);
 			standardizeBatchVector(batch_adv_list);
-			
-			for(int epoch=0; epoch < num_epochs; epoch++)
-            {
-				///std::cout << "Epoch: " << epoch << "\n";
-                for(int traj=0; traj < traj_batch_size ; traj++)
-                {
-
-                    //cache loss gradients
-                    calcAndBackpropGradients(traj, update_batch_size);
-                    // double meanLoss = calcLoss(traj);
-                }
-
-
-            }
+			shuffle_order.clear();
+			for (int epoch = 0; epoch < num_epochs; epoch++){
+				for (int k = 0; k < traj_batch_size * timesteps_per_episode; k++) {
+					shuffle_order.push_back(k);
+				}
+				std::random_shuffle(shuffle_order.begin(), shuffle_order.end());
+				for (int k = 0; k < shuffle_order.size(); k++) {
+					int i = shuffle_order[k] / timesteps_per_episode;
+					int j = shuffle_order[k] % timesteps_per_episode;
+					if (batch_traj_length[i] > j) {
+						calcAndBackpropGradients(i, j, update_batch_size);
+					}
+				}
+				//incase of residual updates
+				policy.popCacheLayerParams();
+				policy.updateParams();
+			}
 			std::cout << "Ratio of Zero/non-zero derivatives: " << static_cast<double>(zero_derivatives) / static_cast<double>(non_zero_derivatives) << "\n";
 			zero_derivatives = 0;
 			non_zero_derivatives = 0;
@@ -183,16 +190,24 @@ protected:
 	}
 	void simpleAdvEstimates2() {
 		valueTargTD1[traj_length - 1] = rew_list[traj_length - 1];
+		adv_list[traj_length - 1] = valueTargTD1[traj_length - 1] - valuePred_list[traj_length - 1];
+		if (isNaN(valuePred_list[traj_length - 1])) std::cout << "valuePred is NaN!\n";
+		if (isNaN(valueTargTD1[traj_length - 1])) std::cout << "valueTargTD1 is NaN!\n";
+		valueTarg_list[traj_length - 1] = valueTargTD1[traj_length - 1];
 		for (int i = traj_length - 2; i >= 0; i--)
 		{
+
 			valueTargTD1[i] = rew_list[i] + m_gamma*valueTargTD1[i + 1];
-		}
-		
-		for (int i = traj_length - 1; i >= 0; i--)
-		{
 			adv_list[i] = valueTargTD1[i] - valuePred_list[i];
 			valueTarg_list[i] = valueTargTD1[i];
+			if (isNaN(valuePred_list[i])) std::cout << "valuePred is NaN!\n";
+			if (isNaN(valueTargTD1[i])) std::cout << "valueTargTD1 is NaN!\n";
+
 		}
+	}
+
+	bool isNaN(double x) {
+		return x != x;
 	}
 
     //produce generalized advantage estimates using value network and state list
@@ -213,8 +228,8 @@ protected:
 		}
 		// could instead use TD(1):
 		// valueTarg_list[i] = sum[from i to end] of rew_list;
-		valueTargTD1[adv_list.size() - 1] = rew_list[adv_list.size() - 1];
-		for (int i = adv_list.size() - 2; i >= 0; i--)
+		valueTargTD1[traj_length - 1] = rew_list[traj_length - 1];
+		for (int i = traj_length - 2; i >= 0; i--)
 		{
 			valueTargTD1[i] = rew_list[i] + m_gamma*valueTargTD1[i + 1];
 		}
@@ -240,12 +255,13 @@ protected:
 		valueFunc.updateParams();
 	}
 	
-	void BatchTrainValueFunc()
+	void BatchTrainValueFunc(int timesteps_per_episode)
 	{
 		int count = 0;
-		for (int i = 0; i < batch_vtarg_list.size(); i++) {
-			
-			for (int j = 0; j < batch_traj_length[i]; j++) {
+		for (int k = 0; k < shuffle_order.size(); k++) {
+			int i = shuffle_order[k] / timesteps_per_episode; //traj
+			int j = shuffle_order[k] % timesteps_per_episode; //timestep
+			if (batch_traj_length[i] > j) {
 				//reforward pass for correct "input gradients"
 				Eigen::Map<MatrixType> ob_matrix(batch_ob_list[i][j].data(), state_space_dim, 1);
 				double vPred  = valueFunc.predict(ob_matrix)(0, 0);
@@ -265,19 +281,15 @@ protected:
 		valueFunc.popCacheLayerParams();
 		valueFunc.updateParams();
 	}
-	// Calculate the loss gradients over the entire trajectory i
-	virtual void calcAndBackpropGradients(int i, int mini_batch_size)
+	// Calculate the loss gradients over trajectory i step j
+	virtual void calcAndBackpropGradients(int i, int j, int mini_batch_size)
 	{
-		for (int j = 0; j < batch_traj_length[i]; j++)
-		{
-
-
 			double r = calcPolicyRatio(i, j);
+			if (r > 100 || r < 0.01) "Oddly large r detected!\n";
 			if ((r * batch_adv_list[i][j]) > (batch_adv_list[i][j] * clipRelativeOne(r, eps)) && ((r > 1 + eps) || (r < 1 - eps)))
 			{
 				// then derivative = 0
 				zero_derivatives++;
-				continue;
 			}
 			else //backprop grads
 			{
@@ -290,26 +302,25 @@ protected:
 
 				// NEGATION because obejctive func = - loss func
 				MatrixType mu_error_gradients = -batch_adv_list[i][j] * r * (actionMatrix.array() - muMatrix.array()) / (sigmaMatrix.array().square());
-				MatrixType sigma_error_gradients = -batch_adv_list[i][j] * r * (((actionMatrix.array() - muMatrix.array()) / sigmaMatrix.array()).square().array() - 1).array() / sigmaMatrix.array();
+				if (isNaN(batch_adv_list[i][j])) std::cout << "batch_adv_list[i][j] is NaN!\n";
+				for (int qwe = 0; qwe < batch_ac_list[i][j].size(); qwe++) {
+					if (isNaN(batch_ac_list[i][j][qwe])) std::cout << "batch_ac_list[i][j] is NaN!\n";
+					if (isNaN(batch_mu_list[i][j][qwe])) std::cout << "batch_mu_list[i][j] is NaN!\n";
+					if (isNaN(batch_sigma_list[i][j][qwe])) std::cout << "batch_sigma_list[i][j] is NaN!\n";
+				}
 
-				MatrixType x(action_space_dim * 2, 1);
-				x << mu_error_gradients,
-					sigma_error_gradients;
-				policy.backprop(x);
+				policy.backprop(mu_error_gradients);
 				policy.cacheLayerParams();
 				non_zero_derivatives++;
 			}
-			if (((j+1) % mini_batch_size) == 0)
+			if (((++batch_backprop_count) % mini_batch_size) == 0)
 			{
+				batch_backprop_count = 0;
 				policy.popCacheLayerParams();
 				policy.updateParams();
 			}
-		}
-		if ((batch_traj_length[i] % mini_batch_size) != 0)//incase of residual updates
-		{
-			policy.popCacheLayerParams();
-			policy.updateParams();
-		}
+			//std::cout << "Pres update Obj: " << lClippObjFunc(r, batch_adv_list[i][j]) << "\n";
+			//std::cout << "Post update Obj: " << lClippObjFunc(calcPolicyRatio(i, j), batch_adv_list[i][j]) << "\n";
 	}
 
 	//ratio pi(a|s)/pi_old(a|s) for batched trajectory i timestep j
@@ -327,19 +338,19 @@ protected:
 
 	void storeBatchData()
 	{
-		batch_adv_list.push_back(std::move(adv_list));
-		batch_ac_list.push_back(std::move(ac_list));
-		batch_ob_list.push_back(std::move(ob_list));
-		batch_prob_list.push_back(std::move(prob_list));
-		batch_mu_list.push_back(std::move(mu_list));
-		batch_sigma_list.push_back(std::move(sigma_list));
-		batch_vpred_list.push_back(std::move(valuePred_list));
-		batch_vtarg_list.push_back(std::move(valueTarg_list));
-		batch_valueTargTD1.push_back(std::move(valueTargTD1));
+		batch_adv_list.push_back((adv_list));
+		batch_ac_list.push_back((ac_list));
+		batch_ob_list.push_back((ob_list));
+		batch_prob_list.push_back((prob_list));
+		batch_mu_list.push_back((mu_list));
+		batch_sigma_list.push_back((sigma_list));
+		batch_vpred_list.push_back((valuePred_list));
+		batch_vtarg_list.push_back((valueTarg_list));
+		batch_valueTargTD1.push_back((valueTargTD1));
 		batch_traj_length.push_back(traj_length);
 	}
 
-	void standardizeBatchVector(std::vector<std::vector< ScalarType >> batch_list)
+	void standardizeBatchVector(std::vector<std::vector< ScalarType >>& batch_list)
 	{
 		double mean = 0;
 		double var = 0;
@@ -408,9 +419,12 @@ protected:
 	int zero_derivatives = 0;
 	int non_zero_derivatives = 0;
 
+	int batch_backprop_count = 0;
+	std::vector<int> shuffle_order;
+
     int m_timesteps_per_episode=0;
     double m_lambda = 0.98;
-    double eps = 0.2;
+	double eps = 0.15;
 	double best_return = 0;
 	double best_return_iteration = 0;
 

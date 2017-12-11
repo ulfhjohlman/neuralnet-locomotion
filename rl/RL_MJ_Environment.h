@@ -115,11 +115,14 @@ class RL_MJ_Environment: public Environment {
 		{
 			//mj_step(model, data)
 			if (i == 0) {
+				//if(m_time_simulated==0)std::cout << "Ac: [";
 				for (int j = 0; j < model->nu; j++)
 				{
+					//if (m_time_simulated == 0)std::cout << " " << actions[i] << "  ";
 					data->ctrl[j] = actions[j];
 					actionSqrSum += actions[j] * actions[j];
 				}
+				//if (m_time_simulated == 0)std::cout << "]\n";
 			}
 			mj_step(model, data);
 			render();
@@ -522,7 +525,7 @@ public:
 
 	}
 	virtual double getReward() {
-		return velocity - 1e-3*actionSqrSum + 1;
+		return velocity - 1e-5*actionSqrSum + 0.01;
 	}
 
 };
@@ -616,7 +619,7 @@ protected:
 	}
 public:
 	virtual bool earlyAbort() {
-		return (data->site_xpos[5]<0);
+		return (data->site_xpos[5]<1);
 	}
 	InvDoublePendEnv() {
 		if (!init()) {

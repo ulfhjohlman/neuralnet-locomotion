@@ -279,7 +279,7 @@ protected:
 	std::vector<double> running_obs_m2;
 	long long count_obs = 0;
 
-	bool normalize_obs =	true;
+	bool normalize_obs =	false;
     ScalarType m_gamma = 0.995;
     int state_space_dim;
     int action_space_dim;

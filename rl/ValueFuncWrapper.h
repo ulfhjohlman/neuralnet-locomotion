@@ -45,7 +45,5 @@ public:
         m_nn->updateParameters();
     }
 
-private:
     LayeredNeuralNet * m_nn;
-    int state_space_dim;
 };
