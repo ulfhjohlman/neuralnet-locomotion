@@ -4,6 +4,8 @@
 #include <math.h>
 #include <experimental/filesystem>
 #include <algorithm>
+#include <iostream>
+#include <fstream>
 
 class PPOTrainer : public PolicyGradientTrainer
 {
@@ -30,6 +32,7 @@ public:
 
     void trainPPO(int max_iterations, int traj_batch_size , int timesteps_per_episode, int mini_batch_size,int num_epochs)
     {
+		avg_returns_list.reserve(max_iterations);
 		shuffle_order.reserve(traj_batch_size * timesteps_per_episode);
 		value_batch_size = mini_batch_size;
 		update_batch_size = mini_batch_size;
@@ -65,7 +68,7 @@ public:
             mean_return_batch /= traj_batch_size;
             std::cout << "Batch of " << traj_batch_size <<
                 " trajectories generated. Mean return over batch: " << mean_return_batch << "\n";
-
+			avg_returns_list.push_back(mean_return_batch);
 			if (mean_return_batch > best_return) {
 				std::cout << "New best_net saving...";
 				save_NN();
@@ -107,6 +110,7 @@ public:
 
         }
 		std::cout << "Optimization done. Best iteration was iter " << best_return_iteration << " with return " << best_return <<"!\n The corresponding net has been saved in ./best_net\n";
+		save_tsv(avg_returns_list,"avg_mean_returns.tsv");
     }
 
 protected:
@@ -409,6 +413,15 @@ protected:
         return x;
     }
 
+	void save_tsv(std::vector<double> list, char* file_name) {
+		std::ofstream file;
+		file.open(file_name);
+		for(int i = 0; i < list.size(); i++) {
+			file << list[i] << "\t";
+		}
+		file.close();
+	}
+
     ValueFuncWrapper valueFunc;
     //PolicyWrapper oldPolicy;
     std::vector<ScalarType> valuePred_list;
@@ -439,6 +452,8 @@ protected:
     std::vector<std::vector<ScalarType>>                batch_vtarg_list;
 	std::vector<std::vector<ScalarType>>				batch_valueTargTD1;
 	std::vector<int>									batch_traj_length;
+	
+	std::vector<double>									avg_returns_list;
 
 
 

@@ -118,7 +118,7 @@ class RL_MJ_Environment: public Environment {
 				//if(m_time_simulated==0)std::cout << "Ac: [";
 				for (int j = 0; j < model->nu; j++)
 				{
-					//if (m_time_simulated == 0)std::cout << " " << actions[i] << "  ";
+					//if (m_time_simulated == 0)std::cout << " " << actions[j] << "  ";
 					data->ctrl[j] = actions[j];
 					actionSqrSum += actions[j] * actions[j];
 				}
@@ -538,22 +538,25 @@ protected:
 	}
 public:
 	virtual bool earlyAbort() {
-		return false;
+		double height = data->geom_xpos[5];
+		double ang = data->qpos[2];
+		double limit_angle = 2; //radians
+		return height < 0.25;
+		//return false;
 	}
 	AntEnv() {
 		if (!init()) {
 			throw std::runtime_error("Unable to init() RL_MJ_environemnt!\n");
 		}
 		environment = new mjEnvironment(1, 1);
+		simstep = 0.01;
 		loadEnv();
 		nsensors = model->nsensordata;
 		nctrls = model->nu;
-		//model = environment->loadMujocoModel("humanoid.xml");
 
 		agent.setup(model);
+		state.resize(model->nv + nsensors);
 		data = agent.getData();
-		//state.resize(nsensors);
-		state.resize(model->nq + model->nv);
 		mj_forward(model, data);
 
 		global_environment = environment;
@@ -566,6 +569,22 @@ public:
 	}
 	virtual double getReward() {
 		return velocity - 1e-4*actionSqrSum + 0.02;
+	}
+
+	virtual int getStateSpaceDimensions()
+	{
+		return (nsensors + model->nv);
+	}
+
+	virtual const std::vector<ScalarType>& getState()
+	{
+		for (int i = 0; i < nsensors; i++) {
+			state[i] = data->sensordata[i];
+		}
+		for (int i = 0; i < model->nv; i++) {
+			state[nsensors + i] = data->qvel[i];
+		}
+		return state;
 	}
 };
 
