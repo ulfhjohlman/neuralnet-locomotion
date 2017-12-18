@@ -110,7 +110,7 @@ public:
 
         }
 		std::cout << "Optimization done. Best iteration was iter " << best_return_iteration << " with return " << best_return <<"!\n The corresponding net has been saved in ./best_net\n";
-		save_tsv(avg_returns_list,"avg_mean_returns.tsv");
+		save_tsv(avg_returns_list,"best_net/avg_mean_returns.tsv");
     }
 
 protected:
