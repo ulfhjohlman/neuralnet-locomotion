@@ -72,6 +72,7 @@ public:
 			if (mean_return_batch > best_return) {
 				std::cout << "New best_net saving...";
 				save_NN();
+				save_tsv(avg_returns_list, "best_net/avg_mean_returns.tsv");
 				std::cout << " Save complete.\n";
 				best_return = mean_return_batch;
 				best_return_iteration = iteration;

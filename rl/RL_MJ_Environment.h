@@ -98,38 +98,39 @@ void scroll(GLFWwindow* window, double xoffset, double yoffset)
 class RL_MJ_Environment: public Environment {
 	public:
 
-    virtual void step(const std::vector<ScalarType>& actions)
-    {
-        #ifdef _DEBUG
-            if(actions.size() != nctrls)
-            {
-                throw std::runtime_error("Controler actions.size() != nctrls\n");
-            }
-        #endif
-
-
-        // agent.simulate(1);
-		double pos_before = data->qpos[0, 0]; 
-		double actionSqrSum = 0;
-		for (int i = 0; i < frameskip; i++)
+		virtual void step(const std::vector<ScalarType>& actions)
 		{
-			//mj_step(model, data)
-			if (i == 0) {
-				//if(m_time_simulated==0)std::cout << "Ac: [";
-				for (int j = 0; j < model->nu; j++)
-				{
-					//if (m_time_simulated == 0)std::cout << " " << actions[j] << "  ";
-					data->ctrl[j] = actions[j];
-					actionSqrSum += actions[j] * actions[j];
-				}
-				//if (m_time_simulated == 0)std::cout << "]\n";
+#ifdef _DEBUG
+			if (actions.size() != nctrls)
+			{
+				throw std::runtime_error("Controler actions.size() != nctrls\n");
 			}
-			mj_step(model, data);
-			render();
-		}
-		extForceSqrSum = calcExtForceSqrSum();
-		double pos_after = data->qpos[0, 0];
-		velocity = (pos_after - pos_before) / (simstep * frameskip);
+#endif
+
+
+			// agent.simulate(1);
+			double pos_before = data->subtree_com[0];
+			double actionSqrSum = 0;
+			for (int i = 0; i < frameskip; i++)
+			{
+				//mj_step(model, data)
+				if (i == 0) {
+					//if(m_time_simulated==0)std::cout << "Ac: [";
+					for (int j = 0; j < model->nu; j++)
+					{
+						//if (m_time_simulated == 0)std::cout << " " << actions[j] << "  ";
+						data->ctrl[j] = actions[j];
+						actionSqrSum += actions[j] * actions[j];
+					}
+					//if (m_time_simulated == 0)std::cout << "]\n";
+				}
+				mj_step(model, data);
+				render();
+			}
+			extForceSqrSum = calcExtForceSqrSum();
+			double pos_after = data->subtree_com[0];
+			//velocity = (pos_after - pos_before) / (simstep * frameskip);
+			velocity = data->subtree_linvel[0];
         m_time_simulated += simstep*frameskip;
 		++step_nr;
 
@@ -273,6 +274,7 @@ bool RL_MJ_Environment::init() {
 }
 
 
+/*
 class HumanoidEnv2 : public RL_MJ_Environment
 {
 protected:
@@ -351,6 +353,7 @@ public:
 		return (model->nq + model->nv * 2 + model->nbody * 22);
 	}
 };
+*/
 
 class HumanoidEnv : public RL_MJ_Environment
 {
@@ -367,7 +370,7 @@ public:
 
 		//for (int i =0; i < 15 ; i++)
 		//std::cout << "geom_xpos[" << i << "]: " << data->geom_xpos[i] << "\n";
-		return height < 1.0 || height > 2.0;
+		return height < 0.9 || height > 2.0;
 		//return false;
 	}
 
@@ -379,7 +382,7 @@ public:
 		loadEnv();
 		nsensors = model->nsensordata;
 		nctrls = model->nu;
-
+		simstep = 0.004;
 		agent.setup(model);
 		data = agent.getData();
 
@@ -397,37 +400,49 @@ public:
 		//environment->cam.trackbodyid = 0;
 	}
 	virtual double getReward() {
-		extForceSqrSum = fmin(extForceSqrSum, 10.0);
-		return 0.25*velocity - 1e-1*actionSqrSum - 0.5*1e-6*extForceSqrSum + 5;
+		//extForceSqrSum = fmin(extForceSqrSum, 10.0);
+		return velocity - 0.00002*actionSqrSum + simstep*0.1;
 	}
 	virtual const std::vector<ScalarType>& getState()
 	{
 		//messy concatenation :S
-		for (int i = 0; i < model->nq; i++) {
-			state[i] = data->qpos[i];
-		}
-		for (int i = 0; i < model->nv; i++) {
-			state[model->nq + i] = data->qvel[i];
-		}
-		for (int i = 0; i < model->nbody*10; i++) {
-			state[model->nq + model->nv + i] = data->cinert[i];
-		}
-		for (int i = 0; i < model->nbody * 6; i++) {
-			state[model->nq + model->nv + model->nbody * 10 + i] = data->cvel[i];
-		}
-		for (int i = 0; i < model->nv; i++) {
-			state[model->nq + model->nv + model->nbody * 16 + i] = data->qfrc_actuator[i];
-		}
-		for (int i = 0; i < model->nbody * 6; i++) {
-			state[model->nq + model->nv*2 + model->nbody * 16 + i] = data->cfrc_ext[i];
+		for (int i = 0; i < nsensors; i++) {
+			state[i] = data->sensordata[i];
 		}
 		return state;
 
 	}
+	virtual void step(const std::vector<ScalarType>& actions) {
+		double pos_before = data->subtree_com[0];
+		double actionSqrSum = 0;
+		for (int i = 0; i < frameskip; i++)
+		{
+			//mj_step(model, data)
+			if (i == 0) {
+				//if(m_time_simulated==0)std::cout << "Ac: [";
+				for (int j = 0; j < model->nu; j++)
+				{
+					//if (m_time_simulated == 0)std::cout << " " << actions[j] << "  ";
+					data->ctrl[j] = data->ctrl[j]*0.1 + 0.9*actions[j];
+					actionSqrSum += actions[j] * actions[j];
+				}
+				//if (m_time_simulated == 0)std::cout << "]\n";
+			}
+			mj_step(model, data);
+			render();
+		}
+		extForceSqrSum = calcExtForceSqrSum();
+		double pos_after = data->subtree_com[0];
+		//velocity = (pos_after - pos_before) / (simstep * frameskip);
+		velocity = data->subtree_linvel[0];
+		m_time_simulated += simstep*frameskip;
+		++step_nr;
+	}
 	virtual int getStateSpaceDimensions()
 	{
 		// return nsensors;
-		return (model->nq + model->nv*2 + model->nbody*22);
+		//return (model->nq + model->nv*2 + model->nbody*22);
+		return nsensors;
 	}
 };
 class HopperEnv : public RL_MJ_Environment

@@ -66,11 +66,11 @@ int ppo_mj_test()
 
 	//initalize environment
 	//InvDoublePendEnv env;
-	//HumanoidEnv env;
+	HumanoidEnv env;
 	//HumanoidEnv2 env;
 	//Walker2dEnv env;
 	//HopperEnv env;
-	AntEnv env;
+	//AntEnv env;
 	int action_space_dim = env.getActionSpaceDimensions();
 	int state_space_dim = env.getStateSpaceDimensions();
 
@@ -122,7 +122,7 @@ int ppo_mj_test()
 
 	env.set_frameskip(frameskip);
 	trainer.setName("ppo_mj_test");
-	trainer.trainPPO(1e4 , 32, 4096/frameskip, 64, 1);
+	trainer.trainPPO(100000 , 32, 4096/frameskip, 64, 1);
 
 
 
