@@ -55,7 +55,7 @@ int ppo_test()
     PPOTrainer trainer(&env,&policy,&valueFunc);
     //arguments: iterations,  batchsize, timesteps_episode, minibatch_size, epochs
 
-    trainer.trainPPO(10000,16,12,4,2);
+    trainer.trainPPO(10000,16,12,4,2,0);
 
 
     return 0;
@@ -66,9 +66,9 @@ int ppo_mj_test()
 
 	//initalize environment
 	//InvDoublePendEnv env;
-	HumanoidEnv env;
+	//HumanoidEnv env;
 	//HumanoidEnv2 env;
-	//Walker2dEnv env;
+	Walker2dEnv env;
 	//HopperEnv env;
 	//AntEnv env;
 	int action_space_dim = env.getActionSpaceDimensions();
@@ -122,7 +122,7 @@ int ppo_mj_test()
 
 	env.set_frameskip(frameskip);
 	trainer.setName("ppo_mj_test");
-	trainer.trainPPO(100000 , 32, 4096/frameskip, 64, 1);
+	trainer.trainPPO(10000 , 32, 4096/frameskip, 64, 1,0);
 
 
 
@@ -210,6 +210,49 @@ int pg_mj_test()
 	return 0;
 }
 
+int ppo_with_initial_net(Environment * env, LayeredNeuralNet* policy_nn_ptr, LayeredNeuralNet* value_nn_ptr, int iterations, int max_time)
+{
+	std::cout << "Starting ppo_with_inital_net\n";
+	//ParameterUpdater
+	AdamUpdater policyUpdater(1e-4);
+	AdamUpdater valueFuncUpdater(1e-4);
+
+	policy_nn_ptr->setParameterUpdater(policyUpdater);
+	value_nn_ptr->setParameterUpdater(valueFuncUpdater);
+
+	//set up training algorithm
+	// PolicyGradientTrainer trainer(&env,&policy);
+	PPOTrainer trainer(env, policy_nn_ptr, value_nn_ptr);
+	//arguments: iterations,  batchsize, timesteps_episode, minibatch_size, epochs
+
+	trainer.setName("ppo_mj_test");
+	trainer.trainPPO(iterations, 32, max_time, 64, 1, 1000);
+
+	return 0;
+}
+
+void test_ppo_with_init_net() {
+	Walker2dEnv env;
+	LayeredNeuralNet policynet;
+	policynet.load("best_net/ppo_mj_test");
+
+	int action_space_dim = env.getActionSpaceDimensions();
+	int state_space_dim = env.getStateSpaceDimensions();
+
+	std::vector<int> layerSizesValueFunc{ state_space_dim,128,64,32,1 };
+	const int inputLayer = Layer::LayerType::inputLayer;
+	const int noactiv = Layer::noActivation;
+	const int tanh = Layer::LayerType::tanh;
+	std::vector<int> layerTypesValueFunc{ inputLayer, tanh,tanh,tanh,noactiv };
+
+	//networks gain ownership/claening responsibilities for these topologies
+	LayeredTopology* topValueFunc = new LayeredTopology(layerSizesValueFunc, layerTypesValueFunc);
+	LayeredNeuralNet valuenet(topValueFunc);
+
+	ppo_with_initial_net(&env, &policynet, &valuenet, 5000, 2000);
+}
+
+
 int main()
 {
     std::cout << " ============ Running rl_test... ============ \n";
@@ -223,8 +266,9 @@ int main()
 		// pg_mj_test();
 		//ppo_test();
          //pg_test();
+		 test_ppo_with_init_net();
     }
-    catch(const std::runtime_error& e)
+	catch(const std::runtime_error& e)
     {
         std::cout << "ERROR: \n" << e.what();
     }

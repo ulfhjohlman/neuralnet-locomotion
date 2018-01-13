@@ -227,7 +227,7 @@ protected:
     int nctrls;
 	
 	//double cntrlCostCoef = 100;
-	int frameskip = 10;
+	int frameskip = 1;
     bool button_left = false;
     bool button_middle = false;
     bool button_right = false;

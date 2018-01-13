@@ -30,14 +30,18 @@ public:
 		policy.m_nn->setName(name);
 	}
 
-    void trainPPO(int max_iterations, int traj_batch_size , int timesteps_per_episode, int mini_batch_size,int num_epochs)
+    void trainPPO(int max_iterations, int traj_batch_size , int timesteps_per_episode, int mini_batch_size,int num_epochs, int burnin)
     {
 		avg_returns_list.reserve(max_iterations);
 		shuffle_order.reserve(traj_batch_size * timesteps_per_episode);
 		value_batch_size = mini_batch_size;
 		update_batch_size = mini_batch_size;
 		m_timesteps_per_episode = timesteps_per_episode;
-        for(int iteration = 0; iteration < max_iterations; iteration++)
+
+		if (burnin != 0) {
+			burnin_valuefunc(burnin, traj_batch_size, timesteps_per_episode);
+		}
+		for(int iteration = 0; iteration < max_iterations; iteration++)
         {
 			policy.setLogSigma(-0.7 - 0.9*(iteration / static_cast<double>(max_iterations)));
 			std::cout << "---- Iteration: " << iteration << " ----\n";
@@ -51,9 +55,9 @@ public:
                 generateTrajectory(timesteps_per_episode);
 				//standardizeVector(rew_list); 
 				makeValuePredictions();
-                //GAE();
+                GAE();
 				//simpleAdvEstimates();
-				simpleAdvEstimates2();
+				//simpleAdvEstimates2();
 
 				//TrainValueFunc();
 
@@ -113,6 +117,32 @@ public:
 		std::cout << "Optimization done. Best iteration was iter " << best_return_iteration << " with return " << best_return <<"!\n The corresponding net has been saved in ./best_net\n";
 		save_tsv(avg_returns_list,"best_net/avg_mean_returns.tsv");
     }
+
+	void burnin_valuefunc(int burnin, int traj_batch_size, int timesteps_per_episode) {
+		std::cout << "--Starting burnin of valuefunc--\n";
+
+		for (int iter = 0; iter < burnin; iter++) {
+			policy.setLogSigma(-1.6);
+			reserveBatchLists(traj_batch_size);
+			for (int traj = 0; traj < traj_batch_size; traj++)
+			{
+				//generate a trajectory (an episode)
+				resizeLists(timesteps_per_episode); //redo each loop as the lists are std::moved at storeDataBatch()
+				generateTrajectory(timesteps_per_episode);
+				makeValuePredictions();
+				simpleAdvEstimates2();
+
+				storeBatchData(); 
+				env->reset();
+			}
+			BatchTrainValueFunc(timesteps_per_episode);
+			if (iter % 10 == 0) {
+				std::cout << "Burnin iteration " << iter << "/" << burnin << " done\n";
+			}
+		}
+
+		std::cout << "--Burnin of valuefunc over--\n";
+	}
 
 protected:
     virtual void resizeLists(int len)
@@ -196,18 +226,12 @@ protected:
 	void simpleAdvEstimates2() {
 		valueTargTD1[traj_length - 1] = rew_list[traj_length - 1];
 		adv_list[traj_length - 1] = valueTargTD1[traj_length - 1] - valuePred_list[traj_length - 1];
-		if (isNaN(valuePred_list[traj_length - 1])) std::cout << "valuePred is NaN!\n";
-		if (isNaN(valueTargTD1[traj_length - 1])) std::cout << "valueTargTD1 is NaN!\n";
 		valueTarg_list[traj_length - 1] = valueTargTD1[traj_length - 1];
 		for (int i = traj_length - 2; i >= 0; i--)
 		{
-
 			valueTargTD1[i] = rew_list[i] + m_gamma*valueTargTD1[i + 1];
 			adv_list[i] = valueTargTD1[i] - valuePred_list[i];
 			valueTarg_list[i] = valueTargTD1[i];
-			if (isNaN(valuePred_list[i])) std::cout << "valuePred is NaN!\n";
-			if (isNaN(valueTargTD1[i])) std::cout << "valueTargTD1 is NaN!\n";
-
 		}
 	}
 
